@@ -22,3 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+development-plan.md
+design-styleguide.html
+masterplan .md
+backend-redesign.md
