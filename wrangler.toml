@@ -1,5 +1,7 @@
 name = "myshipmall"
+compatibility_date = "2026-03-23"
 compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".output/public"
 
 [[kv_namespaces]]
 binding = "SCRAPE_CACHE"
@@ -9,3 +11,5 @@ id = "381f2fbfa8fa4870a39df75740a5a768"
 binding = "RATE_LIMIT"
 id = "74869b84895a462fb677d1802fb13082"
 
+[triggers]
+crons = ["0 0 */5 * *"]
