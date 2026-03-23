@@ -197,61 +197,83 @@ function buildSpecData(s: Record<string, unknown>): SpecData {
 }
 
 // ─── 解析策略：cheerio DOM fallback ───────────────────────────────────────────
-// 賣貨便為傳統 ASP.NET MVC SSR，商品資料存於 data-product JSON attribute
+// 賣貨便為傳統 ASP.NET MVC SSR，商品資料完整存於 data-product JSON attribute
 function parseFromHtml(shopExternalId: string, url: string, html: string): ShopData {
   const $ = cheerio.load(html)
 
   // 賣場名稱
   const name =
-    $('h1').first().text().trim() ||
+    $('meta[property="og:title"]').attr('content') ||
+    $('a.index-title span').first().text().trim() ||
     $('title').text().replace(/[|\-–].*$/, '').trim() ||
     shopExternalId
 
-  const imageUrl = $('[class*="shop-logo"] img, [class*="shopLogo"] img').first().attr('src') || ''
-  const description = $('[class*="shop-desc"], [class*="shopDesc"]').first().html() || ''
+  // 賣場主圖（og:image 為相對路徑）
+  const ogImage = $('meta[property="og:image"]').attr('content') || ''
+  const imageUrl = ogImage
+    ? ogImage.startsWith('http') ? ogImage : `https://myship.7-11.com.tw${ogImage}`
+    : ''
 
-  // 商品列表：data-product attribute 含完整 JSON
+  // 賣場說明：.col-lg-12.mb-20 下，去掉第一個「賣場說明：」段落
+  const $descContainer = $('.main_content .col-lg-12.mb-20').clone()
+  $descContainer.find('p').first().remove()
+  const description = $descContainer.html()?.trim() || ''
+
+  // 商品列表：只取 div.product，避免 .magnific-popup-ajax 上的重複 data-product
   const products: ProductData[] = []
+  const seen = new Set<string>()
 
-  $('[data-product]').each((i, el) => {
-    const $el = $(el)
-    const raw = $el.attr('data-product')
+  $('div.product[data-product]').each((i, el) => {
+    const raw = $(el).attr('data-product')
     if (!raw) return
 
     let p: Record<string, unknown>
     try { p = JSON.parse(raw) } catch { return }
 
     const externalId = str(p.Cgdd_Id || `UNKNOWN_${i}`)
+    if (seen.has(externalId)) return
+    seen.add(externalId)
+
     const productName = str(p.Cgdd_Product_Name || '')
     const desc = str(p.Cgdd_Product_Description || '')
-    const mainImage =
-      $el.attr('data-goods-first-img') ||
-      $el.find('img').first().attr('src') ||
-      ''
 
-    // 規格：子元素的 data-spec-* attributes
-    const specs: SpecData[] = []
-    $el.find('[data-spec-id]').each((j, specEl) => {
-      const $s = $(specEl)
-      specs.push({
-        external_id: $s.attr('data-spec-id') || `SPEC_${i}_${j}`,
-        name: $s.attr('data-spec-name') || '',
-        price: parsePrice($s.attr('data-spec-price') || '0'),
-        sale_price: parsePrice($s.attr('data-spec-sprice') || '0'),
-        image: $s.attr('data-spec-imagepath') || $s.attr('data-spec-imagePath') || '',
-        stock: parseInt($s.attr('data-spec-qty') || '0', 10),
-      })
-    })
+    const imgBase = `https://myship.7-11.com.tw/i/cgdm/${shopExternalId}/`
+    const goodsFirstImg = str(p.GoodsFirstImg || '')
+    const mainImage = goodsFirstImg ? `${imgBase}${goodsFirstImg}` : ''
+
+    // 規格（JSON Spec array）
+    const rawSpecs = (p.Spec as any[]) || []
+    const specs: SpecData[] = rawSpecs.map((s) => ({
+      external_id: str(s.Cgds_Id || ''),
+      name: str(s.Cgds_Spec || ''),
+      price: num(s.Cgds_Price ?? 0),
+      sale_price: num(s.Cgds_SPrice ?? 0),
+      image: s.Cgds_CgimImagePath ? `${imgBase}${s.Cgds_CgimImagePath}` : '',
+      stock: num(s.Inventory ?? s.Cgds_Inventory ?? 0),
+    }))
+
+    // 商品圖片（JSON Images array）
+    const rawImages = (p.Images as any[]) || []
+    const images: ImageData[] = rawImages
+      .sort((a, b) => (a.Cgim_Ordering ?? 0) - (b.Cgim_Ordering ?? 0))
+      .map((img) => ({
+        url: `${imgBase}${img.Cgim_Image_Path}`,
+        ordering: num(img.Cgim_Ordering ?? 0),
+      }))
+
+    if (images.length === 0 && mainImage) {
+      images.push({ url: mainImage, ordering: 0 })
+    }
 
     products.push({
       external_id: externalId,
       name: productName,
       description: desc,
       main_image: mainImage,
-      min_order: 0,
-      max_order: 0,
+      min_order: num(p.Cgdd_Product_MinOrder ?? 0),
+      max_order: num(p.Cgdd_Product_MaxOrder ?? 0),
       specs,
-      images: mainImage ? [{ url: mainImage, ordering: 0 }] : [],
+      images,
     })
   })
 
