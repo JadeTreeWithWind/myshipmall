@@ -44,6 +44,9 @@ importers:
       vue-router:
         specifier: ^5.0.4
         version: 5.0.4(@vue/compiler-sfc@3.5.30)(vue@3.5.30(typescript@5.9.3))
+      xss:
+        specifier: ^1.0.15
+        version: 1.0.15
     devDependencies:
       daisyui:
         specifier: ^5.5.19
@@ -6126,8 +6129,7 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  cssfilter@0.0.10:
-    optional: true
+  cssfilter@0.0.10: {}
 
   cssnano-preset-default@7.0.11(postcss@8.5.8):
     dependencies:
@@ -8250,7 +8252,6 @@ snapshots:
     dependencies:
       commander: 2.20.3
       cssfilter: 0.0.10
-    optional: true
 
   y18n@5.0.8: {}
 

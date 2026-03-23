@@ -1,5 +1,17 @@
 import * as cheerio from 'cheerio'
+import { filterXSS } from 'xss'
 import type { ShopData, ProductData, SpecData, ImageData } from './types'
+
+// 允許的 HTML tags/attributes（只保留排版用的，砍掉 script/iframe/on* 等）
+const sanitize = (html: string) =>
+  filterXSS(html, {
+    allowList: {
+      p: [], br: [], span: ['style'], b: [], strong: [], i: [], em: [],
+      u: [], s: [], ul: [], ol: [], li: [], a: ['href', 'target'], img: ['src', 'alt'],
+    },
+    stripIgnoreTag: true,
+    stripIgnoreTagBody: ['script', 'style', 'iframe', 'object', 'embed'],
+  })
 
 const MYSHIP_URL_REGEX = /^https:\/\/myship\.7-11\.com\.tw\/general\/detail\/(GM\w+)/
 
@@ -217,7 +229,7 @@ function parseFromHtml(shopExternalId: string, url: string, html: string): ShopD
   // 賣場說明：.col-lg-12.mb-20 下，去掉第一個「賣場說明：」段落
   const $descContainer = $('.main_content .col-lg-12.mb-20').clone()
   $descContainer.find('p').first().remove()
-  const description = $descContainer.html()?.trim() || ''
+  const description = sanitize($descContainer.html()?.trim() || '')
 
   // 商品列表：只取 div.product，避免 .magnific-popup-ajax 上的重複 data-product
   const products: ProductData[] = []
@@ -235,7 +247,7 @@ function parseFromHtml(shopExternalId: string, url: string, html: string): ShopD
     seen.add(externalId)
 
     const productName = str(p.Cgdd_Product_Name || '')
-    const desc = str(p.Cgdd_Product_Description || '')
+    const desc = sanitize(str(p.Cgdd_Product_Description || ''))
 
     const imgBase = `https://myship.7-11.com.tw/i/cgdm/${shopExternalId}/`
     const goodsFirstImg = str(p.GoodsFirstImg || '')
