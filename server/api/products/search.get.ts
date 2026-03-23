@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   // 關鍵字搜尋：商品名稱 ILIKE（Trigram 索引會介入）
   // 若同時也要搜商城名稱，使用 or() 搭配 embedded filter
   if (keyword) {
-    q = q.or(`name.ilike.%${keyword}%,shops.name.ilike.%${keyword}%`)
+    q = q.or(`name.ilike.*${keyword}*,shops.name.ilike.*${keyword}*`)
   }
 
   // 價格篩選（區間重疊）
