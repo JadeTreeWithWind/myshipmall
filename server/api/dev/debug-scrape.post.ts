@@ -45,30 +45,47 @@ export default defineEventHandler(async (event) => {
   }
 
   // 找所有 inline script 裡的 JSON（只取開頭 200 chars）
-  const scriptMatches = [...html.matchAll(/<script[^>]*>([\s\S]{20,500}?)<\/script>/g)]
-    .map((m) => m[1].trim())
-    .filter((s) => s.startsWith('{') || s.startsWith('window.') || s.startsWith('var '))
-    .slice(0, 5)
-
   // 找 <script src> 清單（看是否為 SPA 需要 API）
   const scriptSrcs = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)]
     .map((m) => m[1])
     .filter((s) => !s.includes('gtm') && !s.includes('analytics'))
     .slice(0, 10)
 
-  // HTML 前 1000 chars（看 <body> 結構）
-  const bodyStart = html.slice(html.indexOf('<body'), html.indexOf('<body') + 1000)
+  // 找商品相關 HTML 片段（搜尋關鍵字附近 500 chars）
+  const keywords = ['cgdd', 'product-item', 'goods-item', 'prod_', 'item-card', 'shop-goods', 'cgddname', 'CgddName', '商品名稱']
+  const snippets: Record<string, string> = {}
+  for (const kw of keywords) {
+    const idx = html.toLowerCase().indexOf(kw.toLowerCase())
+    if (idx !== -1) {
+      snippets[kw] = html.slice(Math.max(0, idx - 100), idx + 400)
+    }
+  }
+
+  // 找所有 data-* attribute（找看看有沒有 data-id、data-cgdd 之類）
+  const dataAttrs = [...new Set([...html.matchAll(/data-[\w-]+="[^"]*"/g)].map(m => m[0].split('=')[0]))]
+
+  // 找賣場名稱相關
+  const shopNameSnippet = (() => {
+    for (const pat of ['shop-name', 'shopname', 'ShopName', 'store-name', '賣場名稱']) {
+      const idx = html.toLowerCase().indexOf(pat.toLowerCase())
+      if (idx !== -1) return html.slice(Math.max(0, idx - 50), idx + 300)
+    }
+    return null
+  })()
+
+  // <ul> / <li> 數量統計（找商品列表用的標籤結構）
+  const ulCount = (html.match(/<ul/g) || []).length
+  const liCount = (html.match(/<li/g) || []).length
+  const divCount = (html.match(/<div/g) || []).length
 
   return {
     hasNextData: !!nextDataMatch,
-    nextDataKeys,
-    nextDataPagePropsKeys,
-    nextDataSample,
     hasInitialState: !!initialStateMatch,
-    initialStateKeys,
-    inlineScriptSamples: scriptMatches,
     scriptSrcs,
-    bodyStart,
     htmlLength: html.length,
+    ulCount, liCount, divCount,
+    dataAttrs,
+    shopNameSnippet,
+    snippets,
   }
 })
