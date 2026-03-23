@@ -21,10 +21,23 @@ export default defineEventHandler(async (event) => {
     .eq('status', 1)
     .range(offset, offset + PAGE_SIZE - 1)
 
-  // 關鍵字搜尋：商品名稱 ILIKE（Trigram 索引會介入）
-  // 若同時也要搜商城名稱，使用 or() 搭配 embedded filter
+  // 關鍵字搜尋：商品名稱 ILIKE（Trigram 索引介入）
+  // PostgREST 不支援 or() 跨 embedded table，shop name 搜尋另外處理
   if (keyword) {
-    q = q.or(`name.ilike.*${keyword}*,shops.name.ilike.*${keyword}*`)
+    // 找出名稱符合 keyword 的 shop IDs
+    const { data: matchedShops } = await supabase
+      .from('shops')
+      .select('id')
+      .ilike('name', `%${keyword}%`)
+
+    const shopIds = (matchedShops ?? []).map((s: any) => s.id)
+
+    if (shopIds.length > 0) {
+      // 商品名稱 OR 商城名稱都符合
+      q = q.or(`name.ilike.%${keyword}%,shop_id.in.(${shopIds.join(',')})`)
+    } else {
+      q = q.ilike('name', `%${keyword}%`)
+    }
   }
 
   // 價格篩選（區間重疊）
