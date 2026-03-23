@@ -5,6 +5,16 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   modules: ["@nuxt/a11y", "@nuxt/image", "@nuxt/icon"],
+  app: {
+    head: {
+      script: [
+        {
+          src: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+          defer: true,
+        },
+      ],
+    },
+  },
   css: ["@/assets/main.css"],
   vite: {
     plugins: [tailwindcss()],

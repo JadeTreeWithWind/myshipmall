@@ -1,0 +1,300 @@
+import * as cheerio from 'cheerio'
+import type { ShopData, ProductData, SpecData, ImageData } from './types'
+
+const MYSHIP_URL_REGEX = /^https:\/\/myship\.7-11\.com\.tw\/general\/detail\/(GM\w+)/
+
+export function validateMyshipUrl(url: string): string {
+  const match = url.match(MYSHIP_URL_REGEX)
+  if (!match) {
+    throw createError({
+      statusCode: 400,
+      message: '網址格式不正確，請輸入賣貨便賣場網址（https://myship.7-11.com.tw/general/detail/GM...）',
+    })
+  }
+  return match[1]
+}
+
+export async function hashUrl(url: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(url)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+    .slice(0, 20)
+}
+
+export async function scrapeMyship(url: string): Promise<ShopData> {
+  const shopExternalId = validateMyshipUrl(url)
+
+  const html = await $fetch<string>(url, {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8',
+    },
+    responseType: 'text',
+  }).catch(() => {
+    throw createError({ statusCode: 502, message: '無法存取賣貨便頁面，請確認網址是否正確' })
+  })
+
+  // 策略一：嘗試從 __NEXT_DATA__ 提取（效能最佳，CPU 用量低）
+  const nextDataMatch = html.match(
+    /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/,
+  )
+  if (nextDataMatch) {
+    try {
+      const nextData = JSON.parse(nextDataMatch[1])
+      const parsed = parseFromNextData(shopExternalId, url, nextData)
+      if (parsed) return parsed
+    } catch {
+      // fall through
+    }
+  }
+
+  // 策略二：找含有 Cgdd_Id 的 inline JSON script（賣貨便常見資料格式）
+  const inlineJsonMatch = html.match(/window\.__INITIAL_STATE__\s*=\s*(\{[\s\S]*?\})(?:\s*;|\s*<)/)
+  if (inlineJsonMatch) {
+    try {
+      const stateData = JSON.parse(inlineJsonMatch[1])
+      const parsed = parseFromInitialState(shopExternalId, url, stateData)
+      if (parsed) return parsed
+    } catch {
+      // fall through
+    }
+  }
+
+  // 策略三：cheerio DOM 解析（fallback）
+  return parseFromHtml(shopExternalId, url, html)
+}
+
+// ─── 解析策略：__NEXT_DATA__ ───────────────────────────────────────────────────
+// 賣貨便若為 Next.js 架構，資料會在 props.pageProps 內
+function parseFromNextData(
+  shopExternalId: string,
+  url: string,
+  nextData: Record<string, unknown>,
+): ShopData | null {
+  try {
+    const pageProps = (nextData as any)?.props?.pageProps
+    if (!pageProps) return null
+
+    // 嘗試找賣場資料（常見欄位名稱）
+    const shopInfo =
+      pageProps.shopInfo || pageProps.shopData || pageProps.storeInfo || pageProps.generalInfo
+
+    if (!shopInfo) return null
+
+    return buildShopData(shopExternalId, url, shopInfo)
+  } catch {
+    return null
+  }
+}
+
+// ─── 解析策略：window.__INITIAL_STATE__ ───────────────────────────────────────
+function parseFromInitialState(
+  shopExternalId: string,
+  url: string,
+  state: Record<string, unknown>,
+): ShopData | null {
+  try {
+    const shopInfo =
+      (state as any)?.shop ||
+      (state as any)?.general ||
+      (state as any)?.store ||
+      (state as any)?.shopInfo
+    if (!shopInfo) return null
+    return buildShopData(shopExternalId, url, shopInfo)
+  } catch {
+    return null
+  }
+}
+
+// ─── 通用 ShopData builder（從結構化 JSON）───────────────────────────────────
+function buildShopData(
+  shopExternalId: string,
+  url: string,
+  raw: Record<string, unknown>,
+): ShopData | null {
+  // 嘗試多種欄位命名慣例
+  const name = str(raw.ShopName || raw.shopName || raw.name || raw.Name || '')
+  if (!name) return null
+
+  const imageUrl = str(
+    raw.ShopImageUrl || raw.shopImageUrl || raw.image_url || raw.imageUrl || raw.logo || '',
+  )
+  const description = str(raw.Description || raw.description || raw.intro || raw.Intro || '')
+
+  // 找商品列表
+  const rawProducts: unknown[] = (
+    raw.ProductList ||
+    raw.productList ||
+    raw.products ||
+    raw.Products ||
+    raw.goodsList ||
+    raw.GoodsList ||
+    []
+  ) as unknown[]
+
+  const products: ProductData[] = rawProducts.map((p: any, idx: number) =>
+    buildProductData(p, idx),
+  )
+
+  return {
+    external_id: shopExternalId,
+    name,
+    shop_url: url,
+    image_url: imageUrl,
+    description,
+    products,
+  }
+}
+
+function buildProductData(p: Record<string, unknown>, _idx: number): ProductData {
+  const externalId = str(p.Cgdd_Id || p.cgdd_id || p.productId || p.ProductId || p.id || '')
+  const name = str(p.CgddName || p.cgddName || p.name || p.Name || p.productName || '')
+  const description = str(p.Description || p.description || p.intro || '')
+  const mainImage = str(p.MainImage || p.mainImage || p.image || p.Image || p.imgUrl || '')
+  const minOrder = num(p.MinOrder || p.minOrder || p.min_order || 0)
+  const maxOrder = num(p.MaxOrder || p.maxOrder || p.max_order || 0)
+
+  const rawSpecs: unknown[] = (p.SpecList || p.specList || p.specs || p.Specs || []) as unknown[]
+  const specs: SpecData[] = rawSpecs.map((s: any) => buildSpecData(s))
+
+  const rawImages: unknown[] = (
+    p.ImageList ||
+    p.imageList ||
+    p.images ||
+    p.Images ||
+    []
+  ) as unknown[]
+  const images: ImageData[] = rawImages.map((img: any, i: number) => ({
+    url: str(img.url || img.Url || img.imgUrl || img.ImageUrl || img),
+    ordering: num(img.ordering || img.Order || img.sort || i),
+  }))
+
+  // 若沒有 images 但有 mainImage，補一張
+  if (images.length === 0 && mainImage) {
+    images.push({ url: mainImage, ordering: 0 })
+  }
+
+  return { external_id: externalId, name, description, main_image: mainImage, min_order: minOrder, max_order: maxOrder, specs, images }
+}
+
+function buildSpecData(s: Record<string, unknown>): SpecData {
+  const price = num(s.Price || s.price || s.salePrice || 0)
+  const salePrice = num(s.SalePrice || s.sale_price || s.discountPrice || 0)
+  return {
+    external_id: str(s.Cgds_Id || s.cgds_id || s.specId || s.SpecId || s.id || ''),
+    name: str(s.SpecName || s.specName || s.name || s.Name || ''),
+    price,
+    sale_price: salePrice,
+    image: str(s.SpecImage || s.specImage || s.image || ''),
+    stock: num(s.Stock || s.stock || s.inventory || 0),
+  }
+}
+
+// ─── 解析策略：cheerio DOM fallback ───────────────────────────────────────────
+// ⚠️  這些 selector 是根據賣貨便頁面常見結構推測，可能需要根據實際頁面調整
+// 建議：先執行 scrape，若資料不正確，使用瀏覽器 DevTools 查看實際 class name 後調整
+function parseFromHtml(shopExternalId: string, url: string, html: string): ShopData {
+  const $ = cheerio.load(html)
+
+  // 賣場資訊
+  const name =
+    $('[class*="shop-name"]').first().text().trim() ||
+    $('[class*="shopName"]').first().text().trim() ||
+    $('h1').first().text().trim() ||
+    shopExternalId
+
+  const imageUrl =
+    $('[class*="shop-logo"] img, [class*="shopLogo"] img').first().attr('src') || ''
+
+  const description =
+    $('[class*="shop-desc"], [class*="shopDesc"], [class*="shop-intro"]').first().html() || ''
+
+  // 商品列表
+  const products: ProductData[] = []
+  const productEls = $(
+    '[class*="product-item"], [class*="productItem"], [class*="goods-item"], [class*="goodsItem"]',
+  )
+
+  productEls.each((i, el) => {
+    const $el = $(el)
+
+    // 嘗試從 data attribute 取 ID
+    const externalId =
+      $el.attr('data-cgdd-id') ||
+      $el.attr('data-product-id') ||
+      $el.find('[data-cgdd-id]').first().attr('data-cgdd-id') ||
+      `UNKNOWN_${i}`
+
+    const productName =
+      $el.find('[class*="product-name"], [class*="productName"], [class*="goods-name"]').first().text().trim() ||
+      $el.find('h2, h3').first().text().trim()
+
+    const mainImage =
+      $el.find('img').first().attr('src') ||
+      $el.find('img').first().attr('data-src') ||
+      ''
+
+    // 規格（通常在 modal 或 detail 頁才有完整資料，此處嘗試解析）
+    const specs: SpecData[] = []
+    $el.find('[class*="spec-item"], [class*="specItem"]').each((j, specEl) => {
+      const $spec = $(specEl)
+      specs.push({
+        external_id: $spec.attr('data-cgds-id') || $spec.attr('data-spec-id') || `SPEC_${i}_${j}`,
+        name: $spec.find('[class*="spec-name"]').text().trim() || $spec.text().trim(),
+        price: parsePrice($spec.find('[class*="price"]').text()),
+        sale_price: parsePrice($spec.find('[class*="sale-price"], [class*="salePrice"]').text()),
+        image: $spec.find('img').attr('src') || '',
+        stock: parseInt($spec.attr('data-stock') || '0', 10),
+      })
+    })
+
+    products.push({
+      external_id: externalId,
+      name: productName,
+      description: '',
+      main_image: mainImage,
+      min_order: 0,
+      max_order: 0,
+      specs,
+      images: mainImage ? [{ url: mainImage, ordering: 0 }] : [],
+    })
+  })
+
+  if (products.length === 0) {
+    throw createError({
+      statusCode: 422,
+      message: '無法解析賣場商品資料，請確認網址正確，或聯絡管理員（CSS selector 可能需要更新）',
+    })
+  }
+
+  return {
+    external_id: shopExternalId,
+    name,
+    shop_url: url,
+    image_url: imageUrl,
+    description,
+    products,
+  }
+}
+
+// ─── helpers ──────────────────────────────────────────────────────────────────
+function str(val: unknown): string {
+  if (val === null || val === undefined) return ''
+  return String(val).trim()
+}
+
+function num(val: unknown): number {
+  const n = parseInt(String(val ?? 0), 10)
+  return isNaN(n) ? 0 : n
+}
+
+function parsePrice(text: string): number {
+  const match = text.replace(/,/g, '').match(/\d+/)
+  return match ? parseInt(match[0], 10) : 0
+}
