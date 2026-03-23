@@ -83,14 +83,13 @@ watch(() => route.path, () => { menuOpen.value = false })
         <NuxtLink to="/import" class="btn btn-ghost hidden lg:flex">匯入賣場</NuxtLink>
 
         <!-- 漢堡選單（手機） -->
-        <div class="dropdown dropdown-end lg:hidden">
-          <button tabindex="0" class="btn btn-ghost btn-square" @click="menuOpen = !menuOpen">
+        <div class="relative lg:hidden">
+          <button class="btn btn-ghost btn-square" @click="menuOpen = !menuOpen">
             <Icon name="heroicons:bars-3" class="w-6 h-6" />
           </button>
           <ul
             v-if="menuOpen"
-            tabindex="0"
-            class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+            class="absolute right-0 top-full mt-1 w-56 bg-base-100 rounded-box shadow-lg p-2 z-50 flex flex-col gap-1"
           >
             <li>
               <form @submit.prevent="handleSearch">
@@ -102,8 +101,8 @@ watch(() => route.path, () => { menuOpen.value = false })
                 />
               </form>
             </li>
-            <li><NuxtLink to="/import">匯入賣場</NuxtLink></li>
-            <li><NuxtLink to="/about">關於</NuxtLink></li>
+            <li><NuxtLink to="/import" class="block px-3 py-2 rounded-lg hover:bg-base-200">匯入賣場</NuxtLink></li>
+            <li><NuxtLink to="/about" class="block px-3 py-2 rounded-lg hover:bg-base-200">關於</NuxtLink></li>
           </ul>
         </div>
       </div>

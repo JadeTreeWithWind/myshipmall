@@ -1,66 +1,97 @@
 <script setup lang="ts">
-import type { ProductSearchResult } from '~/composables/useProductSearch'
+import type { ProductSearchResult } from "~/composables/useProductSearch";
 
-useHead({ title: 'MyShipBang — 賣貨便商品瀏覽平台' })
+useHead({
+  title: "MyShipBang — 賣貨便商品瀏覽平台",
+  meta: [
+    {
+      name: "description",
+      content:
+        "搜尋並瀏覽所有已匯入的 7-11 賣貨便商品，提供更好的商品瀏覽與搜尋體驗。",
+    },
+    { property: "og:title", content: "MyShipBang — 賣貨便商品瀏覽平台" },
+    {
+      property: "og:description",
+      content:
+        "搜尋並瀏覽所有已匯入的 7-11 賣貨便商品，提供更好的商品瀏覽與搜尋體驗。",
+    },
+    { property: "og:type", content: "website" },
+  ],
+});
 
-const router = useRouter()
-const searchQ = ref('')
+const router = useRouter();
+const searchQ = ref("");
 
 function goSearch() {
-  if (!searchQ.value.trim()) return
-  router.push({ path: '/search', query: { q: searchQ.value.trim() } })
+  if (!searchQ.value.trim()) return;
+  router.push({ path: "/search", query: { q: searchQ.value.trim() } });
 }
 
 // 熱門商品：依 click_count 取前 20 筆
-const { data: hotProducts, pending } = await useFetch<ProductSearchResult[]>('/api/products/search', {
-  query: { sort: 'popular', offset: 0 },
-})
+const { data: hotProducts, pending } = await useFetch<ProductSearchResult[]>(
+  "/api/products/search",
+  {
+    query: { sort: "popular", offset: 0 },
+  },
+);
 </script>
 
 <template>
   <div>
     <!-- ── Hero 搜尋區 ── -->
-    <section class="bg-linear-to-br from-primary/10 to-secondary/10 py-16 px-4">
-      <div class="max-w-2xl mx-auto text-center">
-        <h1 class="text-3xl lg:text-4xl font-bold mb-3">探索賣貨便商品</h1>
-        <p class="text-base-content/60 mb-8">搜尋並瀏覽所有已匯入的 7-11 賣貨便商品</p>
-        <form class="flex gap-2 max-w-lg mx-auto" @submit.prevent="goSearch">
+    <section class="from-primary/10 to-secondary/10 bg-linear-to-br px-4 py-16">
+      <div class="mx-auto max-w-2xl text-center">
+        <h1 class="mb-3 text-3xl font-bold lg:text-4xl">探索賣貨便商品</h1>
+        <p class="text-base-content/60 mb-8">
+          搜尋並瀏覽所有已匯入的 7-11 賣貨便商品
+        </p>
+        <form class="mx-auto flex max-w-lg gap-2" @submit.prevent="goSearch">
           <input
             v-model="searchQ"
             type="search"
             placeholder="搜尋商品名稱、商城..."
-            class="input input-bordered flex-1 input-lg"
+            class="input input-bordered input-lg flex-1"
             autofocus
           />
           <button type="submit" class="btn btn-primary btn-lg">
-            <Icon name="heroicons:magnifying-glass" class="w-5 h-5" />
+            <Icon name="heroicons:magnifying-glass" class="h-5 w-5" />
           </button>
         </form>
       </div>
     </section>
 
     <!-- ── 熱門商品 ── -->
-    <section class="max-w-7xl mx-auto px-4 py-10">
-      <div class="flex items-center gap-2 mb-6">
-        <Icon name="heroicons:fire" class="w-6 h-6 text-orange-500" />
+    <section class="mx-auto max-w-7xl px-4 py-10">
+      <div class="mb-6 flex items-center gap-2">
+        <Icon name="heroicons:fire" class="h-6 w-6 text-orange-500" />
         <h2 class="text-xl font-bold">熱門商品</h2>
       </div>
 
       <!-- 載入中 -->
-      <div v-if="pending" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        <div v-for="i in 10" :key="i" class="card bg-base-100 shadow-sm animate-pulse">
-          <div class="aspect-square bg-base-200 rounded-t-xl" />
-          <div class="card-body p-3 gap-2">
-            <div class="h-4 bg-base-200 rounded w-3/4" />
-            <div class="h-4 bg-base-200 rounded w-1/2" />
+      <div
+        v-if="pending"
+        class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      >
+        <div
+          v-for="i in 10"
+          :key="i"
+          class="card bg-base-100 animate-pulse shadow-sm"
+        >
+          <div class="bg-base-200 aspect-square rounded-t-xl" />
+          <div class="card-body gap-2 p-3">
+            <div class="bg-base-200 h-4 w-3/4 rounded" />
+            <div class="bg-base-200 h-4 w-1/2 rounded" />
           </div>
         </div>
       </div>
 
       <!-- 商品列表 -->
-      <div v-else-if="hotProducts?.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div
+        v-else-if="hotProducts?.length"
+        class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      >
         <ProductCard
-          v-for="p in hotProducts"
+          v-for="(p, index) in hotProducts"
           :key="p.id"
           :id="p.id"
           :name="p.name"
@@ -70,15 +101,18 @@ const { data: hotProducts, pending } = await useFetch<ProductSearchResult[]>('/a
           :shop-name="p.shop_name"
           :shop-id="p.shop_id"
           :click-count="p.click_count"
+          :is-eager="index < 5"
         />
       </div>
 
       <!-- 無資料 -->
-      <div v-else class="text-center py-20 text-base-content/40">
-        <div class="text-5xl mb-4">🛍️</div>
+      <div v-else class="text-base-content/40 py-20 text-center">
+        <div class="mb-4 text-5xl">🛍️</div>
         <p class="text-lg">目前還沒有商品</p>
-        <p class="text-sm mt-2">
-          <NuxtLink to="/import" class="link link-primary">匯入第一個賣場</NuxtLink>
+        <p class="mt-2 text-sm">
+          <NuxtLink to="/import" class="link link-primary"
+            >匯入第一個賣場</NuxtLink
+          >
           來開始吧！
         </p>
       </div>

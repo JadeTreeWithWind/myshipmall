@@ -1,25 +1,6 @@
 <script setup lang="ts">
-import type { ShopData } from "~/server/utils/types";
+import type { ShopData } from "../../server/utils/types";
 
-useHead({ title: "匯入賣場 — MyShipBang" });
-
-const config = useRuntimeConfig();
-
-// ── State ──────────────────────────────────────────────────────────────────
-const url = ref("");
-const urlError = ref("");
-const phase = ref<"input" | "preview" | "success">("input");
-const loading = ref(false);
-const errorMsg = ref("");
-
-const previewData = ref<ShopData | null>(null);
-const importResult = ref<{ shop_name: string; product_count: number } | null>(
-  null,
-);
-
-// ── Turnstile ──────────────────────────────────────────────────────────────
-// Cloudflare Turnstile widget 會注入 window.turnstile
-// 我們在需要 token 時才 execute()，取得 token 後立即送出
 declare global {
   interface Window {
     turnstile: {
@@ -34,6 +15,18 @@ declare global {
   }
 }
 
+const config = useRuntimeConfig();
+const { minLoadingTime } = useMinLoadingTime();
+
+const url = ref("");
+const urlError = ref("");
+const phase = ref<"input" | "preview" | "success">("input");
+const loading = ref(false);
+const errorMsg = ref("");
+const previewData = ref<ShopData | null>(null);
+const importResult = ref<{ shop_name: string; product_count: number } | null>(
+  null,
+);
 const turnstileWidgetId = ref<string | null>(null);
 const turnstileContainer = ref<HTMLElement | null>(null);
 
@@ -44,7 +37,6 @@ function getTurnstileToken(): Promise<string> {
       return;
     }
 
-    // 若已有 widget 先移除
     if (turnstileWidgetId.value) {
       window.turnstile.remove(turnstileWidgetId.value);
     }
@@ -62,7 +54,6 @@ function getTurnstileToken(): Promise<string> {
   });
 }
 
-// ── URL 驗證 ──────────────────────────────────────────────────────────────
 function validateUrl(): boolean {
   const pattern = /^https:\/\/myship\.7-11\.com\.tw\/general\/detail/;
   if (!url.value) {
@@ -78,7 +69,6 @@ function validateUrl(): boolean {
   return true;
 }
 
-// ── Step 1：讀取賣場資料 ──────────────────────────────────────────────────
 async function handleScrape() {
   if (!validateUrl()) return;
   loading.value = true;
@@ -87,10 +77,12 @@ async function handleScrape() {
   try {
     const token = await getTurnstileToken();
 
-    const data = await $fetch<ShopData>("/api/scrape", {
-      method: "POST",
-      body: { url: url.value, turnstile_token: token },
-    });
+    const data = await minLoadingTime(
+      $fetch<ShopData>("/api/scrape", {
+        method: "POST",
+        body: { url: url.value, turnstile_token: token },
+      }),
+    );
 
     previewData.value = data;
     phase.value = "preview";
@@ -102,7 +94,6 @@ async function handleScrape() {
   }
 }
 
-// ── Step 2：確認匯入 ──────────────────────────────────────────────────────
 async function handleConfirmImport() {
   loading.value = true;
   errorMsg.value = "";
@@ -110,14 +101,16 @@ async function handleConfirmImport() {
   try {
     const token = await getTurnstileToken();
 
-    const result = await $fetch<{
-      success: boolean;
-      shop_name: string;
-      product_count: number;
-    }>("/api/confirm-import", {
-      method: "POST",
-      body: { url: url.value, turnstile_token: token },
-    });
+    const result = await minLoadingTime(
+      $fetch<{
+        success: boolean;
+        shop_name: string;
+        product_count: number;
+      }>("/api/confirm-import", {
+        method: "POST",
+        body: { url: url.value, turnstile_token: token },
+      }),
+    );
 
     importResult.value = result;
     phase.value = "success";
@@ -145,6 +138,24 @@ function resetToInput() {
   importResult.value = null;
   errorMsg.value = "";
 }
+
+useHead({
+  title: "匯入賣場 — MyShipBang",
+  meta: [
+    {
+      name: "description",
+      content:
+        "輸入您的賣貨便賣場網址，將賣場商品一鍵匯入 MyShipBang，建立您的專屬商城頁面。",
+    },
+    { property: "og:title", content: "匯入賣場 — MyShipBang" },
+    {
+      property: "og:description",
+      content:
+        "輸入您的賣貨便賣場網址，將賣場商品一鍵匯入 MyShipBang，建立您的專屬商城頁面。",
+    },
+    { property: "og:type", content: "website" },
+  ],
+});
 </script>
 
 <template>
@@ -267,9 +278,12 @@ function resetToInput() {
                     <span>{{ product.specs.length }} 種規格</span>
                     <span v-if="product.specs.length > 0">
                       · NT$
-                      {{ Math.min(...product.specs.map((s) => s.price)) }}
+                      {{ Math.min(...product.specs.map((s: any) => s.price)) }}
                       <template v-if="product.specs.length > 1">
-                        ~ {{ Math.max(...product.specs.map((s) => s.price)) }}
+                        ~
+                        {{
+                          Math.max(...product.specs.map((s: any) => s.price))
+                        }}
                       </template>
                     </span>
                   </div>

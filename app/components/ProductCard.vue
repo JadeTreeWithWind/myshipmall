@@ -1,35 +1,43 @@
 <script setup lang="ts">
 defineProps<{
-  id: string
-  name: string
-  mainImage: string | null
-  minPrice: number
-  maxPrice: number
-  shopName: string
-  shopId: string
-  clickCount: number
-}>()
+  id: string;
+  name: string;
+  mainImage: string | null;
+  minPrice: number;
+  maxPrice: number;
+  shopName: string;
+  shopId: string;
+  clickCount: number;
+  isEager?: boolean;
+}>();
 </script>
 
 <template>
-  <NuxtLink :to="`/product/${id}`" class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow group">
+  <NuxtLink
+    :to="`/product/${id}`"
+    class="card bg-base-100 group shadow-sm transition-shadow hover:shadow-md"
+  >
     <!-- 商品圖片 -->
-    <figure class="aspect-square overflow-hidden bg-base-200">
+    <figure class="bg-base-200 aspect-square overflow-hidden">
       <img
         v-if="mainImage"
         :src="mainImage"
         :alt="name"
-        loading="lazy"
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        :loading="isEager ? undefined : 'lazy'"
+        :fetchpriority="isEager ? 'high' : undefined"
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
-      <div v-else class="w-full h-full flex items-center justify-center text-4xl opacity-30">
+      <div
+        v-else
+        class="flex h-full w-full items-center justify-center text-4xl opacity-30"
+      >
         📦
       </div>
     </figure>
 
-    <div class="card-body p-3 gap-1">
+    <div class="card-body gap-1 p-3">
       <!-- 商品名稱 -->
-      <p class="font-medium text-sm line-clamp-2 leading-snug">{{ name }}</p>
+      <p class="line-clamp-2 text-sm leading-snug font-medium">{{ name }}</p>
 
       <!-- 價格 -->
       <p class="text-primary font-bold">
@@ -42,16 +50,18 @@ defineProps<{
       </p>
 
       <!-- 商城名稱 & 熱門度 -->
-      <div class="flex items-center justify-between mt-1">
+      <div class="mt-1 flex items-center justify-between">
         <NuxtLink
           :to="`/shop/${shopId}`"
-          class="text-xs text-base-content/50 hover:text-primary truncate max-w-[70%]"
+          class="text-base-content/50 hover:text-primary max-w-[70%] truncate text-xs"
           @click.stop
         >
           {{ shopName }}
         </NuxtLink>
-        <span class="text-xs text-base-content/40 flex items-center gap-0.5 shrink-0">
-          <Icon name="heroicons:fire" class="w-3 h-3" />
+        <span
+          class="text-base-content/40 flex shrink-0 items-center gap-0.5 text-xs"
+        >
+          <Icon name="heroicons:fire" class="h-3 w-3" />
           {{ clickCount }}
         </span>
       </div>
