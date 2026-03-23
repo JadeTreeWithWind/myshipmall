@@ -31,7 +31,7 @@ export function validateMyshipUrl(url: string): string {
     throw createError({
       statusCode: 400,
       message:
-        "網址格式不正確，請輸入賣貨便賣場網址（https://myship.7-11.com.tw/general/detai...）",
+        "網址格式不正確，請輸入賣貨便賣場網址（https://myship.7-11.com.tw/general/detail...）",
     });
   }
   // /general/detail/GM1234 或 /general/detail?id=GM1234

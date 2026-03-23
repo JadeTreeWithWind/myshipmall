@@ -64,14 +64,14 @@ function getTurnstileToken(): Promise<string> {
 
 // ── URL 驗證 ──────────────────────────────────────────────────────────────
 function validateUrl(): boolean {
-  const pattern = /^https:\/\/myship\.7-11\.com\.tw\/general\/detail\/GM\w+/;
+  const pattern = /^https:\/\/myship\.7-11\.com\.tw\/general\/detail/;
   if (!url.value) {
     urlError.value = "請輸入賣場網址";
     return false;
   }
   if (!pattern.test(url.value)) {
     urlError.value =
-      "格式不正確，請輸入 https://myship.7-11.com.tw/general/detail/GM... 格式的網址";
+      "格式不正確，請輸入 https://myship.7-11.com.tw/general/detail... 格式的網址";
     return false;
   }
   urlError.value = "";
@@ -185,7 +185,7 @@ function resetToInput() {
             <input
               v-model="url"
               type="url"
-              placeholder="https://myship.7-11.com.tw/general/detail/GM..."
+              placeholder="https://myship.7-11.com.tw/general/detail..."
               class="input input-bordered w-full"
               :class="{ 'input-error': urlError }"
               @keyup.enter="handleScrape"
