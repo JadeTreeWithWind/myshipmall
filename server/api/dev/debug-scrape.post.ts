@@ -1,9 +1,5 @@
-// ⚠️ DEV ONLY — 部署後應手動移除或加 env guard
+// ⚠️ TEMP DEBUG — 驗證後刪除
 export default defineEventHandler(async (event) => {
-  if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_DEBUG) {
-    throw createError({ statusCode: 404, message: 'Not found' })
-  }
-
   const { url } = await readBody<{ url: string }>(event)
   if (!url) throw createError({ statusCode: 400, message: 'url required' })
 
