@@ -197,67 +197,56 @@ function buildSpecData(s: Record<string, unknown>): SpecData {
 }
 
 // ─── 解析策略：cheerio DOM fallback ───────────────────────────────────────────
-// ⚠️  這些 selector 是根據賣貨便頁面常見結構推測，可能需要根據實際頁面調整
-// 建議：先執行 scrape，若資料不正確，使用瀏覽器 DevTools 查看實際 class name 後調整
+// 賣貨便為傳統 ASP.NET MVC SSR，商品資料存於 data-product JSON attribute
 function parseFromHtml(shopExternalId: string, url: string, html: string): ShopData {
   const $ = cheerio.load(html)
 
-  // 賣場資訊
+  // 賣場名稱
   const name =
-    $('[class*="shop-name"]').first().text().trim() ||
-    $('[class*="shopName"]').first().text().trim() ||
     $('h1').first().text().trim() ||
+    $('title').text().replace(/[|\-–].*$/, '').trim() ||
     shopExternalId
 
-  const imageUrl =
-    $('[class*="shop-logo"] img, [class*="shopLogo"] img').first().attr('src') || ''
+  const imageUrl = $('[class*="shop-logo"] img, [class*="shopLogo"] img').first().attr('src') || ''
+  const description = $('[class*="shop-desc"], [class*="shopDesc"]').first().html() || ''
 
-  const description =
-    $('[class*="shop-desc"], [class*="shopDesc"], [class*="shop-intro"]').first().html() || ''
-
-  // 商品列表
+  // 商品列表：data-product attribute 含完整 JSON
   const products: ProductData[] = []
-  const productEls = $(
-    '[class*="product-item"], [class*="productItem"], [class*="goods-item"], [class*="goodsItem"]',
-  )
 
-  productEls.each((i, el) => {
+  $('[data-product]').each((i, el) => {
     const $el = $(el)
+    const raw = $el.attr('data-product')
+    if (!raw) return
 
-    // 嘗試從 data attribute 取 ID
-    const externalId =
-      $el.attr('data-cgdd-id') ||
-      $el.attr('data-product-id') ||
-      $el.find('[data-cgdd-id]').first().attr('data-cgdd-id') ||
-      `UNKNOWN_${i}`
+    let p: Record<string, unknown>
+    try { p = JSON.parse(raw) } catch { return }
 
-    const productName =
-      $el.find('[class*="product-name"], [class*="productName"], [class*="goods-name"]').first().text().trim() ||
-      $el.find('h2, h3').first().text().trim()
-
+    const externalId = str(p.Cgdd_Id || `UNKNOWN_${i}`)
+    const productName = str(p.Cgdd_Product_Name || '')
+    const desc = str(p.Cgdd_Product_Description || '')
     const mainImage =
+      $el.attr('data-goods-first-img') ||
       $el.find('img').first().attr('src') ||
-      $el.find('img').first().attr('data-src') ||
       ''
 
-    // 規格（通常在 modal 或 detail 頁才有完整資料，此處嘗試解析）
+    // 規格：子元素的 data-spec-* attributes
     const specs: SpecData[] = []
-    $el.find('[class*="spec-item"], [class*="specItem"]').each((j, specEl) => {
-      const $spec = $(specEl)
+    $el.find('[data-spec-id]').each((j, specEl) => {
+      const $s = $(specEl)
       specs.push({
-        external_id: $spec.attr('data-cgds-id') || $spec.attr('data-spec-id') || `SPEC_${i}_${j}`,
-        name: $spec.find('[class*="spec-name"]').text().trim() || $spec.text().trim(),
-        price: parsePrice($spec.find('[class*="price"]').text()),
-        sale_price: parsePrice($spec.find('[class*="sale-price"], [class*="salePrice"]').text()),
-        image: $spec.find('img').attr('src') || '',
-        stock: parseInt($spec.attr('data-stock') || '0', 10),
+        external_id: $s.attr('data-spec-id') || `SPEC_${i}_${j}`,
+        name: $s.attr('data-spec-name') || '',
+        price: parsePrice($s.attr('data-spec-price') || '0'),
+        sale_price: parsePrice($s.attr('data-spec-sprice') || '0'),
+        image: $s.attr('data-spec-imagepath') || $s.attr('data-spec-imagePath') || '',
+        stock: parseInt($s.attr('data-spec-qty') || '0', 10),
       })
     })
 
     products.push({
       external_id: externalId,
       name: productName,
-      description: '',
+      description: desc,
       main_image: mainImage,
       min_order: 0,
       max_order: 0,
