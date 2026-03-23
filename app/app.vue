@@ -5,6 +5,7 @@
     <button class="btn" data-set-theme="cupcake">Cupcake</button>
     <button class="btn" data-set-theme="bumblebee">Bumblebee</button>
     <button class="btn" data-set-theme="emerald">Emerald</button>
+    <NuxtPage />
   </div>
 </template>
 
