@@ -10,3 +10,18 @@ id = "381f2fbfa8fa4870a39df75740a5a768"
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
 id = "74869b84895a462fb677d1802fb13082"
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = true
+persist = true
+head_sampling_rate = 1

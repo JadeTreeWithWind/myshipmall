@@ -25,3 +25,4 @@ logs
 .claude/
 supabase/
 scrap.html
+.nuxt/
