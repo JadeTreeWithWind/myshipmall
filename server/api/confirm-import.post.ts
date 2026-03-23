@@ -25,8 +25,8 @@ export default defineEventHandler(async (event) => {
   const ip = getRequestIP(event, { xForwardedFor: true }) ?? 'unknown'
   await verifyTurnstile(turnstile_token, ip)
 
-  // 2. Rate Limit（每 IP 每小時 5 次）
-  await checkRateLimit(rateLimit, ip, 'confirm-import', 5)
+  // 2. Rate Limit（每 IP 每小時 100 次，測試期間暫時調高）
+  await checkRateLimit(rateLimit, ip, 'confirm-import', 100)
 
   // 3. 驗證網址格式
   validateMyshipUrl(url)
