@@ -9,4 +9,16 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  nitro: {
+    preset: "cloudflare-pages",
+  },
+  runtimeConfig: {
+    supabaseSecretKey: "",
+    turnstileSecretKey: "",
+    public: {
+      supabaseUrl: "",
+      supabasePublishableKey: "",
+      turnstileSiteKey: "",
+    },
+  },
 });
