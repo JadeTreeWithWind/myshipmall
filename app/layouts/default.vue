@@ -1,147 +1,273 @@
 <script setup lang="ts">
-const route = useRoute()
-const router = useRouter()
-const { user, signIn, signOut } = useAuth()
+// 1. Imports
+const route = useRoute();
+const router = useRouter();
+const { user, signIn, signOut } = useAuth();
 
-// ── 主題切換 ───────────────────────────────────────────────────
-const theme = ref('light')
+// 2. Type Definitions (None)
 
-onMounted(() => {
-  const saved = localStorage.getItem('theme')
-  if (saved) {
-    theme.value = saved
-  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    theme.value = 'dark'
-  }
-  applyTheme(theme.value)
-})
+// 3. Constants
+const THEMES = {
+  LIGHT: "corporate",
+  DARK: "sunset",
+};
 
+// 4. State/Variables
+const theme = ref(THEMES.LIGHT);
+const searchQ = ref("");
+const menuOpen = ref(false);
+const menuRef = ref<HTMLElement | null>(null);
+
+// 5. Computed Properties (None)
+
+// 6. Functions/Methods
 function applyTheme(t: string) {
-  document.documentElement.setAttribute('data-theme', t)
-  localStorage.setItem('theme', t)
-  theme.value = t
+  document.documentElement.setAttribute("data-theme", t);
+  localStorage.setItem("theme", t);
+  theme.value = t;
 }
 
 function toggleTheme() {
-  applyTheme(theme.value === 'dark' ? 'light' : 'dark')
+  applyTheme(theme.value === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK);
 }
-
-// ── 搜尋框 ────────────────────────────────────────────────────
-const searchQ = ref('')
-
-watch(
-  () => route.query.q,
-  (v) => { searchQ.value = (v as string) || '' },
-  { immediate: true }
-)
 
 function handleSearch() {
-  if (!searchQ.value.trim()) return
-  router.push({ path: '/search', query: { q: searchQ.value.trim() } })
+  if (!searchQ.value.trim()) return;
+  router.push({ path: "/search", query: { q: searchQ.value.trim() } });
 }
 
-// ── 漢堡選單 ─────────────────────────────────────────────────
-const menuOpen = ref(false)
-watch(() => route.path, () => { menuOpen.value = false })
+/**
+ * 點選選單外部時關閉漢堡選單
+ */
+function handleClickOutside(e: MouseEvent) {
+  if (menuRef.value && !menuRef.value.contains(e.target as Node)) {
+    menuOpen.value = false;
+  }
+}
+
+// 7. Watchers
+watch(
+  () => route.query.q,
+  (v) => {
+    searchQ.value = (v as string) || "";
+  },
+  { immediate: true },
+);
+
+watch(
+  () => route.path,
+  () => {
+    menuOpen.value = false;
+  },
+);
+
+// 8. Lifecycle Hooks
+onMounted(() => {
+  const saved = localStorage.getItem("theme");
+  if (saved) {
+    theme.value = saved;
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    theme.value = THEMES.DARK;
+  } else {
+    theme.value = THEMES.LIGHT;
+  }
+  applyTheme(theme.value);
+  document.addEventListener("mousedown", handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("mousedown", handleClickOutside);
+});
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="flex min-h-screen flex-col">
     <!-- ── Navbar ── -->
-    <nav class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
-      <!-- Logo -->
-      <div class="navbar-start">
-        <NuxtLink to="/" class="btn btn-ghost text-xl font-bold gap-1">
-          <span class="text-primary">🛒</span>
-          <span>MyShipBang</span>
-        </NuxtLink>
-      </div>
-
-      <!-- 搜尋框（桌面） -->
-      <div class="navbar-center hidden lg:flex">
-        <form class="flex gap-2" @submit.prevent="handleSearch">
-          <input
-            v-model="searchQ"
-            type="search"
-            placeholder="搜尋商品..."
-            class="input input-bordered w-72"
-          />
-          <button type="submit" class="btn btn-primary btn-square">
-            <Icon name="heroicons:magnifying-glass" class="w-5 h-5" />
-          </button>
-        </form>
-      </div>
-
-      <!-- 右側按鈕 -->
-      <div class="navbar-end gap-1">
-        <!-- 主題切換 -->
-        <button class="btn btn-ghost btn-square" :title="theme === 'dark' ? '切換亮色' : '切換暗色'" @click="toggleTheme">
-          <Icon v-if="theme === 'dark'" name="heroicons:sun" class="w-5 h-5" />
-          <Icon v-else name="heroicons:moon" class="w-5 h-5" />
-        </button>
-
-        <!-- 關於連結（桌面） -->
-        <NuxtLink to="/about" class="btn btn-ghost hidden lg:flex">關於</NuxtLink>
-
-        <!-- 匯入連結（桌面） -->
-        <NuxtLink to="/import" class="btn btn-ghost hidden lg:flex">匯入賣場</NuxtLink>
-
-        <!-- 登入狀態（桌面） -->
-        <template v-if="user">
-          <div class="dropdown dropdown-end hidden lg:block">
-            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-              <div class="w-8 rounded-full">
-                <img
-                  v-if="user.user_metadata?.avatar_url"
-                  :src="user.user_metadata.avatar_url"
-                  :alt="user.user_metadata?.full_name ?? '使用者'"
-                />
-                <div v-else class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-sm font-bold">
-                  {{ (user.user_metadata?.full_name ?? user.email ?? '?')[0].toUpperCase() }}
-                </div>
-              </div>
-            </label>
-            <ul tabindex="0" class="menu dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow">
-              <li class="menu-title truncate px-4 py-2 text-xs opacity-60">
-                {{ user.user_metadata?.full_name ?? user.email }}
-              </li>
-              <li><button @click="signOut">登出</button></li>
-            </ul>
-          </div>
-        </template>
-        <template v-else>
-          <button class="btn btn-ghost hidden lg:flex" @click="signIn">登入</button>
-        </template>
-
-        <!-- 漢堡選單（手機） -->
-        <div class="relative lg:hidden">
-          <button class="btn btn-ghost btn-square" @click="menuOpen = !menuOpen">
-            <Icon name="heroicons:bars-3" class="w-6 h-6" />
-          </button>
-          <ul
-            v-if="menuOpen"
-            class="absolute right-0 top-full mt-1 w-56 bg-base-100 rounded-box shadow-lg p-2 z-50 flex flex-col gap-1"
+    <nav
+      class="bg-base-100/95 border-base-300/60 sticky top-0 z-50 border-b backdrop-blur-md"
+    >
+      <div class="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 sm:px-6">
+        <!-- Logo -->
+        <NuxtLink
+          to="/"
+          class="flex shrink-0 cursor-pointer items-center gap-2"
+        >
+          <Icon name="heroicons:shopping-bag" class="text-primary h-10 w-10" />
+          <span
+            class="text-base-content font-Noto text-xl font-semibold tracking-wide"
+            >賣貨商城</span
           >
-            <li>
-              <form @submit.prevent="handleSearch">
-                <input
-                  v-model="searchQ"
-                  type="search"
-                  placeholder="搜尋商品..."
-                  class="input input-bordered input-sm w-full"
-                />
+        </NuxtLink>
+
+        <!-- 搜尋框（桌面） -->
+        <div class="mx-4 hidden flex-1 lg:flex">
+          <form class="relative w-full" @submit.prevent="handleSearch">
+            <Icon
+              name="heroicons:magnifying-glass"
+              class="pointer-events-none absolute top-1/2 left-3 h-6 w-6 -translate-y-1/2 text-base-content/70"
+            />
+            <input
+              v-model="searchQ"
+              type="search"
+              aria-label="搜尋商品名稱、商城"
+              placeholder="搜尋商品名稱、商城..."
+              class="border-base-600 focus:border-primary/60 h-10 w-full rounded-lg border bg-white pr-3 pl-9 text-sm text-black transition-colors placeholder:text-black/70"
+            />
+          </form>
+        </div>
+
+        <!-- 右側 -->
+        <div class="ml-auto flex items-center gap-0.5">
+          <!-- 主題切換 -->
+          <button
+            class="btn btn-ghost btn-sm btn-square"
+            aria-label="切換主題"
+            :title="theme === THEMES.DARK ? '切換亮色' : '切換暗色'"
+            @click="toggleTheme"
+          >
+            <Icon
+              v-if="theme === THEMES.DARK"
+              name="heroicons:sun"
+              class="h-10 w-10"
+            />
+            <Icon v-else name="heroicons:moon" class="h-10 w-10" />
+          </button>
+
+          <!-- 桌面導覽 -->
+          <NuxtLink
+            to="/about"
+            class="btn btn-ghost text-base-content/70 hover:text-base-content hidden lg:flex"
+            >關於</NuxtLink
+          >
+          <NuxtLink to="/import" class="btn btn-primary ml-1 hidden lg:flex"
+            >匯入賣場</NuxtLink
+          >
+
+          <!-- 登入（桌面） -->
+          <template v-if="user">
+            <div class="dropdown dropdown-end ml-1 hidden lg:block">
+              <label
+                tabindex="0"
+                class="btn btn-ghost btn-sm btn-circle avatar cursor-pointer"
+              >
+                <div class="w-7 overflow-hidden rounded-full">
+                  <img
+                    v-if="user.user_metadata?.avatar_url"
+                    :src="user.user_metadata.avatar_url"
+                    :alt="user.user_metadata?.full_name ?? '使用者'"
+                  />
+                  <div
+                    v-else
+                    class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-xs font-bold"
+                  >
+                    {{
+                      (user.user_metadata?.full_name ??
+                        user.email ??
+                        "?")[0].toUpperCase()
+                    }}
+                  </div>
+                </div>
+              </label>
+              <ul
+                tabindex="0"
+                class="menu dropdown-content bg-base-100 border-base-300/50 z-50 mt-2 w-52 rounded-xl border p-2 shadow-lg"
+              >
+                <li
+                  class="menu-title text-base-content/90 truncate px-3 py-2 text-xs"
+                >
+                  {{ user.user_metadata?.full_name ?? user.email }}
+                </li>
+                <li>
+                  <button class="rounded-lg text-sm" @click="signOut">
+                    登出
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </template>
+          <template v-else>
+            <button
+              class="btn btn-ghost btn-sm text-base-content/70 ml-1 hidden lg:flex"
+              @click="signIn"
+            >
+              登入
+            </button>
+          </template>
+
+          <!-- 漢堡選單（手機） -->
+          <div ref="menuRef" class="relative ml-1 lg:hidden">
+            <button
+              class="btn btn-ghost btn-sm btn-square"
+              aria-label="開啟選單"
+              @click="menuOpen = !menuOpen"
+            >
+              <Icon name="heroicons:bars-3" class="h-5 w-5" />
+            </button>
+            <div
+              v-if="menuOpen"
+              class="bg-base-100 border-base-300/60 absolute top-full right-0 z-50 mt-2 flex w-60 flex-col gap-1 rounded-xl border p-3 shadow-lg"
+            >
+              <!-- 手機搜尋 -->
+              <form @submit.prevent="handleSearch" class="mb-1">
+                <div class="relative">
+                  <Icon
+                    name="heroicons:magnifying-glass"
+                    class="text-base-content/80 pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+                  />
+                  <input
+                    v-model="searchQ"
+                    type="search"
+                    aria-label="搜尋商品"
+                    placeholder="搜尋商品..."
+                    class="border-base-300 bg-base-200/60 focus:border-primary/60 h-9 w-full rounded-lg border pr-3 pl-9 text-sm transition-colors focus:outline-none"
+                  />
+                </div>
               </form>
-            </li>
-            <li><NuxtLink to="/import" class="block px-3 py-2 rounded-lg hover:bg-base-200">匯入賣場</NuxtLink></li>
-            <li><NuxtLink to="/about" class="block px-3 py-2 rounded-lg hover:bg-base-200">關於</NuxtLink></li>
-            <li v-if="user">
-              <div class="px-3 py-2 text-xs opacity-60 truncate">{{ user.user_metadata?.full_name ?? user.email }}</div>
-            </li>
-            <li>
-              <button v-if="user" class="block w-full text-left px-3 py-2 rounded-lg hover:bg-base-200" @click="signOut">登出</button>
-              <button v-else class="block w-full text-left px-3 py-2 rounded-lg hover:bg-base-200" @click="signIn">登入</button>
-            </li>
-          </ul>
+              <NuxtLink
+                to="/import"
+                class="hover:bg-base-200 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium"
+              >
+                <Icon
+                  name="heroicons:arrow-up-tray"
+                  class="text-primary h-4 w-4"
+                />
+                匯入賣場
+              </NuxtLink>
+              <NuxtLink
+                to="/about"
+                class="hover:bg-base-200 text-base-content/70 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm"
+              >
+                <Icon name="heroicons:information-circle" class="h-4 w-4" />
+                關於
+              </NuxtLink>
+              <div class="border-base-300/50 my-1 border-t" />
+              <div
+                v-if="user"
+                class="text-base-content/80 truncate px-3 py-1 text-xs"
+              >
+                {{ user.user_metadata?.full_name ?? user.email }}
+              </div>
+              <button
+                v-if="user"
+                class="hover:bg-base-200 text-base-content/70 flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm"
+                @click="signOut"
+              >
+                <Icon
+                  name="heroicons:arrow-right-on-rectangle"
+                  class="h-4 w-4"
+                />
+                登出
+              </button>
+              <button
+                v-else
+                class="hover:bg-base-200 flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium"
+                @click="signIn"
+              >
+                <Icon name="heroicons:user" class="text-primary h-4 w-4" />
+                Google 登入
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -155,15 +281,41 @@ watch(() => route.path, () => { menuOpen.value = false })
     <ToastContainer />
 
     <!-- ── Footer ── -->
-    <footer class="footer footer-center bg-base-200 text-base-content p-6 mt-10">
-      <div class="flex flex-col items-center gap-1">
-        <p class="font-semibold">MyShipBang</p>
-        <p class="text-sm opacity-60">非官方賣貨便商品瀏覽平台，所有購買行為均在賣貨便完成</p>
-        <div class="flex gap-4 text-sm opacity-60">
-          <NuxtLink to="/about" class="link link-hover">關於</NuxtLink>
-          <NuxtLink to="/import" class="link link-hover">匯入賣場</NuxtLink>
+    <footer class="border-base-300/60 bg-base-100 mt-16 border-t">
+      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        <div
+          class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center"
+        >
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center gap-2">
+              <Icon
+                name="heroicons:shopping-bag"
+                class="text-primary h-4 w-4"
+              />
+              <span class="font-serif text-sm font-semibold">賣貨商城</span>
+            </div>
+            <p class="text-base-content/80 max-w-xs text-xs leading-relaxed">
+              非官方賣貨便商品瀏覽平台，所有購買行為均在賣貨便完成
+            </p>
+          </div>
+          <div class="flex flex-col gap-2 text-sm">
+            <NuxtLink
+              to="/about"
+              class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+              >關於</NuxtLink
+            >
+            <NuxtLink
+              to="/import"
+              class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+              >匯入賣場</NuxtLink
+            >
+          </div>
         </div>
-        <p class="text-xs opacity-40">© {{ new Date().getFullYear() }} MyShipBang</p>
+        <div class="border-base-300/40 mt-8 border-t pt-6">
+          <p class="text-base-content/70 text-center text-xs">
+            © {{ new Date().getFullYear() }} 賣貨商城
+          </p>
+        </div>
       </div>
     </footer>
   </div>

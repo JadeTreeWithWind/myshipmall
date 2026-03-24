@@ -25,21 +25,28 @@ if (shopError.value || !shop.value) {
 
 const config = useRuntimeConfig();
 const shopDesc = computed(() =>
-  (shop.value?.description?.replace(/<[^>]+>/g, "") ?? shop.value?.name ?? "").slice(0, 150),
+  (
+    shop.value?.description?.replace(/<[^>]+>/g, "") ??
+    shop.value?.name ??
+    ""
+  ).slice(0, 150),
 );
 const shopUrl = `${config.public.siteUrl}${route.path}`;
 
 useHead({
-  title: `${shop.value?.name ?? ""} — MyShipBang`,
+  title: `${shop.value?.name ?? ""} — 賣貨商城`,
   meta: [
     { name: "description", content: shopDesc.value },
-    { property: "og:title", content: `${shop.value?.name ?? ""} — MyShipBang` },
+    { property: "og:title", content: `${shop.value?.name ?? ""} — 賣貨商城` },
     { property: "og:description", content: shopDesc.value },
     { property: "og:image", content: shop.value?.image_url ?? "" },
     { property: "og:type", content: "website" },
     { property: "og:url", content: shopUrl },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: `${shop.value?.name ?? ""} — MyShipBang` },
+    {
+      name: "twitter:title",
+      content: `${shop.value?.name ?? ""} — 賣貨商城`,
+    },
     { name: "twitter:description", content: shopDesc.value },
     { name: "twitter:image", content: shop.value?.image_url ?? "" },
   ],
@@ -120,62 +127,73 @@ const updatedAt = computed(() => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-7xl px-4 py-8">
+  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
     <!-- ── 商城資訊 ── -->
-    <div class="card bg-base-100 mb-8 shadow-sm">
-      <div class="card-body">
-        <div class="flex flex-wrap items-center gap-5">
-          <!-- 商城圖片 -->
-          <div class="avatar shrink-0">
-            <div class="bg-base-200 h-20 w-20 rounded-full">
-              <img
-                v-if="shop?.image_url"
-                :src="shop.image_url"
-                :alt="shop?.name"
-              />
-              <div
-                v-else
-                class="flex h-full w-full items-center justify-center text-3xl"
-              >
-                🏪
-              </div>
-            </div>
-          </div>
-
-          <div class="min-w-0 flex-1">
-            <h1 class="text-2xl font-bold">{{ shop?.name }}</h1>
-            <p class="text-base-content/50 mt-1 text-sm">
-              資料最後更新：{{ updatedAt }}
-            </p>
-            <a
-              v-if="shop?.shop_url"
-              :href="shop.shop_url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link link-primary mt-1 inline-flex items-center gap-1 text-sm"
-            >
-              前往賣貨便賣場
+    <div class="bg-base-100 border-base-300/70 mb-10 rounded-2xl border p-6">
+      <div class="flex flex-wrap items-start gap-5">
+        <!-- 商城圖片 -->
+        <div class="shrink-0">
+          <div
+            class="bg-base-200 border-base-300/50 h-20 w-20 overflow-hidden rounded-2xl border"
+          >
+            <img
+              v-if="shop?.image_url"
+              :src="shop.image_url"
+              :alt="shop?.name"
+              class="h-full w-full object-cover"
+            />
+            <div v-else class="flex h-full w-full items-center justify-center">
               <Icon
-                name="heroicons:arrow-top-right-on-square"
-                class="h-4 w-4"
+                name="heroicons:building-storefront"
+                class="text-base-content/25 h-8 w-8"
               />
-            </a>
+            </div>
           </div>
         </div>
 
-        <!-- 商城描述 -->
-        <div
-          v-if="shop?.description"
-          class="prose prose-sm text-base-content/70 mt-4 max-w-none"
-          v-html="sanitize(shop.description)"
-        />
+        <div class="min-w-0 flex-1">
+          <h1 class="text-base-content font-serif text-2xl font-semibold">
+            {{ shop?.name }}
+          </h1>
+          <p class="text-base-content/90 mt-1 text-sm">
+            資料最後更新：{{ updatedAt }}
+          </p>
+          <a
+            v-if="shop?.shop_url"
+            :href="shop.shop_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary mt-2 inline-flex cursor-pointer items-center gap-1 text-base hover:underline"
+          >
+            前往賣貨便賣場
+            <Icon
+              name="heroicons:arrow-top-right-on-square"
+              class="h-3.5 w-3.5"
+            />
+          </a>
+        </div>
       </div>
+
+      <!-- 商城描述 -->
+      <div
+        v-if="shop?.description"
+        class="prose prose-sm text-base-content/80 border-base-300/50 mt-5 max-w-none border-t pt-5"
+        v-html="sanitize(shop.description)"
+      />
     </div>
 
     <!-- ── 商品列表 ── -->
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <h2 class="text-xl font-bold">商城商品</h2>
-      <select v-model="sort" class="select select-bordered select-sm">
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary h-5 w-1 rounded-full" />
+        <h2 class="text-base-content font-serif text-xl font-semibold">
+          商城商品
+        </h2>
+      </div>
+      <select
+        v-model="sort"
+        class="select select-bordered select-sm bg-base-100 focus:border-primary/60 cursor-pointer"
+      >
         <option v-for="o in sortOptions" :key="o.value" :value="o.value">
           {{ o.label }}
         </option>
@@ -184,7 +202,7 @@ const updatedAt = computed(() => {
 
     <div
       v-if="products.length"
-      class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
     >
       <ProductCard
         v-for="(p, index) in products"
@@ -203,29 +221,27 @@ const updatedAt = computed(() => {
 
     <div
       v-else-if="loading"
-      class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
     >
-      <div
-        v-for="i in 6"
-        :key="i"
-        class="card bg-base-100 animate-pulse shadow-sm"
-      >
-        <div class="bg-base-200 aspect-square rounded-t-xl" />
-        <div class="card-body gap-2 p-3">
-          <div class="bg-base-200 h-4 w-3/4 rounded" />
-          <div class="bg-base-200 h-4 w-1/2 rounded" />
-        </div>
-      </div>
+      <SkeletonCard v-for="i in 6" :key="i" />
     </div>
 
-    <div v-else class="text-base-content/40 py-20 text-center">
-      <p class="text-lg">此商城目前沒有上架商品</p>
+    <div v-else class="py-24 text-center">
+      <div
+        class="bg-base-200 mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl"
+      >
+        <Icon
+          name="heroicons:shopping-bag"
+          class="text-base-content/70 h-7 w-7"
+        />
+      </div>
+      <p class="text-base-content text-lg">此商城目前沒有上架商品</p>
     </div>
 
     <!-- 載入更多 -->
-    <div v-if="hasMore && products.length" class="mt-10 flex justify-center">
+    <div v-if="hasMore && products.length" class="mt-12 flex justify-center">
       <button
-        class="btn btn-outline"
+        class="btn btn-outline cursor-pointer rounded-xl px-8"
         :disabled="loading"
         @click="fetchProducts(false)"
       >

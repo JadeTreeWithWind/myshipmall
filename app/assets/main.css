@@ -1,9 +1,43 @@
 @import "tailwindcss";
+
+/* ── 字型變數（Tailwind v4 @theme）────────────────────────── */
+@theme {
+  --font-sans:
+    "Noto Sans TC", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Noto Serif TC", ui-serif, Georgia, Cambria, serif;
+}
+
 @plugin "daisyui" {
   themes:
-    light --default,
-    dark,
-    cupcake,
-    bumblebee,
-    emerald;
+    corporate --default,
+    sunset;
+}
+
+/* ── 全域基礎樣式 ─────────────────────────────────────────── */
+body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+/* ── 全站平滑過渡 ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button {
+    transition-property:
+      color, background-color, border-color, opacity, box-shadow, transform;
+    transition-duration: 150ms;
+    transition-timing-function: ease;
+  }
 }

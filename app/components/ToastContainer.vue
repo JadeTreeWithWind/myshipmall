@@ -1,19 +1,19 @@
 <script setup lang="ts">
-const { toasts, remove } = useToast()
+const { toasts, remove } = useToast();
 
 const alertClass: Record<string, string> = {
-  success: 'alert-success',
-  error: 'alert-error',
-  info: 'alert-info',
-  warning: 'alert-warning',
-}
+  success: "alert-success",
+  error: "alert-error",
+  info: "alert-info",
+  warning: "alert-warning",
+};
 
 const iconName: Record<string, string> = {
-  success: 'heroicons:check-circle',
-  error: 'heroicons:x-circle',
-  info: 'heroicons:information-circle',
-  warning: 'heroicons:exclamation-triangle',
-}
+  success: "heroicons:check-circle",
+  error: "heroicons:x-circle",
+  info: "heroicons:information-circle",
+  warning: "heroicons:exclamation-triangle",
+};
 </script>
 
 <template>
@@ -27,7 +27,9 @@ const iconName: Record<string, string> = {
       >
         <Icon :name="iconName[t.type]" class="h-5 w-5 shrink-0" />
         <span class="text-sm">{{ t.message }}</span>
-        <button class="btn btn-ghost btn-xs ml-2" @click="remove(t.id)">✕</button>
+        <button class="btn btn-ghost btn-xs ml-2" @click="remove(t.id)">
+          ✕
+        </button>
       </div>
     </TransitionGroup>
   </div>

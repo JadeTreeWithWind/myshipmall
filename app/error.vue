@@ -1,33 +1,35 @@
 <script setup lang="ts">
 const props = defineProps<{
   error: {
-    statusCode: number
-    message?: string
-  }
-}>()
+    statusCode: number;
+    message?: string;
+  };
+}>();
 
-const router = useRouter()
+const router = useRouter();
 
 const title = computed(() => {
-  if (props.error.statusCode === 404) return '找不到頁面'
-  if (props.error.statusCode === 410) return '資料已過期'
-  return '發生錯誤'
-})
+  if (props.error.statusCode === 404) return "找不到頁面";
+  if (props.error.statusCode === 410) return "資料已過期";
+  return "發生錯誤";
+});
 
 const desc = computed(() => {
-  if (props.error.statusCode === 404) return '您所尋找的頁面不存在或已被移除。'
-  if (props.error.statusCode === 410) return '此資料已過期，請重新操作。'
-  return props.error.message || '發生未知錯誤，請稍後再試。'
-})
+  if (props.error.statusCode === 404) return "您所尋找的頁面不存在或已被移除。";
+  if (props.error.statusCode === 410) return "此資料已過期，請重新操作。";
+  return props.error.message || "發生未知錯誤，請稍後再試。";
+});
 
 useHead({
-  title: `${title.value} — MyShipBang`,
-})
+  title: `${title.value} — 賣貨商城`,
+});
 </script>
 
 <template>
   <div class="flex min-h-screen flex-col">
-    <div class="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
+    <div
+      class="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center"
+    >
       <p class="text-primary/30 mb-4 text-8xl font-black">
         {{ error.statusCode }}
       </p>

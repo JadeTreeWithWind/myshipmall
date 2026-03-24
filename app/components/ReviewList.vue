@@ -1,14 +1,14 @@
 <script setup lang="ts">
 interface Review {
-  id: string
-  rating: number
-  content: string
-  created_at: string
-  user_name: string | null
-  user_avatar: string | null
+  id: string;
+  rating: number;
+  content: string;
+  created_at: string;
+  user_name: string | null;
+  user_avatar: string | null;
 }
 
-const props = defineProps<{ productId: string }>()
+const props = defineProps<{ productId: string }>();
 
 const {
   data: reviews,
@@ -16,24 +16,24 @@ const {
   pending,
 } = await useAsyncData<Review[]>(`reviews-${props.productId}`, () =>
   $fetch(`/api/reviews/${props.productId}`),
-)
+);
 
 const avgRating = computed(() => {
-  const list = reviews.value ?? []
-  if (!list.length) return 0
-  return list.reduce((sum, r) => sum + r.rating, 0) / list.length
-})
+  const list = reviews.value ?? [];
+  if (!list.length) return 0;
+  return list.reduce((sum, r) => sum + r.rating, 0) / list.length;
+});
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('zh-TW', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  return new Date(iso).toLocaleDateString("zh-TW", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 // 供父元件呼叫，新增/編輯評論後重新載入
-defineExpose({ refresh })
+defineExpose({ refresh });
 </script>
 
 <template>
@@ -46,7 +46,9 @@ defineExpose({ refresh })
           <span class="text-warning text-lg">★</span>
           <span class="font-bold">{{ avgRating.toFixed(1) }}</span>
         </div>
-        <span class="text-base-content/40 text-sm">（{{ reviews?.length }} 則）</span>
+        <span class="text-base-content/80 text-sm"
+          >（{{ reviews?.length }} 則）</span
+        >
       </template>
     </div>
 
@@ -83,17 +85,23 @@ defineExpose({ refresh })
                 v-else
                 class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-xs font-bold"
               >
-                {{ (review.user_name ?? '?')[0].toUpperCase() }}
+                {{ (review.user_name ?? "?")[0].toUpperCase() }}
               </div>
             </div>
           </div>
-          <span class="text-sm font-medium">{{ review.user_name ?? '匿名使用者' }}</span>
-          <span class="text-base-content/40 ml-auto text-xs">{{ formatDate(review.created_at) }}</span>
+          <span class="text-sm font-medium">{{
+            review.user_name ?? "匿名使用者"
+          }}</span>
+          <span class="text-base-content/80 ml-auto text-xs">{{
+            formatDate(review.created_at)
+          }}</span>
         </div>
 
         <!-- 評分 -->
         <div class="text-warning mb-1 text-sm">
-          <span v-for="i in 5" :key="i">{{ i <= review.rating ? '★' : '☆' }}</span>
+          <span v-for="i in 5" :key="i">{{
+            i <= review.rating ? "★" : "☆"
+          }}</span>
         </div>
 
         <!-- 內容 -->

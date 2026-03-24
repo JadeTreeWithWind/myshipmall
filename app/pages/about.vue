@@ -1,20 +1,14 @@
 <script setup lang="ts">
+// 1. Imports (None)
+
+// 2. Types (None)
+
+// 3. Constants
 const config = useRuntimeConfig();
-const desc = "了解 MyShipBang 如何幫助您瀏覽 7-11 賣貨便商品，以及如何將您的賣場匯入本平台。";
+const DESC =
+  "了解 賣貨商城 如何幫助您瀏覽 7-11 賣貨便商品，以及如何將您的賣場匯入本平台。";
 
-useHead({
-  title: "關於 MyShipBang — 賣貨便商品瀏覽平台",
-  meta: [
-    { name: "description", content: desc },
-    { property: "og:title", content: "關於 MyShipBang" },
-    { property: "og:description", content: desc },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: `${config.public.siteUrl}/about` },
-    { name: "twitter:card", content: "summary" },
-  ],
-});
-
-const features = [
+const FEATURES = [
   {
     icon: "heroicons:magnifying-glass",
     title: "強力搜尋",
@@ -47,10 +41,10 @@ const features = [
   },
 ];
 
-const faqs = [
+const FAQS = [
   {
-    q: "MyShipBang 與 7-11 賣貨便是什麼關係？",
-    a: "MyShipBang 是由獨立開發者建立的非官方展示平台，與統一超商或賣貨便官方完全無關。本站不經手任何金流，所有購買行為皆導向賣貨便官方頁面完成。",
+    q: "賣貨商城 與 7-11 賣貨便是什麼關係？",
+    a: "賣貨商城 是由獨立開發者建立的非官方展示平台，與統一超商或賣貨便官方完全無關。本站不經手任何金流，所有購買行為皆導向賣貨便官方頁面完成。",
   },
   {
     q: "購買流程是什麼？",
@@ -73,44 +67,85 @@ const faqs = [
     a: "若您是賣家，請重新匯入最新的賣場資料即可更新。若商品在賣貨便已下架，重新匯入後該商品會自動標記為下架，不再顯示於搜尋結果。",
   },
 ];
+
+// 4. State/Variables (None)
+
+// 5. Computed Properties (None)
+
+// 6. Functions/Methods (None)
+
+// 7. Watchers (None)
+
+// 8. Lifecycle Hooks
+useHead({
+  title: "關於 賣貨商城 — 賣貨便商品瀏覽平台",
+  meta: [
+    { name: "description", content: DESC },
+    { property: "og:title", content: "關於 賣貨商城" },
+    { property: "og:description", content: DESC },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: `${config.public.siteUrl}/about` },
+    { name: "twitter:card", content: "summary" },
+  ],
+});
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl px-4 py-12">
+  <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
     <!-- ── Hero ── -->
-    <div class="mb-12 text-center">
-      <h1 class="mb-3 text-3xl font-bold lg:text-4xl">關於 MyShipBang</h1>
-      <p class="text-base-content/60 text-lg">
+    <div class="mb-14 text-center">
+      <h1
+        class="text-base-content mb-3 font-serif text-3xl font-semibold lg:text-4xl"
+      >
+        關於 賣貨商城
+      </h1>
+      <p class="text-base-content/90 text-base leading-relaxed">
         為賣貨便賣家與買家打造的非官方商品瀏覽平台
       </p>
     </div>
 
     <!-- ── 理念 ── -->
-    <section class="bg-base-200 mb-12 rounded-2xl p-6 lg:p-8">
-      <h2 class="mb-4 text-xl font-bold">為什麼建立這個網站？</h2>
-      <p class="text-base-content/80 mb-3 leading-relaxed">
-        7-11 賣貨便是台灣常見的電商物流服務，但官方平台缺乏獨立商品頁面與搜尋功能，買家很難快速找到想要的商品，賣家也無法方便地分享特定商品連結。
-      </p>
-      <p class="text-base-content/80 leading-relaxed">
-        MyShipBang 作為「展示層」，讓每個賣貨便商品都有獨立的 URL，支援 SEO 與社群分享，並提供搜尋、篩選、排序等功能，提升買賣雙方的體驗。
-      </p>
+    <section class="mb-12">
+      <div class="mb-5 flex items-center gap-3">
+        <div class="bg-primary h-5 w-1 rounded-full" />
+        <h2 class="font-serif text-xl font-semibold">為什麼建立這個網站？</h2>
+      </div>
+      <div
+        class="bg-base-100 border-base-300/70 space-y-3 rounded-2xl border p-6 lg:p-8"
+      >
+        <p class="text-base-content/90 text-base leading-relaxed">
+          7-11
+          賣貨便是台灣常見的電商物流服務，但官方平台缺乏獨立商品頁面與搜尋功能，買家很難快速找到想要的商品，賣家也無法方便地分享特定商品連結。
+        </p>
+        <p class="text-base-content/90 text-base leading-relaxed">
+          賣貨商城 作為「展示層」，讓每個賣貨便商品都有獨立的 URL，支援 SEO
+          與社群分享，並提供搜尋、篩選、排序等功能，提升買賣雙方的體驗。
+        </p>
+      </div>
     </section>
 
     <!-- ── 功能介紹 ── -->
     <section class="mb-12">
-      <h2 class="mb-6 text-xl font-bold">核心功能</h2>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div class="mb-5 flex items-center gap-3">
+        <div class="bg-primary h-5 w-1 rounded-full" />
+        <h2 class="font-serif text-xl font-semibold">核心功能</h2>
+      </div>
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div
-          v-for="f in features"
+          v-for="f in FEATURES"
           :key="f.title"
-          class="bg-base-100 flex gap-4 rounded-xl p-4 shadow-sm"
+          class="bg-base-100 border-base-300/70 flex gap-4 rounded-xl border p-4"
         >
-          <div class="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
-            <Icon :name="f.icon" class="text-primary h-5 w-5" />
+          <div
+            class="bg-primary/10 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+          >
+            <Icon :name="f.icon" class="text-primary h-4 w-4" />
           </div>
           <div>
-            <p class="mb-1 font-semibold">{{ f.title }}</p>
-            <p class="text-base-content/60 text-sm">{{ f.desc }}</p>
+            <p class="mb-1 text-sm font-semibold">{{ f.title }}</p>
+            <p class="text-base-content/80 text-sm leading-relaxed">
+              {{ f.desc }}
+            </p>
           </div>
         </div>
       </div>
@@ -118,34 +153,47 @@ const faqs = [
 
     <!-- ── FAQ ── -->
     <section class="mb-12">
-      <h2 class="mb-6 text-xl font-bold">常見問題 Q&A</h2>
-      <div class="flex flex-col gap-3">
+      <div class="mb-5 flex items-center gap-3">
+        <div class="bg-primary h-5 w-1 rounded-full" />
+        <h2 class="font-serif text-xl font-semibold">常見問題</h2>
+      </div>
+      <div class="flex flex-col gap-2">
         <div
-          v-for="faq in faqs"
+          v-for="faq in FAQS"
           :key="faq.q"
-          class="collapse collapse-arrow bg-base-200 rounded-xl"
+          class="collapse-arrow bg-base-100 border-base-300/70 collapse rounded-xl border"
         >
           <input type="checkbox" />
-          <div class="collapse-title font-medium">{{ faq.q }}</div>
+          <div class="collapse-title py-4 text-sm font-medium">{{ faq.q }}</div>
           <div class="collapse-content">
-            <p class="text-base-content/70 leading-relaxed">{{ faq.a }}</p>
+            <p class="text-base-content/80 pb-2 text-base leading-relaxed">
+              {{ faq.a }}
+            </p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ── 免責聲明 ── -->
-    <section class="border-base-300 rounded-2xl border p-6">
-      <h2 class="mb-3 text-base font-bold">免責聲明</h2>
-      <p class="text-base-content/50 text-sm leading-relaxed">
+    <section
+      class="border-base-300/70 bg-base-200/40 mb-10 rounded-2xl border p-6"
+    >
+      <h2 class="text-base-content/90 mb-2 text-base font-semibold">免責聲明</h2>
+      <p class="text-base-content/70 text-sm leading-relaxed">
         本網站為非官方獨立平台，與統一超商股份有限公司或賣貨便官方服務無任何關聯。商品資訊由賣家自行匯入，本站不保證資料的即時性與完整性。所有交易行為皆在賣貨便官方平台進行，本站不承擔任何交易相關責任。
       </p>
     </section>
 
     <!-- ── CTA ── -->
-    <div class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-      <NuxtLink to="/" class="btn btn-primary">探索商品</NuxtLink>
-      <NuxtLink to="/import" class="btn btn-outline">匯入我的賣場</NuxtLink>
+    <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+      <NuxtLink to="/" class="btn btn-primary cursor-pointer rounded-xl px-6"
+        >探索商品</NuxtLink
+      >
+      <NuxtLink
+        to="/import"
+        class="btn btn-outline cursor-pointer rounded-xl px-6"
+        >匯入我的賣場</NuxtLink
+      >
     </div>
   </div>
 </template>
