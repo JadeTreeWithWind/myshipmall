@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   id: string;
   name: string;
   mainImage: string | null;
@@ -10,6 +10,14 @@ defineProps<{
   clickCount: number;
   isEager?: boolean;
 }>();
+
+const router = useRouter()
+
+function goToShop(e: MouseEvent) {
+  e.preventDefault()
+  e.stopPropagation()
+  router.push(`/shop/${props.shopId}`)
+}
 </script>
 
 <template>
@@ -51,13 +59,13 @@ defineProps<{
 
       <!-- 商城名稱 & 熱門度 -->
       <div class="mt-1 flex items-center justify-between">
-        <NuxtLink
-          :to="`/shop/${shopId}`"
+        <button
+          type="button"
           class="text-base-content/50 hover:text-primary max-w-[70%] truncate text-xs"
-          @click.stop
+          @click="goToShop"
         >
           {{ shopName }}
-        </NuxtLink>
+        </button>
         <span
           class="text-base-content/40 flex shrink-0 items-center gap-0.5 text-xs"
         >

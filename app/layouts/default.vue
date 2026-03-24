@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const router = useRouter()
+const { user, signIn, signOut } = useAuth()
 
 // ── 主題切換 ───────────────────────────────────────────────────
 const theme = ref('light')
@@ -82,6 +83,33 @@ watch(() => route.path, () => { menuOpen.value = false })
         <!-- 匯入連結（桌面） -->
         <NuxtLink to="/import" class="btn btn-ghost hidden lg:flex">匯入賣場</NuxtLink>
 
+        <!-- 登入狀態（桌面） -->
+        <template v-if="user">
+          <div class="dropdown dropdown-end hidden lg:block">
+            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+              <div class="w-8 rounded-full">
+                <img
+                  v-if="user.user_metadata?.avatar_url"
+                  :src="user.user_metadata.avatar_url"
+                  :alt="user.user_metadata?.full_name ?? '使用者'"
+                />
+                <div v-else class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-sm font-bold">
+                  {{ (user.user_metadata?.full_name ?? user.email ?? '?')[0].toUpperCase() }}
+                </div>
+              </div>
+            </label>
+            <ul tabindex="0" class="menu dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow">
+              <li class="menu-title truncate px-4 py-2 text-xs opacity-60">
+                {{ user.user_metadata?.full_name ?? user.email }}
+              </li>
+              <li><button @click="signOut">登出</button></li>
+            </ul>
+          </div>
+        </template>
+        <template v-else>
+          <button class="btn btn-ghost hidden lg:flex" @click="signIn">登入</button>
+        </template>
+
         <!-- 漢堡選單（手機） -->
         <div class="relative lg:hidden">
           <button class="btn btn-ghost btn-square" @click="menuOpen = !menuOpen">
@@ -103,6 +131,13 @@ watch(() => route.path, () => { menuOpen.value = false })
             </li>
             <li><NuxtLink to="/import" class="block px-3 py-2 rounded-lg hover:bg-base-200">匯入賣場</NuxtLink></li>
             <li><NuxtLink to="/about" class="block px-3 py-2 rounded-lg hover:bg-base-200">關於</NuxtLink></li>
+            <li v-if="user">
+              <div class="px-3 py-2 text-xs opacity-60 truncate">{{ user.user_metadata?.full_name ?? user.email }}</div>
+            </li>
+            <li>
+              <button v-if="user" class="block w-full text-left px-3 py-2 rounded-lg hover:bg-base-200" @click="signOut">登出</button>
+              <button v-else class="block w-full text-left px-3 py-2 rounded-lg hover:bg-base-200" @click="signIn">登入</button>
+            </li>
           </ul>
         </div>
       </div>

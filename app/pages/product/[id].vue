@@ -88,6 +88,9 @@ const updatedAt = computed(() => {
   });
 });
 
+// ── 評論元件 ref ──────────────────────────────────────────────
+const reviewListRef = ref<{ refresh: () => Promise<void> } | null>(null)
+
 // ── 購買點擊 ─────────────────────────────────────────────────
 const buyUrl = computed(() => {
   // 賣貨便商品頁 URL 依商品的 external_id 規則組成
@@ -264,6 +267,12 @@ async function handleBuy() {
         class="prose prose-sm bg-base-100 max-w-none rounded-xl p-6"
         v-html="sanitize(product.description)"
       />
+    </div>
+
+    <!-- ── 評論區 ── -->
+    <div class="mt-12">
+      <ReviewForm :product-id="productId" class="mb-8" @submitted="reviewListRef?.refresh()" />
+      <ReviewList ref="reviewListRef" :product-id="productId" />
     </div>
   </div>
 </template>
