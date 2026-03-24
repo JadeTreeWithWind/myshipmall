@@ -27,6 +27,12 @@ export function useProductSearch() {
   const currentParams = ref<SearchParams>({});
   const { minLoadingTime } = useMinLoadingTime();
 
+  /**
+   * 讀取指定頁面或重新搜尋商品資料
+   * @param {SearchParams} params - 搜尋條件，包含關鍵字、價格區間等
+   * @param {boolean} reset - 是否重置資料（第一頁或切換條件時）
+   * @returns {Promise<void>} 無回傳值，直接更新內部響應式狀態
+   */
   async function fetchPage(params: SearchParams, reset: boolean) {
     loading.value = true;
     try {
@@ -54,12 +60,21 @@ export function useProductSearch() {
     }
   }
 
+  /**
+   * 根據新參數發起全新搜尋（帶入 minLoadingTime 避免閃爍）
+   * @param {SearchParams} params - 搜尋條件
+   * @returns {Promise<void>} 
+   */
   async function search(params: SearchParams) {
     currentParams.value = params;
     offset.value = 0;
     await fetchPage(params, true);
   }
 
+  /**
+   * 載入下一頁（無限捲動模式使用）
+   * @returns {Promise<void>} 
+   */
   async function loadMore() {
     if (loading.value || !hasMore.value) return;
     await fetchPage(currentParams.value, false);

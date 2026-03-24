@@ -1,3 +1,9 @@
+/**
+ * 確保最小 loading 時間，避免閃爍
+ * @param {Promise} promise - 要執行的異步操作
+ * @param {Number} minTime - 最小顯示時間（毫秒），預設 300
+ * @returns {Promise} 執行結果
+ */
 export const useMinLoadingTime = () => {
   const minLoadingTime = async <T>(
     promise: Promise<T> | PromiseLike<T>,

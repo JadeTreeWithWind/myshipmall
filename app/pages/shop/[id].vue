@@ -1,10 +1,33 @@
 <script setup lang="ts">
-const route = useRoute();
-const shopId = route.params.id as string;
-const { sanitize } = useSanitize();
+// 1. Imports
+// (None)
 
-// ── 取得商城資料 ─────────────────────────────────────────────
+// 2. Types
+// (None)
+
+// 3. Constants
+const route = useRoute();
+const config = useRuntimeConfig();
+const shopId = route.params.id as string;
+const shopUrl = `${config.public.siteUrl}${route.path}`;
+const sortOptions = [
+  { value: "popular", label: "最熱門" },
+  { value: "price_asc", label: "價格低→高" },
+  { value: "price_desc", label: "價格高→低" },
+  { value: "newest", label: "最新上架" },
+];
+const PAGE_SIZE = 20;
+
+// 4. State/Variables
+const { sanitize } = useSanitize();
 const supabase = useSupabase();
+const { minLoadingTime } = useMinLoadingTime();
+
+const sort = ref("popular");
+const products = ref<any[]>([]);
+const loading = ref(false);
+const hasMore = ref(true);
+const offset = ref(0);
 
 const {
   data: shop,
@@ -20,7 +43,7 @@ const {
   return data;
 });
 
-const config = useRuntimeConfig();
+// 5. Computed Properties
 const shopDesc = computed(() =>
   (
     shop.value?.description?.replace(/<[^>]+>/g, "") ??
@@ -28,57 +51,18 @@ const shopDesc = computed(() =>
     ""
   ).slice(0, 150),
 );
-const shopUrl = `${config.public.siteUrl}${route.path}`;
 
-useHead({
-  title: () => shop.value?.name ?? "商城載入中",
-  link: [{ rel: "canonical", href: shopUrl }],
-  meta: [
-    { name: "description", content: () => shopDesc.value },
-    { property: "og:title", content: () => shop.value?.name ?? "" },
-    { property: "og:description", content: () => shopDesc.value },
-    { property: "og:image", content: () => shop.value?.image_url ?? "" },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: shopUrl },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:image", content: () => shop.value?.image_url ?? "" },
-  ],
-  script: computed(() =>
-    shop.value
-      ? [
-          {
-            type: "application/ld+json",
-            innerHTML: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Store",
-              name: shop.value.name,
-              description: shopDesc.value,
-              image: shop.value.image_url,
-              url: shopUrl,
-            }),
-          },
-        ]
-      : [],
-  ),
+const updatedAt = computed(() => {
+  const d = shop.value?.updated_at;
+  if (!d) return "";
+  return new Date(d).toLocaleDateString("zh-TW", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 });
 
-const { minLoadingTime } = useMinLoadingTime();
-
-// ── 商城商品列表 ──────────────────────────────────────────────
-const sort = ref("popular");
-const sortOptions = [
-  { value: "popular", label: "最熱門" },
-  { value: "price_asc", label: "價格低→高" },
-  { value: "price_desc", label: "價格高→低" },
-  { value: "newest", label: "最新上架" },
-];
-
-const products = ref<any[]>([]);
-const loading = ref(false);
-const hasMore = ref(true);
-const offset = ref(0);
-const PAGE_SIZE = 20;
-
+// 6. Functions/Methods
 async function fetchProducts(reset = false) {
   loading.value = true;
   const curOffset = reset ? 0 : offset.value;
@@ -122,17 +106,44 @@ async function fetchProducts(reset = false) {
   }
 }
 
+// 7. Watchers
 watch(sort, () => fetchProducts(true));
-fetchProducts(true);
 
-const updatedAt = computed(() => {
-  const d = shop.value?.updated_at;
-  if (!d) return "";
-  return new Date(d).toLocaleDateString("zh-TW", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+// 8. Lifecycle Hooks
+useHead({
+  title: () => shop.value?.name ?? "商城載入中",
+  link: [{ rel: "canonical", href: shopUrl }],
+  meta: [
+    { name: "description", content: () => shopDesc.value },
+    { property: "og:title", content: () => shop.value?.name ?? "" },
+    { property: "og:description", content: () => shopDesc.value },
+    { property: "og:image", content: () => shop.value?.image_url ?? "" },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: shopUrl },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: () => shop.value?.image_url ?? "" },
+  ],
+  script: computed(() =>
+    shop.value
+      ? [
+          {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Store",
+              name: shop.value.name,
+              description: shopDesc.value,
+              image: shop.value.image_url,
+              url: shopUrl,
+            }),
+          },
+        ]
+      : [],
+  ),
+});
+
+onMounted(() => {
+  fetchProducts(true);
 });
 </script>
 
