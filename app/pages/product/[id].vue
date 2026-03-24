@@ -37,6 +37,25 @@ const {
 const activeImageIdx = ref(0);
 const reviewListRef = ref<{ refresh: () => Promise<void> } | null>(null);
 
+function navigate(dir: "left" | "right") {
+  const len = images.value.length;
+  activeImageIdx.value =
+    dir === "left"
+      ? (activeImageIdx.value + 1) % len
+      : (activeImageIdx.value - 1 + len) % len;
+}
+
+// Swipe
+const touchStartX = ref(0);
+function onTouchStart(e: TouchEvent) {
+  touchStartX.value = e.touches[0]!.clientX;
+}
+function onTouchEnd(e: TouchEvent) {
+  const diff = touchStartX.value - e.changedTouches[0]!.clientX;
+  if (Math.abs(diff) < 40) return;
+  navigate(diff > 0 ? "left" : "right");
+}
+
 // 5. Computed Properties
 const productDesc = computed(() => {
   const raw = product.value?.description ?? product.value?.name ?? "";
@@ -148,7 +167,7 @@ useHead({
     <!-- Skeleton -->
     <template v-else-if="pending">
       <!-- 麵包屑 skeleton -->
-      <div class="mb-8 flex items-center gap-2">
+      <div class="mb-8 hidden items-center gap-2 sm:flex">
         <div class="skeleton h-4 w-12 rounded" />
         <div class="skeleton h-4 w-4 rounded" />
         <div class="skeleton h-4 w-24 rounded" />
@@ -188,7 +207,7 @@ useHead({
     <!-- 實際內容 -->
     <template v-else>
       <!-- 麵包屑 -->
-      <div class="breadcrumbs text-base-content mb-8 text-sm">
+      <div class="breadcrumbs text-base-content mb-8 hidden text-sm sm:flex">
         <ul>
           <li>
             <NuxtLink to="/" class="hover:text-primary transition-colors"
@@ -213,21 +232,62 @@ useHead({
         <div>
           <!-- 主圖 -->
           <div
-            class="bg-base-200 border-base-300/50 mb-3 aspect-square overflow-hidden rounded-2xl border"
+            class="bg-base-200 group border-base-300/50 relative mb-3 aspect-square overflow-hidden rounded-2xl border"
+            @touchstart="onTouchStart"
+            @touchend="onTouchEnd"
           >
-            <img
-              v-if="activeImage"
-              :src="activeImage"
-              :alt="product?.name"
-              class="h-full w-full object-cover"
-              fetchpriority="high"
-            />
-            <div v-else class="flex h-full w-full items-center justify-center">
-              <Icon
-                name="heroicons:photo"
-                class="text-base-content/20 h-16 w-16"
+            <Transition name="fade">
+              <img
+                v-if="activeImage"
+                :key="activeImageIdx"
+                :src="activeImage"
+                :alt="product?.name"
+                class="absolute inset-0 h-full w-full object-cover"
+                fetchpriority="high"
               />
-            </div>
+              <div
+                v-else
+                :key="`empty-${activeImageIdx}`"
+                class="absolute inset-0 flex h-full w-full items-center justify-center"
+              >
+                <Icon
+                  name="heroicons:photo"
+                  class="text-base-content/20 h-16 w-16"
+                />
+              </div>
+            </Transition>
+
+            <!-- 左右箭頭（多張圖才顯示） -->
+            <template v-if="images.length > 1">
+              <button
+                class="btn btn-circle btn-sm bg-base-100/50 absolute top-1/2 left-2 -translate-y-1/2 border-0 opacity-0 backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:scale-105"
+                aria-label="上一張"
+                @click="navigate('right')"
+              >
+                <Icon name="heroicons:chevron-left" class="h-4 w-4" />
+              </button>
+              <button
+                class="btn btn-circle btn-sm bg-base-100/50 absolute top-1/2 right-2 -translate-y-1/2 border-0 opacity-0 backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:scale-105"
+                aria-label="下一張"
+                @click="navigate('left')"
+              >
+                <Icon name="heroicons:chevron-right" class="h-4 w-4" />
+              </button>
+
+              <!-- 底部 dot 指示器 -->
+              <div
+                class="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5"
+              >
+                <span
+                  v-for="(_, i) in images"
+                  :key="i"
+                  class="block h-1.5 w-1.5 rounded-full transition-all duration-200"
+                  :class="
+                    i === activeImageIdx ? 'bg-primary w-3' : 'bg-base-100/60'
+                  "
+                />
+              </div>
+            </template>
           </div>
 
           <!-- 縮圖列 -->
@@ -335,7 +395,7 @@ useHead({
 
           <!-- ── 購買按鈕 ── -->
           <button
-            class="btn btn-primary btn-lg mt-1 w-full cursor-pointer gap-2 rounded-xl"
+            class="btn btn-primary btn-lg mt-1 w-full cursor-pointer gap-2 rounded-xl text-base"
             @click="handleBuy"
           >
             <Icon name="heroicons:shopping-cart" class="h-5 w-5" />
@@ -385,3 +445,17 @@ useHead({
     </template>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+  position: absolute;
+  inset: 0;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

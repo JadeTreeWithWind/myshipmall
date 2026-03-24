@@ -20,9 +20,13 @@ export function useAuth() {
   }
 
   async function signIn() {
+    localStorage.setItem(
+      'auth:redirect',
+      window.location.pathname + window.location.search,
+    )
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
   }
 

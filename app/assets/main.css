@@ -9,7 +9,7 @@
 
 @plugin "daisyui" {
   themes:
-    caramellatte --default,
+    lofi --default,
     halloween;
 }
 

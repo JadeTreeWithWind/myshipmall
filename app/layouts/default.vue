@@ -9,7 +9,7 @@ const { user, signIn, signOut } = useAuth();
 
 // 3. Constants
 const THEMES = {
-  LIGHT: "caramellatte",
+  LIGHT: "lofi",
   DARK: "halloween",
 };
 
@@ -102,7 +102,7 @@ onUnmounted(() => {
   <div class="flex min-h-screen flex-col">
     <!-- ── Navbar ── -->
     <nav
-      class="bg-base-100/95 border-base-300/60 sticky top-0 z-50 border-b backdrop-blur-md"
+      class="bg-base-100 border-base-300/60 sticky top-0 z-50 backdrop-blur-xs"
     >
       <div class="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 sm:px-6">
         <!-- Logo -->
@@ -112,7 +112,7 @@ onUnmounted(() => {
         >
           <Icon name="heroicons:shopping-bag" class="text-primary h-10 w-10" />
           <span
-            class="text-base-content font-Noto text-xl font-semibold tracking-wide"
+            class="text-base-content font-Noto font-semibold tracking-wide sm:text-xl"
             >賣貨商城</span
           >
         </NuxtLink>

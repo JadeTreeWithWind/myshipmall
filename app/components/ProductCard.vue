@@ -36,7 +36,7 @@ function goToShop(e: MouseEvent) {
 
 <template>
   <div
-    class="group bg-base-100 border-base-300/70 hover:border-base-300 flex cursor-pointer flex-col overflow-hidden rounded-xl border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+    class="group bg-base-200/50 border-base-300/70 hover:border-base-300 flex cursor-pointer flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
     @click="router.push(`/product/${id}`)"
   >
     <!-- 商品圖片 -->

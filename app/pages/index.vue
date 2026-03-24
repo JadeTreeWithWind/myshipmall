@@ -55,18 +55,6 @@ useHead({
   <div>
     <!-- ── Hero 搜尋區 ── -->
     <section class="relative overflow-hidden px-4 py-20 sm:py-28">
-      <!-- 背景漸層 -->
-      <div
-        class="from-base-200/80 to-base-100 pointer-events-none absolute inset-0 bg-linear-to-b"
-      />
-      <!-- 裝飾性背景圓 -->
-      <div
-        class="bg-primary/5 pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full blur-3xl"
-      />
-      <div
-        class="bg-accent/5 pointer-events-none absolute -bottom-12 -left-12 h-64 w-64 rounded-full blur-2xl"
-      />
-
       <div class="relative mx-auto max-w-2xl text-center">
         <!-- 小標籤 -->
         <div

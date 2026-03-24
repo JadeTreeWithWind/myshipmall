@@ -143,7 +143,10 @@ const updatedAt = computed(() => {
       v-if="!shopPending && (shopError || !shop)"
       class="flex flex-col items-center gap-4 py-32 text-center"
     >
-      <Icon name="heroicons:face-frown" class="text-base-content/30 h-16 w-16" />
+      <Icon
+        name="heroicons:face-frown"
+        class="text-base-content/30 h-16 w-16"
+      />
       <p class="text-base-content/60">找不到此商城</p>
       <NuxtLink to="/" class="btn btn-primary btn-sm">回首頁</NuxtLink>
     </div>
@@ -177,7 +180,10 @@ const updatedAt = computed(() => {
                   :alt="shop?.name"
                   class="h-full w-full object-cover"
                 />
-                <div v-else class="flex h-full w-full items-center justify-center">
+                <div
+                  v-else
+                  class="flex h-full w-full items-center justify-center"
+                >
                   <Icon
                     name="heroicons:building-storefront"
                     class="text-base-content/25 h-8 w-8"
@@ -228,7 +234,7 @@ const updatedAt = computed(() => {
         </div>
         <select
           v-model="sort"
-          class="select select-bordered select-sm bg-base-100 focus:border-primary/60 cursor-pointer"
+          class="select select-bordered bg-base-100 focus:border-primary/60 cursor-pointer"
         >
           <option v-for="o in sortOptions" :key="o.value" :value="o.value">
             {{ o.label }}
