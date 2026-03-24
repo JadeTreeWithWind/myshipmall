@@ -85,13 +85,13 @@ useHead({
           <div class="relative flex-1">
             <Icon
               name="heroicons:magnifying-glass"
-              class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-base-content/40"
+              class="text-base-content/40 pointer-events-none absolute top-1/2 left-4 z-10 h-5 w-5 -translate-y-1/2"
             />
             <input
               v-model="searchQ"
               type="search"
               placeholder="搜尋商品名稱、商城..."
-              class="input input-bordered focus:input-primary h-12 w-full rounded-xl bg-base-100 pr-4 pl-11 text-base transition-all"
+              class="input input-bordered focus:input-primary bg-base-100 h-12 w-full rounded-xl pr-4 pl-11 text-base transition-all"
               autofocus
             />
           </div>

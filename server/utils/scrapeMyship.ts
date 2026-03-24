@@ -348,11 +348,13 @@ function parseFromHtml(
       images.push({ url: mainImage, ordering: 0 });
     }
 
+    const resolvedMainImage = mainImage || images[0]?.url || "";
+
     products.push({
       external_id: externalId,
       name: productName,
       description: desc,
-      main_image: mainImage,
+      main_image: resolvedMainImage,
       min_order: num(p.Cgdd_Product_MinOrder ?? 0),
       max_order: num(p.Cgdd_Product_MaxOrder ?? 0),
       specs,
