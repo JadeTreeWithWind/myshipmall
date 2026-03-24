@@ -27,3 +27,4 @@ supabase/
 scrap.html
 .nuxt/
 .agent/
+.wrangler/

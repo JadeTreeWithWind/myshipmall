@@ -93,7 +93,7 @@ useHead({
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
     <!-- ── Hero ── -->
     <div class="mb-14 text-center">
       <h1
@@ -180,7 +180,9 @@ useHead({
     <section
       class="border-base-300/70 bg-base-200/40 mb-10 rounded-2xl border p-6"
     >
-      <h2 class="text-base-content/90 mb-2 text-base font-semibold">免責聲明</h2>
+      <h2 class="text-base-content/90 mb-2 text-base font-semibold">
+        免責聲明
+      </h2>
       <p class="text-base-content/70 text-sm leading-relaxed">
         本網站為非官方獨立平台，與統一超商股份有限公司或賣貨便官方服務無任何關聯。商品資訊由賣家自行匯入，本站不保證資料的即時性與完整性。所有交易行為皆在賣貨便官方平台進行，本站不承擔任何交易相關責任。
       </p>

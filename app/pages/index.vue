@@ -19,6 +19,12 @@ const { data: hotProducts, pending } = await useFetch<ProductSearchResult[]>(
   },
 );
 
+const { data: newProducts, pending: newPending } = await useFetch<
+  ProductSearchResult[]
+>("/api/products/search", {
+  query: { sort: "newest", offset: 0 },
+});
+
 // 5. Computed Properties (None)
 
 // 6. Functions/Methods
@@ -81,7 +87,7 @@ useHead({
           搜尋並瀏覽所有已匯入的 7-11 賣貨便商品
         </p>
 
-        <form class="mx-auto flex max-w-lg gap-2" @submit.prevent="goSearch">
+        <!-- <form class="mx-auto flex max-w-lg gap-2" @submit.prevent="goSearch">
           <div class="relative flex-1">
             <Icon
               name="heroicons:magnifying-glass"
@@ -102,21 +108,27 @@ useHead({
           >
             <Icon name="heroicons:magnifying-glass" class="h-5 w-5" />
           </button>
-        </form>
+        </form> -->
       </div>
     </section>
 
     <!-- ── 熱門商品 ── -->
     <section class="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
       <!-- 區塊標題 -->
-      <div class="mb-8 flex items-center gap-3">
-        <div class="flex items-center gap-2">
-          <div class="bg-primary h-5 w-1 rounded-full" />
-          <h2 class="text-base-content font-serif text-xl font-semibold">
-            熱門商品
-          </h2>
+      <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <div class="bg-primary h-5 w-1 rounded-full" />
+            <h2 class="text-base-content font-serif text-2xl font-semibold">
+              熱門商品
+            </h2>
+          </div>
+          <Icon name="heroicons:fire" class="h-5 w-5 text-orange-400" />
         </div>
-        <Icon name="heroicons:fire" class="h-5 w-5 text-orange-400" />
+        <NuxtLink to="/search?sort=popular" class="btn btn-ghost">
+          查看更多
+          <Icon name="heroicons:arrow-right" class="h-5 w-5" />
+        </NuxtLink>
       </div>
 
       <!-- 載入中 -->
@@ -166,6 +178,53 @@ useHead({
           >
           來開始吧！
         </p>
+      </div>
+    </section>
+
+    <!-- ── 最新上架 ── -->
+    <section class="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+      <!-- 區塊標題 -->
+      <div class="mb-8 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <div class="bg-secondary h-5 w-1 rounded-full" />
+            <h2 class="text-base-content font-serif text-2xl font-semibold">
+              最新上架
+            </h2>
+          </div>
+          <Icon name="heroicons:sparkles" class="h-5 w-5 text-blue-400" />
+        </div>
+        <NuxtLink to="/search?sort=newest" class="btn btn-ghost">
+          查看更多
+          <Icon name="heroicons:arrow-right" class="h-5 w-5" />
+        </NuxtLink>
+      </div>
+
+      <!-- 載入中 -->
+      <div
+        v-if="newPending"
+        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      >
+        <SkeletonCard v-for="i in 10" :key="i" />
+      </div>
+
+      <!-- 商品列表 -->
+      <div
+        v-else-if="newProducts?.length"
+        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      >
+        <ProductCard
+          v-for="p in newProducts"
+          :key="p.id"
+          :id="p.id"
+          :name="p.name"
+          :main-image="p.main_image"
+          :min-price="p.min_price"
+          :max-price="p.max_price"
+          :shop-name="p.shop_name"
+          :shop-id="p.shop_id"
+          :click-count="p.click_count"
+        />
       </div>
     </section>
   </div>
