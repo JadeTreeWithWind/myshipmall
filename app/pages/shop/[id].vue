@@ -34,21 +34,30 @@ const shopDesc = computed(() =>
 const shopUrl = `${config.public.siteUrl}${route.path}`;
 
 useHead({
-  title: `${shop.value?.name ?? ""} — 賣貨商城`,
+  title: shop.value?.name,
+  link: [{ rel: "canonical", href: shopUrl }],
   meta: [
     { name: "description", content: shopDesc.value },
-    { property: "og:title", content: `${shop.value?.name ?? ""} — 賣貨商城` },
+    { property: "og:title", content: shop.value?.name },
     { property: "og:description", content: shopDesc.value },
     { property: "og:image", content: shop.value?.image_url ?? "" },
     { property: "og:type", content: "website" },
     { property: "og:url", content: shopUrl },
     { name: "twitter:card", content: "summary_large_image" },
-    {
-      name: "twitter:title",
-      content: `${shop.value?.name ?? ""} — 賣貨商城`,
-    },
-    { name: "twitter:description", content: shopDesc.value },
     { name: "twitter:image", content: shop.value?.image_url ?? "" },
+  ],
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Store",
+        name: shop.value?.name,
+        description: shopDesc.value,
+        image: shop.value?.image_url,
+        url: shopUrl,
+      }),
+    },
   ],
 });
 

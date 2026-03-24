@@ -85,20 +85,20 @@ useHead({
           <div class="relative flex-1">
             <Icon
               name="heroicons:magnifying-glass"
-              class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-black/40"
+              class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-base-content/40"
             />
             <input
               v-model="searchQ"
               type="search"
               placeholder="搜尋商品名稱、商城..."
-              class="border-base-300 focus:border-primary/60 focus:ring-primary/10 h-12 w-full rounded-xl border bg-white pr-4 pl-11 text-sm text-black shadow-sm transition-all placeholder:text-black/50 focus:ring-2 focus:outline-none"
+              class="input input-bordered focus:input-primary h-12 w-full rounded-xl bg-base-100 pr-4 pl-11 text-base transition-all"
               autofocus
             />
           </div>
           <button
             type="submit"
             aria-label="搜尋"
-            class="btn btn-primary h-12 rounded-xl px-5 shadow-sm"
+            class="btn btn-primary h-12 rounded-xl px-5 shadow-sm transition-all hover:scale-105"
           >
             <Icon name="heroicons:magnifying-glass" class="h-5 w-5" />
           </button>

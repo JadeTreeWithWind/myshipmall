@@ -2,6 +2,7 @@
 // 1. Imports
 const route = useRoute();
 const router = useRouter();
+const config = useRuntimeConfig();
 const { user, signIn, signOut } = useAuth();
 
 // 2. Type Definitions (None)
@@ -62,14 +63,30 @@ watch(
 );
 
 // 8. Lifecycle Hooks
+useHead({
+  titleTemplate: (title) => (title ? `${title} | 賣貨商城` : "賣貨商城 — 賣貨便商品瀏覽平台"),
+  link: [{ rel: "canonical", href: `${config.public.siteUrl}${route.path}` }],
+  script: [
+    {
+      type: "speculationrules",
+      innerHTML: JSON.stringify({
+        prerender: [
+          {
+            source: "list",
+            urls: ["/about", "/import", "/search"],
+          },
+        ],
+      }),
+    },
+  ],
+});
+
 onMounted(() => {
   const saved = localStorage.getItem("theme");
   if (saved) {
     theme.value = saved;
   } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
     theme.value = THEMES.DARK;
-  } else {
-    theme.value = THEMES.LIGHT;
   }
   applyTheme(theme.value);
   document.addEventListener("mousedown", handleClickOutside);
@@ -104,14 +121,14 @@ onUnmounted(() => {
           <form class="relative w-full" @submit.prevent="handleSearch">
             <Icon
               name="heroicons:magnifying-glass"
-              class="pointer-events-none absolute top-1/2 left-3 h-6 w-6 -translate-y-1/2 text-base-content/70"
+              class="pointer-events-none absolute top-1/2 left-3 h-6 w-6 -translate-y-1/2 text-base-content/40"
             />
             <input
               v-model="searchQ"
               type="search"
               aria-label="搜尋商品名稱、商城"
               placeholder="搜尋商品名稱、商城..."
-              class="border-base-600 focus:border-primary/60 h-10 w-full rounded-lg border bg-white pr-3 pl-9 text-sm text-black transition-colors placeholder:text-black/70"
+              class="input input-bordered focus:input-primary h-10 w-full rounded-lg bg-base-100 pr-3 pl-9 text-sm transition-colors"
             />
           </form>
         </div>

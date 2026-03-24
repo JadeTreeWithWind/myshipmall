@@ -9,14 +9,17 @@ interface Review {
 }
 
 const props = defineProps<{ productId: string }>();
+const { minLoadingTime } = useMinLoadingTime();
 
 const {
   data: reviews,
-  refresh,
+  refresh: _refresh,
   pending,
 } = await useAsyncData<Review[]>(`reviews-${props.productId}`, () =>
-  $fetch(`/api/reviews/${props.productId}`),
+  minLoadingTime($fetch(`/api/reviews/${props.productId}`)),
 );
+
+const refresh = async () => await minLoadingTime(_refresh());
 
 const avgRating = computed(() => {
   const list = reviews.value ?? [];
@@ -85,7 +88,7 @@ defineExpose({ refresh });
                 v-else
                 class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-xs font-bold"
               >
-                {{ (review.user_name ?? "?")[0].toUpperCase() }}
+                {{ (review.user_name || "?").charAt(0).toUpperCase() }}
               </div>
             </div>
           </div>

@@ -1,4 +1,3 @@
 User-agent: *
-Disallow: /import
-
+Allow: /
 Sitemap: https://myshipmall.pages.dev/sitemap.xml

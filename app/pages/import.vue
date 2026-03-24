@@ -168,6 +168,9 @@ useHead({
       content:
         "輸入您的賣貨便賣場網址，將賣場商品一鍵匯入 賣貨商城，建立您的專屬商城頁面。",
     },
+    { property: "og:image", content: `${config.public.siteUrl}/og-import.png` },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: `${config.public.siteUrl}/og-import.png` },
     { property: "og:type", content: "website" },
   ],
 });

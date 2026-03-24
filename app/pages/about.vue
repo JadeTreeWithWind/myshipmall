@@ -78,11 +78,13 @@ const FAQS = [
 
 // 8. Lifecycle Hooks
 useHead({
-  title: "關於 賣貨商城 — 賣貨便商品瀏覽平台",
+  title: "關於我們",
+  link: [{ rel: "canonical", href: `${config.public.siteUrl}/about` }],
   meta: [
     { name: "description", content: DESC },
     { property: "og:title", content: "關於 賣貨商城" },
     { property: "og:description", content: DESC },
+    { property: "og:image", content: `${config.public.siteUrl}/og-image.png` },
     { property: "og:type", content: "website" },
     { property: "og:url", content: `${config.public.siteUrl}/about` },
     { name: "twitter:card", content: "summary" },

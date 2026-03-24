@@ -35,9 +35,9 @@ function goToShop(e: MouseEvent) {
 </script>
 
 <template>
-  <NuxtLink
-    :to="`/product/${id}`"
+  <div
     class="group bg-base-100 border-base-300/70 hover:border-base-300 flex cursor-pointer flex-col overflow-hidden rounded-xl border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+    @click="router.push(`/product/${id}`)"
   >
     <!-- 商品圖片 -->
     <div class="bg-base-200 aspect-square shrink-0 overflow-hidden">
@@ -80,13 +80,13 @@ function goToShop(e: MouseEvent) {
       <div
         class="border-base-200 mt-auto flex items-center justify-between border-t pt-2"
       >
-        <button
-          type="button"
+        <NuxtLink
+          :to="`/shop/${shopId}`"
           class="text-base-content hover:text-primary max-w-[70%] cursor-pointer truncate text-sm transition-colors"
-          @click="goToShop"
+          @click.stop
         >
           {{ shopName }}
-        </button>
+        </NuxtLink>
         <span
           class="text-base-content/90 flex shrink-0 items-center gap-0.5 text-sm"
         >
@@ -95,5 +95,5 @@ function goToShop(e: MouseEvent) {
         </span>
       </div>
     </div>
-  </NuxtLink>
+  </div>
 </template>

@@ -95,24 +95,36 @@ async function handleBuy() {
 
 // 8. Lifecycle Hooks
 useHead({
-  title: `${product.value?.name ?? ""} — 賣貨商城`,
+  title: product.value?.name,
   meta: [
     { name: "description", content: productDesc.value },
-    {
-      property: "og:title",
-      content: `${product.value?.name ?? ""} — 賣貨商城`,
-    },
+    { property: "og:title", content: product.value?.name },
     { property: "og:description", content: productDesc.value },
     { property: "og:image", content: product.value?.main_image ?? "" },
     { property: "og:type", content: "product" },
     { property: "og:url", content: productUrl },
     { name: "twitter:card", content: "summary_large_image" },
-    {
-      name: "twitter:title",
-      content: `${product.value?.name ?? ""} — 賣貨商城`,
-    },
-    { name: "twitter:description", content: productDesc.value },
     { name: "twitter:image", content: product.value?.main_image ?? "" },
+  ],
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        name: product.value?.name,
+        image: images.value.map((img) => img.url),
+        description: productDesc.value,
+        offers: {
+          "@type": "AggregateOffer",
+          availability: "https://schema.org/InStock",
+          priceCurrency: "TWD",
+          lowPrice: product.value?.min_price,
+          highPrice: product.value?.max_price,
+          offerCount: specs.value.length || 1,
+        },
+      }),
+    },
   ],
 });
 </script>

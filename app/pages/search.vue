@@ -59,16 +59,17 @@ watch(q, doSearch, { immediate: true });
 
 // 8. Lifecycle Hooks
 useHead({
-  title: "搜尋商品 — 賣貨商城",
+  title: q.value ? `搜尋「${q.value}」` : "搜尋商品",
+  link: [{ rel: "canonical", href: `${config.public.siteUrl}/search` }],
   meta: [
     { name: "description", content: SEARCH_DESC },
     { property: "og:title", content: "搜尋商品 — 賣貨商城" },
     { property: "og:description", content: SEARCH_DESC },
+    { property: "og:image", content: `${config.public.siteUrl}/og-search.png` },
     { property: "og:type", content: "website" },
     { property: "og:url", content: `${config.public.siteUrl}/search` },
-    { name: "twitter:card", content: "summary" },
-    { name: "twitter:title", content: "搜尋商品 — 賣貨商城" },
-    { name: "twitter:description", content: SEARCH_DESC },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: `${config.public.siteUrl}/og-search.png` },
   ],
 });
 </script>
