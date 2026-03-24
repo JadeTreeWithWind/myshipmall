@@ -9,12 +9,12 @@ const { user, signIn, signOut } = useAuth();
 
 // 3. Constants
 const THEMES = {
-  LIGHT: "corporate",
-  DARK: "sunset",
+  LIGHT: "caramellatte",
+  DARK: "halloween",
 };
 
 // 4. State/Variables
-const theme = ref(THEMES.LIGHT);
+const theme = ref(THEMES.DARK);
 const searchQ = ref("");
 const menuOpen = ref(false);
 const menuRef = ref<HTMLElement | null>(null);
@@ -64,7 +64,8 @@ watch(
 
 // 8. Lifecycle Hooks
 useHead({
-  titleTemplate: (title) => (title ? `${title} | 賣貨商城` : "賣貨商城 — 賣貨便商品瀏覽平台"),
+  titleTemplate: (title) =>
+    title ? `${title} | 賣貨商城` : "賣貨商城 — 賣貨便商品瀏覽平台",
   link: [{ rel: "canonical", href: `${config.public.siteUrl}${route.path}` }],
   script: [
     {
@@ -121,14 +122,14 @@ onUnmounted(() => {
           <form class="relative w-full" @submit.prevent="handleSearch">
             <Icon
               name="heroicons:magnifying-glass"
-              class="pointer-events-none absolute top-1/2 left-3 h-6 w-6 -translate-y-1/2 text-base-content/40"
+              class="text-base-content/40 pointer-events-none absolute top-1/2 left-3 z-1 h-6 w-6 -translate-y-1/2"
             />
             <input
               v-model="searchQ"
               type="search"
               aria-label="搜尋商品名稱、商城"
               placeholder="搜尋商品名稱、商城..."
-              class="input input-bordered focus:input-primary h-10 w-full rounded-lg bg-base-100 pr-3 pl-9 text-sm transition-colors"
+              class="input input-bordered focus:input-primary bg-base-100 h-10 w-full rounded-lg pr-3 pl-9 text-sm transition-colors"
             />
           </form>
         </div>
@@ -145,9 +146,9 @@ onUnmounted(() => {
             <Icon
               v-if="theme === THEMES.DARK"
               name="heroicons:sun"
-              class="h-10 w-10"
+              class="h-10 w-10 text-[16px]"
             />
-            <Icon v-else name="heroicons:moon" class="h-10 w-10" />
+            <Icon v-else name="heroicons:moon" class="h-10 w-10 text-[16px]" />
           </button>
 
           <!-- 桌面導覽 -->

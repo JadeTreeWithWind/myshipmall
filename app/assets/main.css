@@ -9,8 +9,8 @@
 
 @plugin "daisyui" {
   themes:
-    corporate --default,
-    sunset;
+    caramellatte --default,
+    halloween;
 }
 
 /* ── 全域基礎樣式 ─────────────────────────────────────────── */

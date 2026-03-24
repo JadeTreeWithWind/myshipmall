@@ -132,7 +132,7 @@ useHead({
 <template>
   <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
     <!-- 麵包屑 -->
-    <div class="breadcrumbs text-base-content mb-8 text-base">
+    <div class="breadcrumbs text-base-content mb-8 text-sm">
       <ul>
         <li>
           <NuxtLink to="/" class="hover:text-primary transition-colors"
@@ -254,8 +254,8 @@ useHead({
                 :key="spec.id"
                 class="border-base-300/40"
               >
-                <td class="text-base font-medium">{{ spec.name }}</td>
-                <td class="text-base">
+                <td class="text-sm font-medium">{{ spec.name }}</td>
+                <td class="text-sm">
                   <template v-if="spec.sale_price > 0">
                     <span class="text-error font-semibold"
                       >NT$&nbsp;{{ spec.sale_price.toLocaleString() }}</span
