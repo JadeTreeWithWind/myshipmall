@@ -1,2 +1,4 @@
-User-Agent: *
-Disallow:
+User-agent: *
+Disallow: /import
+
+Sitemap: https://myshipmall.pages.dev/sitemap.xml

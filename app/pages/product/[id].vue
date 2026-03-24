@@ -29,17 +29,26 @@ if (productError.value || !product.value) {
   throw createError({ statusCode: 404, message: "找不到此商品" });
 }
 
+const config = useRuntimeConfig();
+const productDesc = computed(() => {
+  const raw = product.value?.description ?? product.value?.name ?? "";
+  return raw.replace(/<[^>]+>/g, "").slice(0, 150);
+});
+const productUrl = `${config.public.siteUrl}${route.path}`;
+
 useHead({
   title: `${product.value?.name ?? ""} — MyShipBang`,
   meta: [
-    { name: "description", content: product.value?.name ?? "" },
-    {
-      property: "og:title",
-      content: `${product.value?.name ?? ""} — MyShipBang`,
-    },
-    { property: "og:description", content: product.value?.name ?? "" },
+    { name: "description", content: productDesc.value },
+    { property: "og:title", content: `${product.value?.name ?? ""} — MyShipBang` },
+    { property: "og:description", content: productDesc.value },
     { property: "og:image", content: product.value?.main_image ?? "" },
     { property: "og:type", content: "product" },
+    { property: "og:url", content: productUrl },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: `${product.value?.name ?? ""} — MyShipBang` },
+    { name: "twitter:description", content: productDesc.value },
+    { name: "twitter:image", content: product.value?.main_image ?? "" },
   ],
 });
 

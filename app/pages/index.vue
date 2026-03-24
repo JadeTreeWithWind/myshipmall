@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import type { ProductSearchResult } from "~/composables/useProductSearch";
 
+const config = useRuntimeConfig();
+const homeDesc =
+  "搜尋並瀏覽所有已匯入的 7-11 賣貨便商品，提供更好的商品瀏覽與搜尋體驗。";
+
 useHead({
   title: "MyShipBang — 賣貨便商品瀏覽平台",
   meta: [
-    {
-      name: "description",
-      content:
-        "搜尋並瀏覽所有已匯入的 7-11 賣貨便商品，提供更好的商品瀏覽與搜尋體驗。",
-    },
+    { name: "description", content: homeDesc },
     { property: "og:title", content: "MyShipBang — 賣貨便商品瀏覽平台" },
-    {
-      property: "og:description",
-      content:
-        "搜尋並瀏覽所有已匯入的 7-11 賣貨便商品，提供更好的商品瀏覽與搜尋體驗。",
-    },
+    { property: "og:description", content: homeDesc },
     { property: "og:type", content: "website" },
+    { property: "og:url", content: config.public.siteUrl },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "MyShipBang — 賣貨便商品瀏覽平台" },
+    { name: "twitter:description", content: homeDesc },
   ],
 });
 

@@ -29,6 +29,7 @@ export default defineNuxtConfig({
       supabaseUrl: "",
       supabasePublishableKey: "",
       turnstileSiteKey: "",
+      siteUrl: "https://myshipmall.pages.dev",
     },
   },
 });

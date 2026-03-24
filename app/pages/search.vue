@@ -1,17 +1,18 @@
 <script setup lang="ts">
+const config = useRuntimeConfig();
+const searchDesc = "在 MyShipBang 搜尋賣貨便商品，快速找到您想要的物品。";
+
 useHead({
   title: "搜尋商品 — MyShipBang",
   meta: [
-    {
-      name: "description",
-      content: "在 MyShipBang 搜尋賣貨便商品，快速找到您想要的物品。",
-    },
+    { name: "description", content: searchDesc },
     { property: "og:title", content: "搜尋商品 — MyShipBang" },
-    {
-      property: "og:description",
-      content: "在 MyShipBang 搜尋賣貨便商品，快速找到您想要的物品。",
-    },
+    { property: "og:description", content: searchDesc },
     { property: "og:type", content: "website" },
+    { property: "og:url", content: `${config.public.siteUrl}/search` },
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: "搜尋商品 — MyShipBang" },
+    { name: "twitter:description", content: searchDesc },
   ],
 });
 

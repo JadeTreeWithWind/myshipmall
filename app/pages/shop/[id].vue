@@ -23,26 +23,25 @@ if (shopError.value || !shop.value) {
   throw createError({ statusCode: 404, message: "找不到此商城" });
 }
 
+const config = useRuntimeConfig();
+const shopDesc = computed(() =>
+  (shop.value?.description?.replace(/<[^>]+>/g, "") ?? shop.value?.name ?? "").slice(0, 150),
+);
+const shopUrl = `${config.public.siteUrl}${route.path}`;
+
 useHead({
   title: `${shop.value?.name ?? ""} — MyShipBang`,
   meta: [
-    {
-      name: "description",
-      content:
-        shop.value?.description?.replace(/<[^>]+>/g, "").slice(0, 150) ??
-        shop.value?.name ??
-        "",
-    },
+    { name: "description", content: shopDesc.value },
     { property: "og:title", content: `${shop.value?.name ?? ""} — MyShipBang` },
-    {
-      property: "og:description",
-      content:
-        shop.value?.description?.replace(/<[^>]+>/g, "").slice(0, 150) ??
-        shop.value?.name ??
-        "",
-    },
+    { property: "og:description", content: shopDesc.value },
     { property: "og:image", content: shop.value?.image_url ?? "" },
     { property: "og:type", content: "website" },
+    { property: "og:url", content: shopUrl },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: `${shop.value?.name ?? ""} — MyShipBang` },
+    { name: "twitter:description", content: shopDesc.value },
+    { name: "twitter:image", content: shop.value?.image_url ?? "" },
   ],
 });
 
