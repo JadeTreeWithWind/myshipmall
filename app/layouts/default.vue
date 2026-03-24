@@ -118,7 +118,7 @@ onUnmounted(() => {
         </NuxtLink>
 
         <!-- 搜尋框（桌面） -->
-        <div class="mx-4 hidden flex-1 lg:flex">
+        <div class="mx-4 flex flex-1">
           <form class="relative w-full" @submit.prevent="handleSearch">
             <Icon
               name="heroicons:magnifying-glass"
@@ -135,7 +135,7 @@ onUnmounted(() => {
         </div>
 
         <!-- 右側 -->
-        <div class="ml-auto flex items-center gap-0.5">
+        <div class="flex items-center gap-0.5">
           <!-- 主題切換 -->
           <button
             class="btn btn-ghost btn-sm btn-square"
@@ -146,9 +146,9 @@ onUnmounted(() => {
             <Icon
               v-if="theme === THEMES.DARK"
               name="heroicons:sun"
-              class="h-10 w-10 text-[16px]"
+              class="text-[16px]"
             />
-            <Icon v-else name="heroicons:moon" class="h-10 w-10 text-[16px]" />
+            <Icon v-else name="heroicons:moon" class="text-[16px]" />
           </button>
 
           <!-- 桌面導覽 -->
@@ -213,7 +213,7 @@ onUnmounted(() => {
           </template>
 
           <!-- 漢堡選單（手機） -->
-          <div ref="menuRef" class="relative ml-1 lg:hidden">
+          <div ref="menuRef" class="relative ml-1 hidden">
             <button
               class="btn btn-ghost btn-sm btn-square"
               aria-label="開啟選單"
