@@ -8,9 +8,9 @@ const config = useRuntimeConfig();
 const SEARCH_DESC = "在 賣貨商城 搜尋賣貨便商品，快速找到您想要的物品。";
 const SORT_OPTIONS = [
   { value: "popular", label: "最熱門" },
+  { value: "newest", label: "最新上架" },
   { value: "price_asc", label: "價格低→高" },
   { value: "price_desc", label: "價格高→低" },
-  { value: "newest", label: "最新上架" },
 ];
 
 // 4. State/Variables
@@ -69,13 +69,16 @@ useHead({
     { property: "og:type", content: "website" },
     { property: "og:url", content: `${config.public.siteUrl}/search` },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:image", content: `${config.public.siteUrl}/og-search.png` },
+    {
+      name: "twitter:image",
+      content: `${config.public.siteUrl}/og-search.png`,
+    },
   ],
 });
 </script>
 
 <template>
-  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+  <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6">
     <!-- ── 標題 ── -->
     <div class="mb-6">
       <h1 class="text-base-content font-serif text-2xl font-semibold">
@@ -94,22 +97,24 @@ useHead({
       <!-- 排序 -->
       <div class="flex flex-col gap-1">
         <span class="text-base-content/90 text-xs font-medium">排序</span>
-        <select
-          v-model="sort"
-          aria-label="排序方式"
-          class="select select-bordered select-sm bg-base-100 focus:border-primary/60 min-w-[120px]"
-        >
-          <option v-for="o in SORT_OPTIONS" :key="o.value" :value="o.value">
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="o in SORT_OPTIONS"
+            :key="o.value"
+            class="btn btn-sm cursor-pointer"
+            :class="sort === o.value ? 'btn-primary' : 'btn-outline'"
+            @click="sort = o.value"
+          >
             {{ o.label }}
-          </option>
-        </select>
+          </button>
+        </div>
       </div>
 
       <!-- 分隔線 -->
-      <div class="bg-base-300/60 mb-0.5 hidden h-8 w-px self-end sm:block" />
+      <!-- <div class="bg-base-300/60 mb-0.5 hidden h-8 w-px self-end sm:block" /> -->
 
       <!-- 最低價 -->
-      <div class="flex flex-col gap-1">
+      <!-- <div class="flex flex-col gap-1">
         <span class="text-base-content/90 text-xs font-medium">最低價格</span>
         <input
           v-model.number="minPrice"
@@ -119,10 +124,10 @@ useHead({
           placeholder="NT$"
           class="input input-bordered input-sm bg-base-100 focus:border-primary/60 w-28"
         />
-      </div>
+      </div> -->
 
       <!-- 最高價 -->
-      <div class="flex flex-col gap-1">
+      <!-- <div class="flex flex-col gap-1">
         <span class="text-base-content/90 text-xs font-medium">最高價格</span>
         <input
           v-model.number="maxPrice"
@@ -132,9 +137,9 @@ useHead({
           placeholder="NT$"
           class="input input-bordered input-sm bg-base-100 focus:border-primary/60 w-28"
         />
-      </div>
+      </div> -->
 
-      <div class="flex items-end gap-2">
+      <!-- <div class="flex items-end gap-2">
         <button
           class="btn btn-primary btn-sm cursor-pointer"
           :disabled="loading"
@@ -149,7 +154,7 @@ useHead({
         >
           清除
         </button>
-      </div>
+      </div> -->
     </div>
 
     <!-- ── 商品列表 ── -->

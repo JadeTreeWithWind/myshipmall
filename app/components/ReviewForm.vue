@@ -127,10 +127,17 @@ async function submit() {
           編輯
         </button>
       </div>
-      <div class="text-warning mb-1 text-sm">
-        <span v-for="i in 5" :key="i">{{
-          i <= existingReview.rating ? "★" : "☆"
-        }}</span>
+      <div class="mb-1 flex gap-0.5">
+        <Icon
+          v-for="i in 5"
+          :key="i"
+          name="material-symbols:star-rounded"
+          :class="
+            i <= existingReview.rating
+              ? 'text-yellow-500'
+              : 'text-base-content/20'
+          "
+        />
       </div>
       <p class="text-sm">{{ existingReview.content }}</p>
     </div>
@@ -146,7 +153,7 @@ async function submit() {
         <button
           v-for="i in 5"
           :key="i"
-          class="text-2xl transition-transform hover:scale-110 focus:outline-none"
+          class="text-3xl transition-transform hover:scale-110 focus:outline-none"
           :class="
             i <= (hoverRating || rating)
               ? 'text-warning'
@@ -156,7 +163,7 @@ async function submit() {
           @mouseleave="hoverRating = 0"
           @click="rating = i"
         >
-          ★
+          <Icon name="material-symbols:star-rounded" />
         </button>
       </div>
 

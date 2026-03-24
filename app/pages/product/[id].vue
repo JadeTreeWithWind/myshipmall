@@ -150,7 +150,7 @@ useHead({
 </script>
 
 <template>
-  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 sm:py-4">
     <!-- 404 -->
     <div
       v-if="!pending && (productError || !product)"
@@ -323,7 +323,9 @@ useHead({
           </h1>
 
           <!-- 價格 -->
-          <div class="text-primary text-3xl font-bold tracking-tight">
+          <div
+            class="text-primary text-xl font-bold tracking-tight sm:text-3xl"
+          >
             <template v-if="product?.min_price === product?.max_price">
               NT$&nbsp;{{ product?.min_price?.toLocaleString() }}
             </template>

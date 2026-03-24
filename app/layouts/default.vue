@@ -104,11 +104,22 @@ onUnmounted(() => {
     <nav
       class="bg-base-100 border-base-300/60 sticky top-0 z-50 backdrop-blur-xs"
     >
-      <div class="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 sm:px-6">
+      <div
+        class="mx-auto flex h-14 max-w-7xl items-center px-4 sm:h-20 sm:gap-3 sm:px-6"
+      >
         <!-- Logo -->
+        <button
+          v-if="route.path !== '/'"
+          class="btn btn-ghost btn-sm btn-square text-xl sm:hidden"
+          aria-label="返回上一頁"
+          @click="router.back()"
+        >
+          <Icon name="heroicons:arrow-left" class="h-5 w-5" />
+        </button>
         <NuxtLink
           to="/"
-          class="flex shrink-0 cursor-pointer items-center gap-2"
+          :class="route.path !== '/' ? 'hidden sm:flex' : 'flex'"
+          class="shrink-0 cursor-pointer items-center gap-2"
         >
           <Icon name="heroicons:shopping-bag" class="text-primary h-10 w-10" />
           <span

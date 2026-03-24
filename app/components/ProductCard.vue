@@ -18,16 +18,9 @@ const props = defineProps<{
   isEager?: boolean;
 }>();
 
-const router = useRouter();
-
 // 5. Computed Properties (None)
 
-// 6. Functions/Methods
-function goToShop(e: MouseEvent) {
-  e.preventDefault();
-  e.stopPropagation();
-  router.push(`/shop/${props.shopId}`);
-}
+// 6. Functions/Methods (None)
 
 // 7. Watchers (None)
 
@@ -35,9 +28,9 @@ function goToShop(e: MouseEvent) {
 </script>
 
 <template>
-  <div
+  <NuxtLink
+    :to="`/product/${id}`"
     class="group bg-base-200/50 border-base-300/70 hover:border-base-300 flex cursor-pointer flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-    @click="router.push(`/product/${id}`)"
   >
     <!-- 商品圖片 -->
     <div class="bg-base-200 aspect-square shrink-0 overflow-hidden">
@@ -95,5 +88,5 @@ function goToShop(e: MouseEvent) {
         </span>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>

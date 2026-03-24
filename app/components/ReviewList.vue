@@ -46,7 +46,10 @@ defineExpose({ refresh });
       <h2 class="text-lg font-bold">買家評論</h2>
       <template v-if="(reviews?.length ?? 0) > 0">
         <div class="flex items-center gap-1">
-          <span class="text-warning text-lg">★</span>
+          <Icon
+            name="material-symbols:star-rounded"
+            class="text-lg text-yellow-500"
+          />
           <span class="font-bold">{{ avgRating.toFixed(1) }}</span>
         </div>
         <span class="text-base-content/80 text-sm"
@@ -101,10 +104,15 @@ defineExpose({ refresh });
         </div>
 
         <!-- 評分 -->
-        <div class="text-warning mb-1 text-sm">
-          <span v-for="i in 5" :key="i">{{
-            i <= review.rating ? "★" : "☆"
-          }}</span>
+        <div class="mb-1 flex gap-0.5">
+          <Icon
+            v-for="i in 5"
+            :key="i"
+            name="material-symbols:star-rounded"
+            :class="
+              i <= review.rating ? 'text-yellow-500' : 'text-base-content/20'
+            "
+          />
         </div>
 
         <!-- 內容 -->
