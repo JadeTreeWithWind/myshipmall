@@ -93,7 +93,7 @@ useHead({
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
     <!-- ── Hero ── -->
     <div class="mb-14 text-center">
       <h1

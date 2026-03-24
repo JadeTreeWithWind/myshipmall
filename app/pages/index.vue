@@ -12,14 +12,14 @@ const HOME_DESC =
 // 4. State/Variables
 const router = useRouter();
 const searchQ = ref("");
-const { data: hotProducts, pending } = await useFetch<ProductSearchResult[]>(
+const { data: hotProducts, pending } = useFetch<ProductSearchResult[]>(
   "/api/products/search",
   {
     query: { sort: "popular", offset: 0 },
   },
 );
 
-const { data: newProducts, pending: newPending } = await useFetch<
+const { data: newProducts, pending: newPending } = useFetch<
   ProductSearchResult[]
 >("/api/products/search", {
   query: { sort: "newest", offset: 0 },
