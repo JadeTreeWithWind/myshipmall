@@ -65,6 +65,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, message: error.message })
   }
 
+  // 搜尋結果短暫快取（無 keyword 的熱門頁可多快取一點）
+  const maxAge = keyword ? 30 : 120
+  setHeader(event, 'Cache-Control', `public, max-age=${maxAge}, stale-while-revalidate=60`)
+
   return (data ?? []).map((p: any) => ({
     id: p.id,
     name: p.name,

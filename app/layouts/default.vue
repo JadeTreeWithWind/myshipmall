@@ -80,6 +80,9 @@ watch(() => route.path, () => { menuOpen.value = false })
           <Icon v-else name="heroicons:moon" class="w-5 h-5" />
         </button>
 
+        <!-- 關於連結（桌面） -->
+        <NuxtLink to="/about" class="btn btn-ghost hidden lg:flex">關於</NuxtLink>
+
         <!-- 匯入連結（桌面） -->
         <NuxtLink to="/import" class="btn btn-ghost hidden lg:flex">匯入賣場</NuxtLink>
 
@@ -147,6 +150,9 @@ watch(() => route.path, () => { menuOpen.value = false })
     <main class="flex-1">
       <slot />
     </main>
+
+    <!-- ── Toast 通知 ── -->
+    <ToastContainer />
 
     <!-- ── Footer ── -->
     <footer class="footer footer-center bg-base-200 text-base-content p-6 mt-10">

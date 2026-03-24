@@ -31,6 +31,8 @@ function goToShop(e: MouseEvent) {
         v-if="mainImage"
         :src="mainImage"
         :alt="name"
+        width="400"
+        height="400"
         :loading="isEager ? undefined : 'lazy'"
         :fetchpriority="isEager ? 'high' : undefined"
         class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"

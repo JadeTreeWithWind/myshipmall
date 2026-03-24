@@ -72,17 +72,7 @@ const { data: hotProducts, pending } = await useFetch<ProductSearchResult[]>(
         v-if="pending"
         class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
-        <div
-          v-for="i in 10"
-          :key="i"
-          class="card bg-base-100 animate-pulse shadow-sm"
-        >
-          <div class="bg-base-200 aspect-square rounded-t-xl" />
-          <div class="card-body gap-2 p-3">
-            <div class="bg-base-200 h-4 w-3/4 rounded" />
-            <div class="bg-base-200 h-4 w-1/2 rounded" />
-          </div>
-        </div>
+        <SkeletonCard v-for="i in 10" :key="i" />
       </div>
 
       <!-- 商品列表 -->
