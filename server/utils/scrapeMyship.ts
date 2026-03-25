@@ -365,8 +365,7 @@ function parseFromHtml(
   if (products.length === 0) {
     throw createError({
       statusCode: 422,
-      message:
-        "無法解析賣場商品資料，請確認網址正確，或聯絡管理員（CSS selector 可能需要更新）",
+      message: "無法解析賣場商品資料，請確認網址正確，或聯絡管理員回報問題",
     });
   }
 
