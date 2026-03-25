@@ -1,19 +1,18 @@
 export default defineNuxtRouteMiddleware(async () => {
-  const { user } = useAuth();
-
-  // SSR 階段跳過，client 端再判斷
   if (import.meta.server) return;
 
-  if (!user.value) {
-    return navigateTo("/");
-  }
+  const { user, getToken } = useAuth();
 
-  // 呼叫後端驗證，若非 admin 則 403
+  // 等待 auth 初始化（user 可能還是 null 但 session 已存在）
+  const token = await getToken();
+
+  if (!token) return navigateTo("/");
+
+  // 若 user state 還沒同步，也用 token 去後端驗證即可
+  if (user.value && !user.value.email) return navigateTo("/");
+
   try {
-    const { getToken } = useAuth();
-    const token = await getToken();
-    await $fetch("/api/admin/contacts", {
-      method: "HEAD",
+    await $fetch("/api/admin/verify", {
       headers: { authorization: `Bearer ${token}` },
     });
   } catch {

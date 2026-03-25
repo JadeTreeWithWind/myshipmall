@@ -4,6 +4,7 @@ const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
 const { user, signIn, signOut } = useAuth();
+const { isAdmin, checkAdmin } = useAdminCheck();
 
 // 2. Type Definitions (None)
 
@@ -97,6 +98,15 @@ watch(
   },
 );
 
+watch(
+  user,
+  (u) => {
+    if (u) checkAdmin();
+    else isAdmin.value = false;
+  },
+  { immediate: true },
+);
+
 // 8. Lifecycle Hooks
 useHead({
   titleTemplate: (title) =>
@@ -186,7 +196,9 @@ onUnmounted(() => {
         <!-- 右側 -->
         <div class="flex items-center gap-0.5">
           <!-- 主題切換 -->
-          <label class="swap swap-rotate cursor-pointer">
+          <label
+            class="swap btn btn-square btn-ghost btn-sm swap-rotate cursor-pointer"
+          >
             <!-- this hidden checkbox controls the state -->
             <input
               type="checkbox"
@@ -218,39 +230,43 @@ onUnmounted(() => {
             </svg>
           </label>
           <!-- 桌面導覽 -->
-          <button
-            class="btn btn-ghost text-base-content/70 hover:text-base-content hidden lg:flex"
-            @click="openContact"
-          >
-            聯絡我
-          </button>
+
           <NuxtLink to="/import" class="btn btn-primary ml-1 hidden lg:flex"
             >匯入賣場</NuxtLink
           >
 
-          <!-- 登入（桌面） -->
-          <template v-if="user">
+          <!-- 漢堡選單 -->
+          <template>
             <div class="dropdown dropdown-end ml-1 hidden lg:block">
               <label
                 tabindex="0"
                 class="btn btn-ghost btn-sm btn-circle avatar cursor-pointer"
               >
-                <div class="w-7 overflow-hidden rounded-full">
-                  <img
-                    v-if="user.user_metadata?.avatar_url"
-                    :src="user.user_metadata.avatar_url"
-                    :alt="user.user_metadata?.full_name ?? '使用者'"
-                  />
-                  <div
-                    v-else
-                    class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-xs font-bold"
-                  >
-                    {{
-                      (user.user_metadata?.full_name ??
-                        user.email ??
-                        "?")[0].toUpperCase()
-                    }}
+                <div
+                  class="flex w-7 items-center justify-center overflow-hidden rounded-full"
+                >
+                  <div v-if="user">
+                    <img
+                      v-if="user.user_metadata?.avatar_url"
+                      :src="user.user_metadata.avatar_url"
+                      :alt="user.user_metadata?.full_name ?? '使用者'"
+                    />
+                    <div
+                      v-else
+                      class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-xs font-bold"
+                    >
+                      {{
+                        (user.user_metadata?.full_name ??
+                          user.email ??
+                          "?")[0].toUpperCase()
+                      }}
+                    </div>
                   </div>
+                  <Icon
+                    v-else
+                    name="iconamoon:menu-burger-horizontal-bold"
+                    class="h-5 w-5"
+                  />
                 </div>
               </label>
               <ul
@@ -258,13 +274,64 @@ onUnmounted(() => {
                 class="menu dropdown-content bg-base-100 border-base-300/50 z-50 mt-2 w-52 rounded-xl border p-2 shadow-lg"
               >
                 <li
-                  class="menu-title text-base-content/90 truncate px-3 py-2 text-xs"
+                  v-if="user"
+                  class="menu-title text-base-content/90 truncate px-3 py-2"
                 >
                   {{ user.user_metadata?.full_name ?? user.email }}
                 </li>
+                <li v-if="isAdmin">
+                  <NuxtLink to="/admin/messages" class="rounded-lg text-base">
+                    <Icon
+                      name="material-symbols:stacked-email-outline"
+                      class="text-base-content/90 text-xl"
+                    />
+                    聯絡訊息
+                  </NuxtLink>
+                </li>
+
                 <li>
-                  <button class="rounded-lg text-sm" @click="signOut">
+                  <NuxtLink to="/about" class="rounded-lg text-base">
+                    <Icon
+                      name="material-symbols:info-outline-rounded"
+                      class="text-base-content/90 text-xl"
+                    />
+                    關於商城
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="/terms" class="rounded-lg text-base">
+                    <Icon
+                      name="material-symbols:docs-outline"
+                      class="text-base-content/90 text-xl"
+                    />
+                    服務條款
+                  </NuxtLink>
+                </li>
+                <li>
+                  <button class="rounded-lg text-base" @click="openContact">
+                    <Icon
+                      name="material-symbols:chat-outline-rounded"
+                      class="text-base-content/90 text-xl"
+                    />
+                    聯絡我
+                  </button>
+                </li>
+                <li v-if="user">
+                  <button class="rounded-lg text-base" @click="signOut">
+                    <Icon
+                      name="material-symbols:mobile-arrow-right-outline-rounded"
+                      class="text-base-content/90 text-xl"
+                    />
                     登出
+                  </button>
+                </li>
+                <li v-else>
+                  <button class="rounded-lg text-base" @click="signIn">
+                    <Icon
+                      name="material-symbols:account-circle-outline"
+                      class="text-base-content/90 text-xl"
+                    />
+                    登入
                   </button>
                 </li>
               </ul>
