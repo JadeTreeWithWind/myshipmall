@@ -9,14 +9,15 @@ const SEARCH_DESC = "在 賣貨商城 搜尋賣貨便商品，快速找到您想
 const SORT_OPTIONS = [
   { value: "popular", label: "最熱門" },
   { value: "newest", label: "最新上架" },
-  { value: "price_asc", label: "價格低→高" },
-  { value: "price_desc", label: "價格高→低" },
+  { value: "price_asc", label: "價格↑" },
+  { value: "price_desc", label: "價格↓" },
 ];
 
 // 4. State/Variables
 const route = useRoute();
 const router = useRouter();
-const { products, loading, hasMore, search, loadMore, setProducts } = useProductSearch();
+const { products, loading, hasMore, search, loadMore, setProducts } =
+  useProductSearch();
 const { sentinel } = useInfiniteScroll(() => {
   if (!hasMore.value || loading.value) return;
   loadMore();
@@ -50,7 +51,6 @@ async function doSearch() {
     maxPrice: maxPrice.value,
   });
 }
-
 
 const SCROLL_CACHE_KEY = "search-scroll-state";
 
@@ -128,7 +128,7 @@ useHead({
       <!-- 排序 -->
       <div class="flex flex-col gap-1">
         <span class="text-base-content/90 text-xs font-medium">排序</span>
-        <div class="flex flex-wrap gap-2">
+        <div class="flex w-full flex-wrap gap-1">
           <button
             v-for="o in SORT_OPTIONS"
             :key="o.value"

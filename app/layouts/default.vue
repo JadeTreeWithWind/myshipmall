@@ -125,7 +125,10 @@ onUnmounted(() => {
           :class="route.path !== '/' ? 'hidden sm:flex' : 'flex'"
           class="shrink-0 cursor-pointer items-center gap-2"
         >
-          <Icon name="heroicons:shopping-bag" class="text-primary h-10 w-10" />
+          <Icon
+            name="icon-park-outline:shopping-bag"
+            class="text-primary text-[20px]"
+          />
           <span
             class="text-base-content font-Noto font-semibold tracking-wide sm:text-xl"
             >賣貨商城</span
@@ -144,7 +147,7 @@ onUnmounted(() => {
               type="search"
               aria-label="搜尋商品名稱、商城"
               placeholder="搜尋商品名稱、商城..."
-              class="input input-bordered focus:input-primary bg-base-100 h-10 w-full rounded-lg pr-3 pl-9 text-sm transition-colors"
+              class="input input-bordered input-primary bg-base-100 h-10 w-full rounded-lg pr-3 pl-9 text-sm transition-colors"
             />
           </form>
         </div>
@@ -163,7 +166,7 @@ onUnmounted(() => {
 
             <!-- sun icon -->
             <svg
-              class="swap-on h-6 w-6 fill-current"
+              class="swap-on h-5 w-5 fill-current"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
             >
@@ -174,7 +177,7 @@ onUnmounted(() => {
 
             <!-- moon icon -->
             <svg
-              class="swap-off h-6 w-6 fill-current"
+              class="swap-off h-5 w-5 fill-current"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
             >

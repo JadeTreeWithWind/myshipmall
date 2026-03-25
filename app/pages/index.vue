@@ -12,17 +12,34 @@ const HOME_DESC =
 // 4. State/Variables
 const router = useRouter();
 const searchQ = ref("");
+const {
+  data: randomProducts,
+  pending: randomPending,
+  refresh: _refreshRandom,
+} = useFetch<ProductSearchResult[]>("/api/products/random", {
+  query: { count: 10 },
+});
+
+const isCoolingDown = ref(false);
+
+function refreshRandom() {
+  if (isCoolingDown.value) return;
+  isCoolingDown.value = true;
+  _refreshRandom();
+  setTimeout(() => (isCoolingDown.value = false), 5000);
+}
+
 const { data: hotProducts, pending } = useFetch<ProductSearchResult[]>(
   "/api/products/search",
   {
-    query: { sort: "popular", offset: 0 },
+    query: { sort: "popular", offset: 0, limit: 20 },
   },
 );
 
 const { data: newProducts, pending: newPending } = useFetch<
   ProductSearchResult[]
 >("/api/products/search", {
-  query: { sort: "newest", offset: 0 },
+  query: { sort: "newest", offset: 0, limit: 20 },
 });
 
 // 5. Computed Properties (None)
@@ -74,29 +91,61 @@ useHead({
         >
           搜尋並瀏覽所有已匯入的 7-11 賣貨便商品
         </p>
+      </div>
+    </section>
 
-        <!-- <form class="mx-auto flex max-w-lg gap-2" @submit.prevent="goSearch">
-          <div class="relative flex-1">
-            <Icon
-              name="heroicons:magnifying-glass"
-              class="text-base-content/40 pointer-events-none absolute top-1/2 left-4 z-10 h-5 w-5 -translate-y-1/2"
-            />
-            <input
-              v-model="searchQ"
-              type="search"
-              placeholder="搜尋商品名稱、商城..."
-              class="input input-bordered focus:input-primary bg-base-100 h-12 w-full rounded-xl pr-4 pl-11 text-base transition-all"
-              autofocus
-            />
+    <!-- ── 隨機推薦 ── -->
+    <section class="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+      <!-- 區塊標題 -->
+      <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <div class="bg-accent h-5 w-1 rounded-full" />
+            <h2 class="text-base-content font-serif text-2xl font-semibold">
+              隨機推薦
+            </h2>
           </div>
-          <button
-            type="submit"
-            aria-label="搜尋"
-            class="btn btn-primary h-12 rounded-xl px-5 shadow-sm transition-all hover:scale-105"
-          >
-            <Icon name="heroicons:magnifying-glass" class="h-5 w-5" />
-          </button>
-        </form> -->
+          <Icon name="heroicons:arrow-path" class="text-xl text-purple-400" />
+        </div>
+        <button
+          class="btn btn-ghost"
+          :disabled="isCoolingDown"
+          @click="refreshRandom"
+        >
+          換一批
+          <Icon
+            name="heroicons:arrow-path"
+            class="h-5 w-5"
+            :class="{ 'animate-spin': isCoolingDown }"
+          />
+        </button>
+      </div>
+
+      <!-- 載入中 -->
+      <div
+        v-if="randomPending"
+        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      >
+        <SkeletonCard v-for="i in 10" :key="i" />
+      </div>
+
+      <!-- 商品列表 -->
+      <div
+        v-else-if="randomProducts?.length"
+        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      >
+        <ProductCard
+          v-for="p in randomProducts"
+          :key="p.id"
+          :id="p.id"
+          :name="p.name"
+          :main-image="p.main_image"
+          :min-price="p.min_price"
+          :max-price="p.max_price"
+          :shop-name="p.shop_name"
+          :shop-id="p.shop_id"
+          :click-count="p.click_count"
+        />
       </div>
     </section>
 
@@ -111,7 +160,7 @@ useHead({
               熱門商品
             </h2>
           </div>
-          <Icon name="heroicons:fire" class="h-5 w-5 text-orange-400" />
+          <Icon name="heroicons:fire" class="text-xl text-orange-400" />
         </div>
         <NuxtLink to="/search?sort=popular" class="btn btn-ghost">
           查看更多
@@ -124,7 +173,7 @@ useHead({
         v-if="pending"
         class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
-        <SkeletonCard v-for="i in 10" :key="i" />
+        <SkeletonCard v-for="i in 20" :key="i" />
       </div>
 
       <!-- 商品列表 -->
@@ -180,7 +229,7 @@ useHead({
               最新上架
             </h2>
           </div>
-          <Icon name="heroicons:sparkles" class="h-5 w-5 text-blue-400" />
+          <Icon name="heroicons:sparkles" class="text-xl text-blue-400" />
         </div>
         <NuxtLink to="/search?sort=newest" class="btn btn-ghost">
           查看更多
@@ -193,7 +242,7 @@ useHead({
         v-if="newPending"
         class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
-        <SkeletonCard v-for="i in 10" :key="i" />
+        <SkeletonCard v-for="i in 20" :key="i" />
       </div>
 
       <!-- 商品列表 -->
