@@ -366,18 +366,15 @@ onUnmounted(() => {
             </template>
 
             <template v-else>
-              <div class="flex flex-col items-center gap-2 py-4 text-center">
+              <div class="flex flex-col items-center gap-4 py-4 text-center">
                 <Icon
                   name="heroicons:check-circle"
-                  class="text-success h-10 w-10"
+                  class="text-success text-5xl"
                 />
-                <p class="text-base-content text-sm font-medium">
+                <p class="text-base-content text-lg font-medium">
                   訊息已送出，謝謝！
                 </p>
-                <button
-                  class="btn btn-ghost btn-xs"
-                  @click="contactOpen = false"
-                >
+                <button class="btn btn-primary" @click="contactOpen = false">
                   關閉
                 </button>
               </div>

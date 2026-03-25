@@ -64,6 +64,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     supabaseSecretKey: "",
     turnstileSecretKey: "",
+    adminEmail: "",
     public: {
       supabaseUrl: "",
       supabasePublishableKey: "",
