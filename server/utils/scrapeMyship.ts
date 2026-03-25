@@ -26,12 +26,13 @@ const sanitize = (html: string) =>
   });
 
 export function validateMyshipUrl(url: string): string {
-  const base = /^https:\/\/myship\.7-11\.com\.tw\/general\/detail/;
+  const base =
+    /^https:\/\/myship\.7-11\.com\.tw\/general\/detail(?:\/|\?id=)GM\d{10,16}$/;
   if (!base.test(url)) {
     throw createError({
       statusCode: 400,
       message:
-        "網址格式不正確，請輸入賣貨便賣場網址（https://myship.7-11.com.tw/general/detail...）",
+        "網址格式不正確，請輸入賣貨便賣場網址（https://myship.7-11.com.tw/general/detail/GM1234567890123）",
     });
   }
   // /general/detail/GM1234 或 /general/detail?id=GM1234
@@ -43,7 +44,7 @@ export function validateMyshipUrl(url: string): string {
     throw createError({
       statusCode: 400,
       message:
-        "網址格式不正確，請輸入賣貨便賣場網址（https://myship.7-11.com.tw/general/detail...）",
+        "網址格式不正確，請輸入賣貨便賣場網址（https://myship.7-11.com.tw/general/detail/GM1234567890123）",
     });
   }
   return id;

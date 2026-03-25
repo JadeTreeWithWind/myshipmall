@@ -112,7 +112,7 @@ useHead({
   <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6">
     <!-- ── 標題 ── -->
     <div class="mb-6">
-      <h1 class="text-base-content font-serif text-2xl font-semibold">
+      <h1 class="text-base-content text-2xl font-semibold">
         <template v-if="q">「{{ q }}」的搜尋結果</template>
         <template v-else>全部商品</template>
       </h1>

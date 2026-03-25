@@ -36,6 +36,24 @@ const {
 
 const activeImageIdx = ref(0);
 const reviewListRef = ref<{ refresh: () => Promise<void> } | null>(null);
+const thumbsRef = ref<HTMLElement | null>(null);
+const specsExpanded = ref(false);
+
+watch(activeImageIdx, (idx) => {
+  const btn = thumbsRef.value?.children[idx] as HTMLElement | undefined;
+  btn?.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest",
+    inline: "center",
+  });
+});
+
+function scrollThumbs(dir: "left" | "right") {
+  thumbsRef.value?.scrollBy({
+    left: dir === "left" ? -300 : 300,
+    behavior: "smooth",
+  });
+}
 
 function navigate(dir: "left" | "right") {
   const len = images.value.length;
@@ -291,25 +309,44 @@ useHead({
           </div>
 
           <!-- 縮圖列 -->
-          <div v-if="images.length > 1" class="flex flex-wrap gap-2">
-            <button
-              v-for="(img, idx) in images"
-              :key="img.id"
-              aria-label="更換預覽圖片"
-              class="h-16 w-16 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200"
-              :class="
-                idx === activeImageIdx
-                  ? 'border-primary shadow-sm'
-                  : 'border-base-300/50 hover:border-base-300'
-              "
-              @click="activeImageIdx = idx"
+          <div v-if="images.length > 1" class="group relative">
+            <div
+              ref="thumbsRef"
+              class="scrollbar-hide flex gap-1 overflow-x-auto sm:gap-2"
             >
-              <img
-                :src="img.url"
-                :alt="`圖片 ${idx + 1}`"
-                class="h-full w-full object-cover"
-                loading="lazy"
-              />
+              <button
+                v-for="(img, idx) in images"
+                :key="img.id"
+                aria-label="更換預覽圖片"
+                class="h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg border-2 transition-all duration-200"
+                :class="
+                  idx === activeImageIdx
+                    ? 'border-primary shadow-sm'
+                    : 'border-base-300/50 hover:border-base-300'
+                "
+                @click="activeImageIdx = idx"
+              >
+                <img
+                  :src="img.url"
+                  :alt="`圖片 ${idx + 1}`"
+                  class="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </button>
+            </div>
+            <button
+              class="btn btn-circle btn-sm bg-base-100/50 absolute top-1/2 left-0 -translate-y-1/2 border-0 opacity-0 backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:scale-105"
+              aria-label="往左"
+              @click="scrollThumbs('left')"
+            >
+              <Icon name="heroicons:chevron-left" class="h-4 w-4" />
+            </button>
+            <button
+              class="btn btn-circle btn-sm bg-base-100/50 absolute top-1/2 right-0 -translate-y-1/2 border-0 opacity-0 backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:scale-105"
+              aria-label="往右"
+              @click="scrollThumbs('right')"
+            >
+              <Icon name="heroicons:chevron-right" class="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -317,7 +354,7 @@ useHead({
         <!-- ── 右：商品資訊 ── -->
         <div class="flex flex-col gap-5">
           <h1
-            class="text-base-content font-serif text-2xl leading-snug font-semibold"
+            class="text-base-content text-xl leading-snug font-semibold sm:text-2xl"
           >
             {{ product?.name }}
           </h1>
@@ -358,41 +395,59 @@ useHead({
           </p>
 
           <!-- ── 規格列表 ── -->
-          <div
-            v-if="specs.length"
-            class="border-base-300/70 overflow-x-auto rounded-xl border"
-          >
-            <table class="table-sm bg-base-100 table w-full">
-              <thead class="bg-base-200/60">
-                <tr class="text-base-content/90 text-sm font-medium">
-                  <th>規格</th>
-                  <th>價格</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="spec in specs"
-                  :key="spec.id"
-                  class="border-base-300/40"
-                >
-                  <td class="text-sm font-medium">{{ spec.name }}</td>
-                  <td class="text-sm">
-                    <template v-if="spec.sale_price > 0">
-                      <span class="text-error font-semibold"
-                        >NT$&nbsp;{{ spec.sale_price.toLocaleString() }}</span
-                      >
-                      <span
-                        class="text-base-content/80 ml-1.5 text-sm line-through"
-                        >{{ spec.price.toLocaleString() }}</span
-                      >
-                    </template>
-                    <template v-else>
-                      NT$&nbsp;{{ spec.price.toLocaleString() }}
-                    </template>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div v-if="specs.length" class="border-base-300/70 rounded-xl border">
+            <div
+              class="overflow-x-auto transition-all duration-300"
+              :class="
+                specsExpanded ? 'max-h-none' : 'max-h-48 overflow-y-hidden'
+              "
+            >
+              <table class="table-sm bg-base-100 table w-full">
+                <thead class="bg-base-200/60">
+                  <tr class="text-base-content/90 text-sm font-medium">
+                    <th>規格</th>
+                    <th>價格</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="spec in specs"
+                    :key="spec.id"
+                    class="border-base-300/40"
+                  >
+                    <td class="text-sm font-medium">{{ spec.name }}</td>
+                    <td class="text-sm">
+                      <template v-if="spec.sale_price > 0">
+                        <span class="text-error font-semibold"
+                          >NT$&nbsp;{{ spec.sale_price.toLocaleString() }}</span
+                        >
+                        <span
+                          class="text-base-content/80 ml-1.5 text-sm line-through"
+                          >{{ spec.price.toLocaleString() }}</span
+                        >
+                      </template>
+                      <template v-else>
+                        NT$&nbsp;{{ spec.price.toLocaleString() }}
+                      </template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <button
+              v-if="specs.length > 5"
+              class="border-base-300/70 text-base-content/70 hover:bg-base-200/50 flex w-full cursor-pointer items-center justify-center gap-1 border-t py-2 text-xs transition-colors"
+              @click="specsExpanded = !specsExpanded"
+            >
+              <Icon
+                name="heroicons:chevron-down"
+                class="h-3.5 w-3.5 transition-transform duration-300"
+                :class="specsExpanded ? 'rotate-180' : ''"
+              />
+              {{
+                specsExpanded ? "收起規格" : `展開全部 ${specs.length} 個規格`
+              }}
+            </button>
           </div>
 
           <!-- ── 購買按鈕 ── -->
@@ -423,7 +478,7 @@ useHead({
       <div v-if="product?.description" class="mt-14">
         <div class="mb-6 flex items-center gap-3">
           <div class="bg-primary h-5 w-1 rounded-full" />
-          <h2 class="font-serif text-lg font-semibold">商品說明</h2>
+          <h2 class="text-lg font-semibold">商品說明</h2>
         </div>
         <div
           class="prose prose-sm bg-base-100 border-base-300/60 max-w-none rounded-2xl border p-6"
@@ -435,7 +490,7 @@ useHead({
       <div class="mt-14">
         <div class="mb-6 flex items-center gap-3">
           <div class="bg-primary h-5 w-1 rounded-full" />
-          <h2 class="font-serif text-lg font-semibold">評論</h2>
+          <h2 class="text-lg font-semibold">評論</h2>
         </div>
         <ReviewForm
           :product-id="productId"
@@ -459,5 +514,12 @@ useHead({
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 </style>

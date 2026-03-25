@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
     config.supabaseSecretKey,
   );
 
-  const { data, error } = await supabase.rpc("upsert_shop_with_products", {
+  const { error } = await supabase.rpc("upsert_shop_with_products", {
     p_data: shopData,
   });
 
@@ -68,11 +68,25 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const { data: shopRow, error: shopError } = await supabase
+    .from("shops")
+    .select("id")
+    .eq("external_id", shopData.external_id)
+    .single();
+
+  if (shopError || !shopRow) {
+    throw createError({
+      statusCode: 500,
+      message: "無法取得商城 ID，請稍後再試",
+    });
+  }
+
   // 6. 寫入成功後刪除 KV 快取
   await scrapeCache.delete(cacheKey);
 
   return {
     success: true,
+    shop_id: shopRow.id as string,
     shop_name: shopData.name,
     product_count: shopData.products.length,
   };

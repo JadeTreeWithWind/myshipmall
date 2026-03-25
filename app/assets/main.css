@@ -4,7 +4,6 @@
 @theme {
   --font-sans:
     "Noto Sans TC", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-serif: "Noto Serif TC", ui-serif, Georgia, Cambria, serif;
 }
 
 @plugin "daisyui" {
@@ -40,4 +39,12 @@ h6 {
     transition-duration: 150ms;
     transition-timing-function: ease;
   }
+}
+
+.prose a {
+  @apply text-primary font-bold;
+}
+
+.prose a:hover {
+  @apply underline underline-offset-4;
 }

@@ -220,7 +220,7 @@ definePageMeta({ keepalive: { max: 5 } });
             </div>
 
             <div class="min-w-0 flex-1">
-              <h1 class="text-base-content font-serif text-2xl font-semibold">
+              <h1 class="text-base-content text-2xl font-semibold">
                 {{ shop?.name }}
               </h1>
               <p class="text-base-content/90 mt-1 text-sm">
@@ -255,9 +255,7 @@ definePageMeta({ keepalive: { max: 5 } });
       <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="bg-primary h-5 w-1 rounded-full" />
-          <h2 class="text-base-content font-serif text-xl font-semibold">
-            商城商品
-          </h2>
+          <h2 class="text-base-content text-xl font-semibold">商城商品</h2>
         </div>
         <select
           v-model="sort"

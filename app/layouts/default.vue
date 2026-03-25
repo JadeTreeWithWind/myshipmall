@@ -238,14 +238,6 @@ onUnmounted(() => {
               </ul>
             </div>
           </template>
-          <template v-else>
-            <button
-              class="btn btn-ghost btn-sm text-base-content/70 ml-1 hidden lg:flex"
-              @click="signIn"
-            >
-              登入
-            </button>
-          </template>
         </div>
       </div>
     </nav>
@@ -270,7 +262,7 @@ onUnmounted(() => {
                 name="heroicons:shopping-bag"
                 class="text-primary h-4 w-4"
               />
-              <span class="font-serif text-sm font-semibold">賣貨商城</span>
+              <span class="text-sm font-semibold">賣貨商城</span>
             </div>
             <p class="text-base-content/80 max-w-xs text-xs leading-relaxed">
               非官方賣貨便商品瀏覽平台，所有購買行為均在賣貨便完成
@@ -286,6 +278,11 @@ onUnmounted(() => {
               to="/import"
               class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
               >匯入賣場</NuxtLink
+            >
+            <NuxtLink
+              to="/terms"
+              class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+              >條款與免責</NuxtLink
             >
           </div>
         </div>

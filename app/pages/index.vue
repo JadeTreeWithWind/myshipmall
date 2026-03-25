@@ -82,7 +82,7 @@ useHead({
         </div>
 
         <h1
-          class="text-base-content mb-4 font-serif text-3xl leading-tight font-semibold sm:text-4xl lg:text-5xl"
+          class="text-base-content mb-4 text-3xl leading-tight font-semibold sm:text-4xl lg:text-5xl"
         >
           探索賣貨便商品
         </h1>
@@ -101,9 +101,7 @@ useHead({
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
             <div class="bg-accent h-5 w-1 rounded-full" />
-            <h2 class="text-base-content font-serif text-2xl font-semibold">
-              隨機推薦
-            </h2>
+            <h2 class="text-base-content text-2xl font-semibold">隨機推薦</h2>
           </div>
           <Icon name="heroicons:arrow-path" class="text-xl text-purple-400" />
         </div>
@@ -156,9 +154,7 @@ useHead({
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
             <div class="bg-primary h-5 w-1 rounded-full" />
-            <h2 class="text-base-content font-serif text-2xl font-semibold">
-              熱門商品
-            </h2>
+            <h2 class="text-base-content text-2xl font-semibold">熱門商品</h2>
           </div>
           <Icon name="heroicons:fire" class="text-xl text-orange-400" />
         </div>
@@ -225,9 +221,7 @@ useHead({
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
             <div class="bg-secondary h-5 w-1 rounded-full" />
-            <h2 class="text-base-content font-serif text-2xl font-semibold">
-              最新上架
-            </h2>
+            <h2 class="text-base-content text-2xl font-semibold">最新上架</h2>
           </div>
           <Icon name="heroicons:sparkles" class="text-xl text-blue-400" />
         </div>
