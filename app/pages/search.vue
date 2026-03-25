@@ -16,7 +16,11 @@ const SORT_OPTIONS = [
 // 4. State/Variables
 const route = useRoute();
 const router = useRouter();
-const { products, loading, hasMore, search, loadMore } = useProductSearch();
+const { products, loading, hasMore, search, loadMore, setProducts } = useProductSearch();
+const { sentinel } = useInfiniteScroll(() => {
+  if (!hasMore.value || loading.value) return;
+  loadMore();
+});
 
 const sort = ref((route.query.sort as string) || "popular");
 const minPrice = ref(
@@ -47,17 +51,44 @@ async function doSearch() {
   });
 }
 
-function clearFilters() {
-  minPrice.value = undefined;
-  maxPrice.value = undefined;
-  doSearch();
-}
+
+const SCROLL_CACHE_KEY = "search-scroll-state";
 
 // 7. Watchers
 watch(sort, doSearch);
-watch(q, doSearch, { immediate: true });
+watch(q, doSearch);
 
 // 8. Lifecycle Hooks
+onBeforeRouteLeave((to) => {
+  if (to.path.startsWith("/product/")) {
+    sessionStorage.setItem(
+      SCROLL_CACHE_KEY,
+      JSON.stringify({
+        items: products.value,
+        hasMore: hasMore.value,
+        scrollY: window.scrollY,
+        params: { q: q.value, sort: sort.value },
+      }),
+    );
+  } else {
+    sessionStorage.removeItem(SCROLL_CACHE_KEY);
+  }
+});
+
+onMounted(async () => {
+  const raw = sessionStorage.getItem(SCROLL_CACHE_KEY);
+  if (raw) {
+    sessionStorage.removeItem(SCROLL_CACHE_KEY);
+    const { items, hasMore: more, scrollY, params } = JSON.parse(raw);
+    if (params.q === q.value && params.sort === sort.value) {
+      setProducts(items, more, { q: params.q, sort: params.sort });
+      await nextTick();
+      window.scrollTo(0, scrollY);
+      return;
+    }
+  }
+  await doSearch();
+});
 useHead({
   title: q.value ? `搜尋「${q.value}」` : "搜尋商品",
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/search` }],
@@ -202,8 +233,11 @@ useHead({
       </p>
     </div>
 
-    <!-- ── 載入更多 ── -->
-    <div v-if="hasMore && products.length" class="mt-12 flex justify-center">
+    <!-- ── 無限捲動 sentinel ── -->
+    <div v-if="hasMore && products.length" ref="sentinel" class="h-1" />
+
+    <!-- ── 載入更多（備援按鈕） ── -->
+    <div v-if="hasMore && products.length" class="mt-8 flex justify-center">
       <button
         class="btn btn-outline cursor-pointer rounded-xl px-8"
         :disabled="loading"

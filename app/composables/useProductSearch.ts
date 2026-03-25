@@ -17,7 +17,7 @@ export interface SearchParams {
   maxPrice?: number;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export function useProductSearch() {
   const products = ref<ProductSearchResult[]>([]);
@@ -63,7 +63,7 @@ export function useProductSearch() {
   /**
    * 根據新參數發起全新搜尋（帶入 minLoadingTime 避免閃爍）
    * @param {SearchParams} params - 搜尋條件
-   * @returns {Promise<void>} 
+   * @returns {Promise<void>}
    */
   async function search(params: SearchParams) {
     currentParams.value = params;
@@ -73,12 +73,23 @@ export function useProductSearch() {
 
   /**
    * 載入下一頁（無限捲動模式使用）
-   * @returns {Promise<void>} 
+   * @returns {Promise<void>}
    */
   async function loadMore() {
     if (loading.value || !hasMore.value) return;
     await fetchPage(currentParams.value, false);
   }
 
-  return { products, loading, hasMore, search, loadMore };
+  function setProducts(
+    items: ProductSearchResult[],
+    more: boolean,
+    params: SearchParams,
+  ) {
+    products.value = items;
+    offset.value = items.length;
+    hasMore.value = more;
+    currentParams.value = params;
+  }
+
+  return { products, loading, hasMore, search, loadMore, setProducts };
 }

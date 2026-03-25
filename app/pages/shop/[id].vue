@@ -16,7 +16,7 @@ const sortOptions = [
   { value: "price_desc", label: "價格高→低" },
   { value: "newest", label: "最新上架" },
 ];
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 // 4. State/Variables
 const { sanitize } = useSanitize();
@@ -106,6 +106,10 @@ async function fetchProducts(reset = false) {
   }
 }
 
+const { sentinel } = useInfiniteScroll(() => {
+  if (hasMore.value && !loading.value) fetchProducts(false);
+});
+
 // 7. Watchers
 watch(sort, () => fetchProducts(true));
 
@@ -142,9 +146,21 @@ useHead({
   ),
 });
 
+const _savedScrollY = ref(0);
+onDeactivated(() => {
+  _savedScrollY.value = window.scrollY;
+});
+onActivated(() => {
+  nextTick(() =>
+    window.scrollTo({ top: _savedScrollY.value, behavior: "instant" }),
+  );
+});
+
 onMounted(() => {
   fetchProducts(true);
 });
+
+definePageMeta({ keepalive: { max: 5 } });
 </script>
 
 <template>
@@ -291,8 +307,11 @@ onMounted(() => {
         <p class="text-base-content text-lg">此商城目前沒有上架商品</p>
       </div>
 
-      <!-- 載入更多 -->
-      <div v-if="hasMore && products.length" class="mt-12 flex justify-center">
+      <!-- 無限捲動 sentinel -->
+      <div v-if="hasMore && products.length" ref="sentinel" class="h-1" />
+
+      <!-- 載入更多（備援按鈕） -->
+      <div v-if="hasMore && products.length" class="mt-8 flex justify-center">
         <button
           class="btn btn-outline cursor-pointer rounded-xl px-8"
           :disabled="loading"
