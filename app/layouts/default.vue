@@ -18,6 +18,10 @@ const theme = ref(THEMES.DARK);
 const searchQ = ref("");
 const menuOpen = ref(false);
 const menuRef = ref<HTMLElement | null>(null);
+const contactOpen = ref(false);
+const contactForm = reactive({ name: "", email: "", subject: "", message: "" });
+const contactSending = ref(false);
+const contactSent = ref(false);
 
 // 5. Computed Properties (None)
 
@@ -39,6 +43,33 @@ function goBack() {
 function handleSearch() {
   if (!searchQ.value.trim()) return;
   router.push({ path: "/search", query: { q: searchQ.value.trim() } });
+}
+
+async function submitContact() {
+  if (
+    !contactForm.name.trim() ||
+    !contactForm.email.trim() ||
+    !contactForm.message.trim()
+  )
+    return;
+  contactSending.value = true;
+  try {
+    await $fetch("/api/contact", {
+      method: "POST",
+      body: { ...contactForm },
+    });
+    contactSent.value = true;
+    contactForm.name = "";
+    contactForm.email = "";
+    contactForm.message = "";
+  } finally {
+    contactSending.value = false;
+  }
+}
+
+function openContact() {
+  contactSent.value = false;
+  contactOpen.value = true;
 }
 
 /**
@@ -155,7 +186,7 @@ onUnmounted(() => {
         <!-- 右側 -->
         <div class="flex items-center gap-0.5">
           <!-- 主題切換 -->
-          <label class="swap swap-rotate">
+          <label class="swap swap-rotate cursor-pointer">
             <!-- this hidden checkbox controls the state -->
             <input
               type="checkbox"
@@ -187,11 +218,12 @@ onUnmounted(() => {
             </svg>
           </label>
           <!-- 桌面導覽 -->
-          <NuxtLink
-            to="/about"
+          <button
             class="btn btn-ghost text-base-content/70 hover:text-base-content hidden lg:flex"
-            >關於</NuxtLink
+            @click="openContact"
           >
+            聯絡我
+          </button>
           <NuxtLink to="/import" class="btn btn-primary ml-1 hidden lg:flex"
             >匯入賣場</NuxtLink
           >
@@ -250,6 +282,111 @@ onUnmounted(() => {
     <!-- ── Toast 通知 ── -->
     <ToastContainer />
 
+    <!-- ── 聯絡我浮動視窗 ── -->
+    <Teleport to="body">
+      <div
+        v-if="contactOpen"
+        class="fixed inset-0 z-99 cursor-pointer bg-black/10"
+        @click="contactOpen = false"
+      />
+      <Transition name="contact-panel">
+        <div
+          v-if="contactOpen"
+          class="bg-base-100 border-primary/50 fixed right-0 bottom-0 z-100 w-96 max-w-full rounded-2xl border p-2 shadow-2xl sm:right-4 sm:bottom-4"
+        >
+          <div
+            class="border-base-300/40 flex items-center justify-between border-b px-4 py-3"
+          >
+            <div class="flex items-center gap-2">
+              <Icon
+                name="heroicons:chat-bubble-left-ellipsis"
+                class="text-primary h-4 w-4 text-lg"
+              />
+              <h2 class="text-base-content text-lg font-semibold">聯絡我</h2>
+            </div>
+            <button
+              class="btn btn-ghost btn-circle"
+              aria-label="關閉"
+              @click="contactOpen = false"
+            >
+              <Icon name="heroicons:x-mark" class="h-4 w-4" />
+            </button>
+          </div>
+
+          <div class="p-4">
+            <template v-if="!contactSent">
+              <form
+                class="flex flex-col gap-2.5"
+                @submit.prevent="submitContact"
+              >
+                <input
+                  v-model="contactForm.name"
+                  type="text"
+                  placeholder="你的名稱"
+                  required
+                  class="input input-lg input-bordered w-full"
+                />
+                <input
+                  v-model="contactForm.email"
+                  type="email"
+                  placeholder="電子郵件"
+                  required
+                  class="input input-lg input-bordered w-full"
+                />
+                <select
+                  v-model="contactForm.subject"
+                  required
+                  class="select select-lg select-bordered w-full cursor-pointer"
+                >
+                  <option value="" disabled>選擇主旨</option>
+                  <option value="問題回報">問題回報</option>
+                  <option value="功能建議">功能建議</option>
+                  <option value="資料移除">資料移除</option>
+                  <option value="著作權問題">著作權問題</option>
+                  <option value="濫用檢舉">濫用檢舉</option>
+                  <option value="商業合作">商業合作</option>
+                  <option value="其他">其他</option>
+                </select>
+                <textarea
+                  v-model="contactForm.message"
+                  placeholder="留言內容..."
+                  required
+                  rows="5"
+                  class="textarea textarea-lg textarea-bordered w-full resize-none"
+                />
+                <button
+                  type="submit"
+                  class="btn btn-primary w-full"
+                  :disabled="contactSending"
+                >
+                  <span v-if="contactSending" class="loading loading-spinner" />
+                  {{ contactSending ? "傳送中..." : "送出" }}
+                </button>
+              </form>
+            </template>
+
+            <template v-else>
+              <div class="flex flex-col items-center gap-2 py-4 text-center">
+                <Icon
+                  name="heroicons:check-circle"
+                  class="text-success h-10 w-10"
+                />
+                <p class="text-base-content text-sm font-medium">
+                  訊息已送出，謝謝！
+                </p>
+                <button
+                  class="btn btn-ghost btn-xs"
+                  @click="contactOpen = false"
+                >
+                  關閉
+                </button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <!-- ── Footer ── -->
     <footer class="border-base-300/60 bg-base-100 mt-16 border-t">
       <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
@@ -295,3 +432,17 @@ onUnmounted(() => {
     </footer>
   </div>
 </template>
+
+<style scoped>
+.contact-panel-enter-active,
+.contact-panel-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.contact-panel-enter-from,
+.contact-panel-leave-to {
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+}
+</style>
