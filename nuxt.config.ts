@@ -111,43 +111,7 @@ export default defineNuxtConfig({
         },
       ],
     },
-    workbox: {
-      navigateFallback: null, // SSR 模式不使用 fallback，保持 SSR 正常運作
-      globPatterns: [], // SSR 模式不 precache，改由 runtimeCaching 處理
-      runtimeCaching: [
-        {
-          // 靜態資源：Cache First，一年
-          urlPattern: /\/_nuxt\/.*/i,
-          handler: "CacheFirst",
-          options: {
-            cacheName: "nuxt-assets",
-            expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            cacheableResponse: { statuses: [0, 200] },
-          },
-        },
-        {
-          // 圖片：Cache First，30 天
-          urlPattern: /\.(png|jpg|jpeg|svg|gif|webp|ico)$/i,
-          handler: "CacheFirst",
-          options: {
-            cacheName: "images",
-            expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
-            cacheableResponse: { statuses: [0, 200] },
-          },
-        },
-        {
-          // API（Supabase）：Network First，失敗才用快取
-          urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
-          handler: "NetworkFirst",
-          options: {
-            cacheName: "supabase-api",
-            networkTimeoutSeconds: 5,
-            expiration: { maxEntries: 50, maxAgeSeconds: 60 * 5 },
-            cacheableResponse: { statuses: [0, 200] },
-          },
-        },
-      ],
-    },
+
     client: {
       installPrompt: true,
     },
