@@ -149,6 +149,19 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "cloudflare-pages",
+    cloudflare: {
+      pages: {
+        routes: {
+          // 強制這些 PWA 靜態檔案繞過 SSR Worker，直接由 Cloudflare Pages 提供
+          exclude: [
+            "/manifest.webmanifest",
+            "/sw.js",
+            "/workbox-*.js",
+            "/offline.html",
+          ],
+        },
+      },
+    },
   },
   runtimeConfig: {
     supabaseSecretKey: "",
