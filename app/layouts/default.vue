@@ -19,10 +19,17 @@ const theme = ref(THEMES.DARK);
 const searchQ = ref("");
 const menuOpen = ref(false);
 const menuRef = ref<HTMLElement | null>(null);
-const contactOpen = ref(false);
+const contactOpen = useState("contactOpen", () => false);
 const contactForm = reactive({ name: "", email: "", subject: "", message: "" });
 const contactSending = ref(false);
 const contactSent = ref(false);
+
+const bottomNavItems = [
+  { path: "/", icon: "heroicons:home", label: "首頁" },
+  { path: "/search", icon: "heroicons:fire", label: "熱門" },
+  { path: "/import", icon: "heroicons:arrow-down-tray", label: "匯入" },
+  { path: "/settings", icon: "heroicons:cog-6-tooth", label: "設定" },
+];
 
 // 5. 計算屬性（無）
 
@@ -207,7 +214,7 @@ onUnmounted(() => {
         <div class="flex items-center gap-0.5">
           <!-- 主題切換 -->
           <label
-            class="swap btn btn-square btn-ghost btn-sm swap-rotate cursor-pointer"
+            class="swap btn btn-square btn-ghost btn-sm swap-rotate hidden cursor-pointer lg:block"
           >
             <!-- this hidden checkbox controls the state -->
             <input
@@ -241,7 +248,7 @@ onUnmounted(() => {
           </label>
           <!-- 桌面導覽 -->
 
-          <NuxtLink to="/import" class="btn btn-primary ml-1 hidden lg:flex"
+          <NuxtLink to="/import" class="btn btn-primary ml-1 hidden sm:flex"
             >匯入賣場</NuxtLink
           >
 
@@ -355,45 +362,19 @@ onUnmounted(() => {
     <!-- ── 手機底部導航列 ── -->
     <nav
       style="view-transition-name: bottom-nav"
-      class="border-base-200 bg-base-200 fixed bottom-0 left-0 z-99 flex w-full items-center justify-around border-t pb-4 shadow-xl sm:hidden"
+      class="border-base-200 bg-base-200 fixed bottom-0 left-0 z-99 flex w-full items-center justify-around border-t pb-2 shadow-xl sm:hidden"
     >
       <NuxtLink
-        to="/"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
-        :class="route.path === '/' ? 'text-primary' : 'text-base-content/60'"
-      >
-        <Icon name="heroicons:home" class="h-6 w-6" />
-        <span class="text-[10px]">首頁</span>
-      </NuxtLink>
-      <NuxtLink
-        to="/search"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
+        v-for="item in bottomNavItems"
+        :key="item.path"
+        :to="item.path"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-lg font-semibold transition-colors"
         :class="
-          route.path === '/search' ? 'text-primary' : 'text-base-content/60'
+          route.path === item.path ? 'text-primary' : 'text-base-content/60'
         "
       >
-        <Icon name="heroicons:fire" class="h-6 w-6" />
-        <span class="text-[10px]">熱門</span>
-      </NuxtLink>
-      <NuxtLink
-        to="/import"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
-        :class="
-          route.path === '/import' ? 'text-primary' : 'text-base-content/60'
-        "
-      >
-        <Icon name="heroicons:arrow-down-tray" class="h-6 w-6" />
-        <span class="text-[10px]">匯入</span>
-      </NuxtLink>
-      <NuxtLink
-        to="/about"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
-        :class="
-          route.path === '/about' ? 'text-primary' : 'text-base-content/60'
-        "
-      >
-        <Icon name="heroicons:cog-6-tooth" class="h-6 w-6" />
-        <span class="text-[10px]">設定</span>
+        <Icon :name="item.icon" />
+        <span class="text-xs">{{ item.label }}</span>
       </NuxtLink>
     </nav>
 
@@ -415,7 +396,7 @@ onUnmounted(() => {
       <Transition name="contact-panel">
         <div
           v-if="contactOpen"
-          class="bg-base-100 border-primary/50 fixed right-0 bottom-0 z-100 w-96 max-w-full rounded-2xl border p-2 shadow-2xl sm:right-4 sm:bottom-4"
+          class="bg-base-100 border-primary/50 fixed right-0 bottom-0 z-100 w-full rounded-2xl border p-2 shadow-2xl sm:right-4 sm:bottom-4 sm:max-w-96"
         >
           <div
             class="border-base-300/40 flex items-center justify-between border-b px-4 py-3"
