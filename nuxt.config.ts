@@ -113,7 +113,7 @@ export default defineNuxtConfig({
     },
     workbox: {
       navigateFallback: null, // SSR 模式不使用 fallback，保持 SSR 正常運作
-      globPatterns: ["**/*.{js,css,woff,woff2,ttf,eot,ico,png,svg,webp}"],
+      globPatterns: [], // SSR 模式不 precache，改由 runtimeCaching 處理
       runtimeCaching: [
         {
           // 靜態資源：Cache First，一年
