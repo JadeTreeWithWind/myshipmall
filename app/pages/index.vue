@@ -1,15 +1,15 @@
 <script setup lang="ts">
-// 1. Imports
+// 1. 外部引用
 import type { ProductSearchResult } from "~/composables/useProductSearch";
 
-// 2. Types (None beyond import)
+// 2. 類型定義（無）
 
-// 3. Constants
+// 3. 常量宣告
 const config = useRuntimeConfig();
 const HOME_DESC =
   "搜尋並瀏覽所有已匯入的 7-11 賣貨便商品，提供更好的商品瀏覽與搜尋體驗。";
 
-// 4. State/Variables
+// 4. 響應式狀態/變數
 const router = useRouter();
 const searchQ = ref("");
 const {
@@ -21,13 +21,6 @@ const {
 });
 
 const isCoolingDown = ref(false);
-
-function refreshRandom() {
-  if (isCoolingDown.value) return;
-  isCoolingDown.value = true;
-  _refreshRandom();
-  setTimeout(() => (isCoolingDown.value = false), 5000);
-}
 
 const { data: hotProducts, pending } = useFetch<ProductSearchResult[]>(
   "/api/products/search",
@@ -71,17 +64,23 @@ watch(
   { immediate: true },
 );
 
-// 5. Computed Properties (None)
+// 5. 計算屬性（無）
 
-// 6. Functions/Methods
+// 6. 核心邏輯與函數
+function refreshRandom() {
+  if (isCoolingDown.value) return;
+  isCoolingDown.value = true;
+  _refreshRandom();
+  setTimeout(() => (isCoolingDown.value = false), 5000);
+}
 function goSearch() {
   if (!searchQ.value.trim()) return;
   router.push({ path: "/search", query: { q: searchQ.value.trim() } });
 }
 
-// 7. Watchers (None)
+// 7. 偵聽器（無）
 
-// 8. Lifecycle Hooks
+// 8. 生命週期鉤子
 useHead({
   title: "賣貨商城 — 賣貨便商品瀏覽平台",
   meta: [

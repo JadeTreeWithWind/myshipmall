@@ -1,11 +1,11 @@
 <script setup lang="ts">
-// 1. Imports (None)
+// 1. 外部引用（無）
 
-// 2. Types (None)
+// 2. 類型定義（無）
 
-// 3. Constants (None)
+// 3. 常量宣告（無）
 
-// 4. State/Variables
+// 4. 響應式狀態/變數
 const props = defineProps<{
   id: string;
   name: string;
@@ -18,13 +18,13 @@ const props = defineProps<{
   isEager?: boolean;
 }>();
 
-// 5. Computed Properties (None)
+// 5. 計算屬性（無）
 
-// 6. Functions/Methods (None)
+// 6. 核心邏輯與函數（無）
 
-// 7. Watchers (None)
+// 7. 偵聽器（無）
 
-// 8. Lifecycle Hooks (None)
+// 8. 生命週期鉤子（無）
 </script>
 
 <template>

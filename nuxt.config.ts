@@ -24,12 +24,7 @@ export default defineNuxtConfig({
           href: "https://fonts.gstatic.com",
           crossorigin: "",
         },
-        // 非阻塞字型載入方案，減少 render-blocking
-        {
-          rel: "preload",
-          as: "style",
-          href: "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap",
-        },
+        // 非阻塞字型載入：media="print" + onload 切換，避免 render-blocking
         {
           rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap",
@@ -38,15 +33,10 @@ export default defineNuxtConfig({
         },
       ],
       script: [
-        {
-          src: "https://challenges.cloudflare.com/turnstile/v0/api.js",
-          async: true,
-          defer: true,
-        },
         // 🔹 這裡加入小小 Inline Script，防止主題閃爍 (Theme Flicker)
         {
           innerHTML: `(function() {
-            const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'sunset' : 'corporate');
+            const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'halloween' : 'lofi');
             document.documentElement.setAttribute('data-theme', saved);
           })()`,
           type: "text/javascript",

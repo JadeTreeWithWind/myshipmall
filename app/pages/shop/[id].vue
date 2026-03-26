@@ -1,11 +1,9 @@
 <script setup lang="ts">
-// 1. Imports
-// (None)
+// 1. 外部引用（無）
 
-// 2. Types
-// (None)
+// 2. 類型定義（無）
 
-// 3. Constants
+// 3. 常量宣告
 const route = useRoute();
 const config = useRuntimeConfig();
 const shopId = route.params.id as string;
@@ -18,7 +16,7 @@ const sortOptions = [
 ];
 const PAGE_SIZE = 20;
 
-// 4. State/Variables
+// 4. 響應式狀態/變數
 const { sanitize } = useSanitize();
 const supabase = useSupabase();
 const { minLoadingTime } = useMinLoadingTime();
@@ -43,7 +41,7 @@ const {
   return data;
 });
 
-// 5. Computed Properties
+// 5. 計算屬性
 const shopDesc = computed(() =>
   (
     shop.value?.description?.replace(/<[^>]+>/g, "") ??
@@ -62,7 +60,7 @@ const updatedAt = computed(() => {
   });
 });
 
-// 6. Functions/Methods
+// 6. 核心邏輯與函數
 async function fetchProducts(reset = false) {
   loading.value = true;
   const curOffset = reset ? 0 : offset.value;
@@ -110,10 +108,10 @@ const { sentinel } = useInfiniteScroll(() => {
   if (hasMore.value && !loading.value) fetchProducts(false);
 });
 
-// 7. Watchers
+// 7. 偵聽器
 watch(sort, () => fetchProducts(true));
 
-// 8. Lifecycle Hooks
+// 8. 生命週期鉤子
 useHead({
   title: () => shop.value?.name ?? "商城載入中",
   link: [{ rel: "canonical", href: shopUrl }],

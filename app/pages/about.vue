@@ -1,9 +1,9 @@
 <script setup lang="ts">
-// 1. Imports (None)
+// 1. 外部引用（無）
 
-// 2. Types (None)
+// 2. 類型定義（無）
 
-// 3. Constants
+// 3. 常量宣告
 const config = useRuntimeConfig();
 const DESC =
   "賣貨商城是一個為 7-11 賣貨便量身打造的商品展示平台——讓買家更好找、讓賣家更好賣。這裡會告訴你這個站是怎麼來的、能幫你做什麼，以及一些常見問題。";
@@ -175,15 +175,15 @@ const FAQS = [
   },
 ];
 
-// 4. State/Variables (None)
+// 4. 響應式狀態/變數（無）
 
-// 5. Computed Properties (None)
+// 5. 計算屬性（無）
 
-// 6. Functions/Methods (None)
+// 6. 核心邏輯與函數（無）
 
-// 7. Watchers (None)
+// 7. 偵聽器（無）
 
-// 8. Lifecycle Hooks
+// 8. 生命週期鉤子
 useHead({
   title: "關於我們",
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/about` }],
@@ -225,8 +225,8 @@ useHead({
         class="bg-base-100 border-base-300/70 space-y-3 rounded-2xl border p-6 lg:p-8"
       >
         <p
-          v-for="(para, i) in STORY.content"
-          :key="i"
+          v-for="para in STORY.content"
+          :key="para"
           class="text-base-content/90 text-sm leading-relaxed sm:text-base"
         >
           {{ para }}

@@ -1,35 +1,35 @@
 <script setup lang="ts">
-// 1. Imports
+// 1. 外部引用
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
 const { user, signIn, signOut } = useAuth();
 const { isAdmin, checkAdmin } = useAdminCheck();
 
-// 2. Type Definitions (None)
+// 2. 類型定義（無）
 
-// 3. Constants
+// 3. 常量宣告
 const THEMES = {
   LIGHT: "lofi",
   DARK: "halloween",
 };
 
-// 4. State/Variables
+// 4. 響應式狀態/變數
 const theme = ref(THEMES.DARK);
 const searchQ = ref("");
 const menuOpen = ref(false);
-function closeDropdown() {
-  (document.activeElement as HTMLElement)?.blur();
-}
 const menuRef = ref<HTMLElement | null>(null);
 const contactOpen = ref(false);
 const contactForm = reactive({ name: "", email: "", subject: "", message: "" });
 const contactSending = ref(false);
 const contactSent = ref(false);
 
-// 5. Computed Properties (None)
+// 5. 計算屬性（無）
 
-// 6. Functions/Methods
+// 6. 核心邏輯與函數
+function closeDropdown() {
+  (document.activeElement as HTMLElement)?.blur();
+}
 function applyTheme(t: string) {
   document.documentElement.setAttribute("data-theme", t);
   localStorage.setItem("theme", t);
@@ -66,6 +66,8 @@ async function submitContact() {
     contactForm.name = "";
     contactForm.email = "";
     contactForm.message = "";
+  } catch {
+    useToast().error("訊息送出失敗，請稍後再試");
   } finally {
     contactSending.value = false;
   }
@@ -85,7 +87,7 @@ function handleClickOutside(e: MouseEvent) {
   }
 }
 
-// 7. Watchers
+// 7. 偵聽器
 watch(
   () => route.query.q,
   (v) => {
@@ -110,7 +112,7 @@ watch(
   { immediate: true },
 );
 
-// 8. Lifecycle Hooks
+// 8. 生命週期鉤子
 useHead({
   titleTemplate: (title) =>
     title ? `${title} | 賣貨商城` : "賣貨商城 — 賣貨便商品瀏覽平台",
@@ -351,7 +353,7 @@ onUnmounted(() => {
     <!-- ── 手機底部導航列 ── -->
     <nav
       style="view-transition-name: bottom-nav"
-      class="border-base-300 bg-base-100 fixed bottom-0 left-0 z-99 flex h-12 w-full items-center justify-around border-t sm:hidden"
+      class="border-base-300 bg-base-100 fixed bottom-0 left-0 z-99 flex w-full items-center justify-around border-t pb-4 sm:hidden"
     >
       <NuxtLink
         to="/"
@@ -531,12 +533,13 @@ onUnmounted(() => {
                 class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
                 >* 匯入賣場</NuxtLink
               >
-              <div
-                class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+              <button
+                type="button"
+                class="text-base-content/90 hover:text-primary cursor-pointer text-left transition-colors"
                 @click="contactOpen = true"
               >
                 * 聯絡我
-              </div>
+              </button>
             </div>
             <div class="flex w-1/2 flex-col gap-2 text-sm sm:w-auto">
               <div class="title text-base-content/90 text-lg font-semibold">

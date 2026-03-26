@@ -1,9 +1,9 @@
 <script setup lang="ts">
-// 1. Imports (None)
+// 1. 外部引用（無）
 
-// 2. Types (None)
+// 2. 類型定義（無）
 
-// 3. Constants
+// 3. 常量宣告
 const config = useRuntimeConfig();
 const SEARCH_DESC = "在 賣貨商城 搜尋賣貨便商品，快速找到您想要的物品。";
 const SORT_OPTIONS = [
@@ -13,7 +13,7 @@ const SORT_OPTIONS = [
   { value: "price_desc", label: "價格↓" },
 ];
 
-// 4. State/Variables
+// 4. 響應式狀態/變數
 const route = useRoute();
 const router = useRouter();
 const { products, loading, hasMore, search, loadMore, setProducts } =
@@ -31,10 +31,10 @@ const maxPrice = ref(
   route.query.max_price ? Number(route.query.max_price) : undefined,
 );
 
-// 5. Computed Properties
+// 5. 計算屬性
 const q = computed(() => (route.query.q as string) || "");
 
-// 6. Functions/Methods
+// 6. 核心邏輯與函數
 async function doSearch() {
   router.replace({
     query: {
@@ -54,11 +54,11 @@ async function doSearch() {
 
 const SCROLL_CACHE_KEY = "search-scroll-state";
 
-// 7. Watchers
+// 7. 偵聽器
 watch(sort, doSearch);
 watch(q, doSearch);
 
-// 8. Lifecycle Hooks
+// 8. 生命週期鉤子
 onBeforeRouteLeave((to) => {
   if (to.path.startsWith("/product/")) {
     sessionStorage.setItem(
@@ -90,7 +90,7 @@ onMounted(async () => {
   await doSearch();
 });
 useHead({
-  title: q.value ? `搜尋「${q.value}」` : "搜尋商品",
+  title: () => (q.value ? `搜尋「${q.value}」` : "搜尋商品"),
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/search` }],
   meta: [
     { name: "description", content: SEARCH_DESC },

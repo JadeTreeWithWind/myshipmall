@@ -1,8 +1,8 @@
 <script setup lang="ts">
-// 1. Imports
+// 1. 外部引用
 import type { ShopData } from "../../server/utils/types";
 
-// 2. Types
+// 2. 類型定義
 declare global {
   interface Window {
     turnstile: {
@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-// 3. Constants
+// 3. 常量宣告
 const config = useRuntimeConfig();
 const faqItems = [
   {
@@ -86,7 +86,7 @@ const PAGE_PHASE = {
   SUCCESS: "success",
 };
 
-// 4. Variables
+// 4. 響應式狀態/變數
 const url = ref("");
 const urlError = ref("");
 const phase = ref(PAGE_PHASE.INPUT);
@@ -102,9 +102,9 @@ const turnstileWidgetId = ref<string | null>(null);
 const turnstileContainer = ref<HTMLElement | null>(null);
 const agreedToTerms = ref(false);
 
-// 5. Computed (None)
+// 5. 計算屬性（無）
 
-// 6. Methods
+// 6. 核心邏輯與函數
 function getTurnstileToken(): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!window.turnstile) {
@@ -214,9 +214,19 @@ function resetToInput() {
   errorMsg.value = "";
 }
 
-// 7. Watchers (None)
+// 7. 偵聽器（無）
 
-// 8. Lifecycle Hooks
+// 8. 生命週期鉤子
+onMounted(() => {
+  // 動態載入 Turnstile script（僅在此頁面載入，不全站污染）
+  if (!document.querySelector('script[src*="turnstile"]')) {
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    s.async = true;
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+});
 useHead({
   title: "匯入賣場 — 賣貨商城",
   meta: [
@@ -480,8 +490,8 @@ useHead({
         </div>
         <div class="flex flex-col gap-2">
           <div
-            v-for="(item, i) in faqItems"
-            :key="i"
+            v-for="item in faqItems"
+            :key="item.q"
             class="collapse-arrow bg-base-100 border-base-300/70 collapse rounded-xl border"
           >
             <input type="checkbox" />

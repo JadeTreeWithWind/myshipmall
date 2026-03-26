@@ -1,15 +1,15 @@
 <script setup lang="ts">
-// 1. Imports (None)
+// 1. 外部引用（無）
 
-// 2. Types (None)
+// 2. 類型定義（無）
 
-// 3. Constants
+// 3. 常量宣告
 const route = useRoute();
 const productId = route.params.id as string;
 const config = useRuntimeConfig();
 const productUrl = `${config.public.siteUrl}${route.path}`;
 
-// 4. State/Variables
+// 4. 響應式狀態/變數
 const supabase = useSupabase();
 const { sanitize } = useSanitize();
 
@@ -74,7 +74,7 @@ function onTouchEnd(e: TouchEvent) {
   navigate(diff > 0 ? "left" : "right");
 }
 
-// 5. Computed Properties
+// 5. 計算屬性
 const productDesc = computed(() => {
   const raw = product.value?.description ?? product.value?.name ?? "";
   return raw.replace(/<[^>]+>/g, "").slice(0, 150);
@@ -113,7 +113,7 @@ const updatedAt = computed(() => {
 
 const buyUrl = computed(() => shop.value?.shop_url ?? null);
 
-// 6. Functions/Methods
+// 6. 核心邏輯與函數
 async function handleBuy() {
   $fetch("/api/record-click", {
     method: "POST",
@@ -125,9 +125,9 @@ async function handleBuy() {
   }
 }
 
-// 7. Watchers (None)
+// 7. 偵聽器（無）
 
-// 8. Lifecycle Hooks
+// 8. 生命週期鉤子
 useHead({
   title: () => product.value?.name ?? "商品載入中",
   meta: [
