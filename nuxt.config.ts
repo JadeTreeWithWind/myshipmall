@@ -18,6 +18,8 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: "icon", type: "image/png", href: "/favicon.png" },
+        // app.head.link 裡加這行
+        { rel: "manifest", href: "/manifest.webmanifest" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",
@@ -30,6 +32,11 @@ export default defineNuxtConfig({
           href: "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap",
           media: "print",
           onload: "this.media='all'",
+        },
+        {
+          rel: "apple-touch-icon",
+          href: "/apple-touch-icon-180x180.png",
+          sizes: "180x180",
         },
       ],
       script: [
@@ -93,75 +100,50 @@ export default defineNuxtConfig({
       orientation: "portrait",
       start_url: "/",
       icons: [
-        { src: "/pwa_192.png", sizes: "192x192", type: "image/png" },
+        { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
+        { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
         {
-          src: "/pwa_512.png",
+          src: "/pwa-512x512.png",
           sizes: "512x512",
           type: "image/png",
-          purpose: "any maskable",
+          purpose: "maskable",
         },
       ],
     },
     workbox: {
       navigateFallback: "/offline.html",
-      globPatterns: ["offline.html"], // 只 precache 離線頁，其餘靠 runtimeCaching
+      globPatterns: ["offline.html"],
+      // runtime cache：字型、圖片、API
       runtimeCaching: [
         {
-          // 靜態資源：Cache First，一年
-          urlPattern: /\/_nuxt\/.*/i,
+          urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
           handler: "CacheFirst",
           options: {
-            cacheName: "nuxt-assets",
-            expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            cacheableResponse: { statuses: [0, 200] },
+            cacheName: "google-fonts",
+            expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
           },
         },
         {
-          // 圖片：Cache First，30 天
-          urlPattern: /\.(png|jpg|jpeg|svg|gif|webp|ico)$/i,
-          handler: "CacheFirst",
+          urlPattern: /\.(png|jpg|jpeg|svg|webp|avif)$/i,
+          handler: "StaleWhileRevalidate",
           options: {
             cacheName: "images",
             expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
-            cacheableResponse: { statuses: [0, 200] },
-          },
-        },
-        {
-          // API（Supabase）：Network First，失敗才用快取
-          urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
-          handler: "NetworkFirst",
-          options: {
-            cacheName: "supabase-api",
-            networkTimeoutSeconds: 5,
-            expiration: { maxEntries: 50, maxAgeSeconds: 60 * 5 },
-            cacheableResponse: { statuses: [0, 200] },
           },
         },
       ],
     },
-    client: {
-      installPrompt: true,
+    // Cloudflare Pages 不跑 node，關掉 SW 的 type: 'module'
+    injectManifest: {
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
     devOptions: {
-      enabled: true,
+      enabled: true, // dev 時也能測 SW
       type: "module",
     },
   },
   nitro: {
     preset: "cloudflare-pages",
-    cloudflare: {
-      pages: {
-        routes: {
-          // 強制這些 PWA 靜態檔案繞過 SSR Worker，直接由 Cloudflare Pages 提供
-          exclude: [
-            "/manifest.webmanifest",
-            "/sw.js",
-            "/workbox-*.js",
-            "/offline.html",
-          ],
-        },
-      },
-    },
   },
   runtimeConfig: {
     supabaseSecretKey: "",
