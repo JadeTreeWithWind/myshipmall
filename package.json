@@ -25,6 +25,7 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
+    "@vite-pwa/nuxt": "^1.1.1",
     "daisyui": "^5.5.19",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
