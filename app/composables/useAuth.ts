@@ -7,16 +7,19 @@ export function useAuth() {
   /**
    * 初始化：讀取現有 session，並監聽後續 auth 狀態變更。
    * 應在 app.vue 的 onMounted 呼叫一次。
+   * @returns {() => void} 呼叫後可取消 auth 狀態監聽，避免 memory leak
    */
-  async function init() {
+  async function init(): Promise<() => void> {
     const {
       data: { session },
     } = await supabase.auth.getSession()
     user.value = session?.user ?? null
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       user.value = session?.user ?? null
     })
+
+    return () => subscription.unsubscribe()
   }
 
   async function signIn() {

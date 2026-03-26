@@ -126,19 +126,6 @@ useHead({
   titleTemplate: (title) =>
     title ? `${title} | 賣貨商城` : "賣貨商城 — 賣貨便商品瀏覽平台",
   link: [{ rel: "canonical", href: `${config.public.siteUrl}${route.path}` }],
-  script: [
-    {
-      type: "speculationrules",
-      innerHTML: JSON.stringify({
-        prerender: [
-          {
-            source: "list",
-            urls: ["/about", "/import", "/search"],
-          },
-        ],
-      }),
-    },
-  ],
 });
 
 onMounted(() => {
@@ -259,8 +246,7 @@ onUnmounted(() => {
           >
 
           <!-- 漢堡選單 -->
-          <template>
-            <div class="dropdown dropdown-end ml-1 hidden lg:block">
+          <div class="dropdown dropdown-end ml-1 hidden lg:block">
               <label
                 tabindex="0"
                 class="btn btn-ghost btn-sm btn-circle avatar cursor-pointer"
@@ -360,7 +346,6 @@ onUnmounted(() => {
                 </li>
               </ul>
             </div>
-          </template>
         </div>
       </div>
     </nav>

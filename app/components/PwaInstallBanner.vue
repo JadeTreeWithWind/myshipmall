@@ -3,7 +3,7 @@
     <Transition name="slide-up">
       <div
         v-if="showInstallBanner"
-        class="fixed bottom-20 left-4 right-4 z-[200] flex items-center justify-between gap-3 rounded-xl border border-base-300 bg-base-100 p-4 shadow-lg sm:bottom-4 sm:left-auto sm:right-4 sm:max-w-sm"
+        class="border-base-300 bg-base-100 fixed right-4 bottom-20 left-4 z-[200] flex items-center justify-between gap-3 rounded-xl border p-4 shadow-lg sm:right-4 sm:bottom-4 sm:left-auto sm:max-w-sm"
       >
         <div class="flex items-center gap-3">
           <img
@@ -13,7 +13,9 @@
           />
           <div>
             <p class="text-sm font-medium">安裝賣貨商城</p>
-            <p class="text-xs text-base-content/60">加到主畫面，享受更好的體驗</p>
+            <p class="text-base-content/60 text-xs">
+              加到主畫面，享受更接近App的體驗
+            </p>
           </div>
         </div>
         <div class="flex shrink-0 gap-2">

@@ -149,11 +149,14 @@ async function submit() {
       </h3>
 
       <!-- 星評選擇 -->
-      <div class="flex gap-1">
+      <div class="flex gap-1" role="radiogroup" aria-label="評分（1 到 5 顆星）">
         <button
           v-for="i in 5"
           :key="i"
-          class="cursor-pointer text-3xl transition-transform hover:scale-110 focus:outline-none"
+          type="button"
+          :aria-label="`${i} 顆星`"
+          :aria-pressed="rating === i"
+          class="cursor-pointer text-3xl transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded"
           :class="
             i <= (hoverRating || rating)
               ? 'text-warning'
@@ -163,7 +166,7 @@ async function submit() {
           @mouseleave="hoverRating = 0"
           @click="rating = i"
         >
-          <Icon name="material-symbols:star-rounded" />
+          <Icon name="material-symbols:star-rounded" aria-hidden="true" />
         </button>
       </div>
 

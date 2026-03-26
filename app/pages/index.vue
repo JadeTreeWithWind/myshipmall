@@ -42,16 +42,24 @@ const { data: stats } = useFetch<{ products: number; shops: number }>(
 const displayProducts = ref(0);
 const displayShops = ref(0);
 
+/**
+ * 數字動態累計動畫，元件卸載時自動取消
+ * @param {number} target - 目標數值
+ * @param {(v: number) => void} setter - 更新響應式數值的 setter
+ * @param {number} duration - 動畫時長（毫秒），預設 3000
+ */
 function countUp(target: number, setter: (v: number) => void, duration = 3000) {
   const from = Math.max(0, target - 30);
   const start = performance.now();
+  let rafId: number;
   function step(now: number) {
     const progress = Math.min((now - start) / duration, 1);
     const ease = 1 - Math.pow(1 - progress, 3);
     setter(Math.round(from + ease * (target - from)));
-    if (progress < 1) requestAnimationFrame(step);
+    if (progress < 1) rafId = requestAnimationFrame(step);
   }
-  requestAnimationFrame(step);
+  rafId = requestAnimationFrame(step);
+  onUnmounted(() => cancelAnimationFrame(rafId));
 }
 
 watch(

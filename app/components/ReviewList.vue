@@ -80,7 +80,7 @@ defineExpose({ refresh });
       >
         <!-- 使用者資訊列 -->
         <div class="mb-2 flex items-center gap-2">
-          <div class="avatar">
+          <div class="avatar" aria-hidden="true">
             <div class="w-8 rounded-full">
               <img
                 v-if="review.user_avatar"
@@ -104,11 +104,16 @@ defineExpose({ refresh });
         </div>
 
         <!-- 評分 -->
-        <div class="mb-1 flex gap-0.5">
+        <div
+          class="mb-1 flex gap-0.5"
+          :aria-label="`評分 ${review.rating} 顆星（滿分 5 顆）`"
+          role="img"
+        >
           <Icon
             v-for="i in 5"
             :key="i"
             name="material-symbols:star-rounded"
+            aria-hidden="true"
             :class="
               i <= review.rating ? 'text-yellow-500' : 'text-base-content/20'
             "

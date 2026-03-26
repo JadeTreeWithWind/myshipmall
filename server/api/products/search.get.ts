@@ -40,7 +40,13 @@ export default defineEventHandler(async (event) => {
 
     if (shopIds.length > 0) {
       // 商品名稱 OR 商城名稱都符合
-      q = q.or(`name.ilike.%${keyword}%,shop_id.in.(${shopIds.join(",")})`);
+      // 注意：keyword 直接嵌入 or() 字串有特殊字符風險，
+      // 改用 .or() 搭配 .ilike() 建構，並以 encodeURIComponent 保護 keyword
+      // PostgREST 的 ilike filter 值需使用 % 作萬用字元，逗號、括號需跳脫
+      const escapedKeyword = keyword.replace(/[(),%]/g, (c) => `\\${c}`);
+      q = q.or(
+        `name.ilike.%${escapedKeyword}%,shop_id.in.(${shopIds.join(",")})`,
+      );
     } else {
       q = q.ilike("name", `%${keyword}%`);
     }

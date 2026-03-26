@@ -111,9 +111,7 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      navigateFallback: "/offline.html",
-      globPatterns: ["offline.html"],
-      // runtime cache：字型、圖片、API
+      navigateFallback: "/",
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
@@ -140,6 +138,7 @@ export default defineNuxtConfig({
     devOptions: {
       enabled: true, // dev 時也能測 SW
       type: "module",
+      suppressWarnings: true,
     },
   },
   nitro: {

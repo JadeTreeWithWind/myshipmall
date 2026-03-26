@@ -22,7 +22,16 @@ const supabase = useSupabase();
 const { minLoadingTime } = useMinLoadingTime();
 
 const sort = ref("popular");
-const products = ref<any[]>([]);
+interface ShopProduct {
+  id: string;
+  name: string;
+  main_image: string | null;
+  min_price: number;
+  max_price: number;
+  click_count: number;
+  updated_at: string;
+}
+const products = ref<ShopProduct[]>([]);
 const loading = ref(false);
 const hasMore = ref(true);
 const offset = ref(0);

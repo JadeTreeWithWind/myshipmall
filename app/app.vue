@@ -3,7 +3,8 @@ const { init } = useAuth();
 const router = useRouter();
 const slideDir = ref<"left" | "right">("left");
 
-router.beforeEach((to, from) => {
+// 保存 unregister，避免重複注冊造成問題
+const unregisterGuard = router.beforeEach((to, from) => {
   const toDepth = to.path.split("/").filter(Boolean).length;
   const fromDepth = from.path.split("/").filter(Boolean).length;
   slideDir.value = toDepth >= fromDepth ? "left" : "right";
@@ -14,8 +15,15 @@ const pageTransition = computed(() => ({
   mode: "out-in" as const,
 }));
 
-onMounted(() => {
-  init();
+let unsubscribeAuth: (() => void) | undefined;
+
+onMounted(async () => {
+  unsubscribeAuth = await init();
+});
+
+onBeforeUnmount(() => {
+  unregisterGuard();
+  unsubscribeAuth?.();
 });
 </script>
 

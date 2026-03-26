@@ -55,10 +55,14 @@ function scrollThumbs(dir: "left" | "right") {
   });
 }
 
-function navigate(dir: "left" | "right") {
+/**
+ * 切換商品主圖
+ * @param {'prev' | 'next'} dir - 切換方向：prev 上一張，next 下一張
+ */
+function navigate(dir: "prev" | "next") {
   const len = images.value.length;
   activeImageIdx.value =
-    dir === "left"
+    dir === "next"
       ? (activeImageIdx.value + 1) % len
       : (activeImageIdx.value - 1 + len) % len;
 }
@@ -71,7 +75,8 @@ function onTouchStart(e: TouchEvent) {
 function onTouchEnd(e: TouchEvent) {
   const diff = touchStartX.value - e.changedTouches[0]!.clientX;
   if (Math.abs(diff) < 40) return;
-  navigate(diff > 0 ? "left" : "right");
+  // diff > 0：手指往左滑 → 看下一張；diff < 0：手指往右滑 → 看上一張
+  navigate(diff > 0 ? "next" : "prev");
 }
 
 // 5. 計算屬性
@@ -99,7 +104,12 @@ const specs = computed(() =>
   [...(product.value?.product_specs ?? [])].sort((a, b) => a.price - b.price),
 );
 
-const shop = computed(() => (product.value?.shops as any) ?? null);
+interface ShopRef {
+  id: string;
+  name: string;
+  shop_url: string;
+}
+const shop = computed(() => (product.value?.shops as unknown as ShopRef) ?? null);
 
 const updatedAt = computed(() => {
   const d = product.value?.updated_at;
@@ -280,14 +290,14 @@ useHead({
               <button
                 class="btn btn-circle btn-sm bg-base-100/50 absolute top-1/2 left-2 -translate-y-1/2 border-0 opacity-0 backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:scale-105"
                 aria-label="上一張"
-                @click="navigate('right')"
+                @click="navigate('prev')"
               >
                 <Icon name="heroicons:chevron-left" class="h-4 w-4" />
               </button>
               <button
                 class="btn btn-circle btn-sm bg-base-100/50 absolute top-1/2 right-2 -translate-y-1/2 border-0 opacity-0 backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:scale-105"
                 aria-label="下一張"
-                @click="navigate('left')"
+                @click="navigate('next')"
               >
                 <Icon name="heroicons:chevron-right" class="h-4 w-4" />
               </button>
