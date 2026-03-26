@@ -149,10 +149,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative mb-8 flex min-h-screen flex-col sm:mb-0">
+  <div
+    class="relative mb-8 flex min-h-screen flex-col overflow-x-hidden sm:mb-0"
+  >
     <!-- ── Navbar ── -->
     <nav
-      class="bg-base-100 border-base-300/60 sticky top-0 z-50 backdrop-blur-xs"
+      class="bg-base-100 border-base-300/60 fixed top-0 z-50 w-full backdrop-blur-xs"
     >
       <div
         class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-20 sm:gap-3 sm:px-6"
@@ -353,50 +355,50 @@ onUnmounted(() => {
     <!-- ── 手機底部導航列 ── -->
     <nav
       style="view-transition-name: bottom-nav"
-      class="border-base-300 bg-base-100 fixed bottom-0 left-0 z-99 flex w-full items-center justify-around border-t pb-4 sm:hidden"
+      class="border-base-200 bg-base-200 fixed bottom-0 left-0 z-99 flex w-full items-center justify-around border-t pb-4 shadow-xl sm:hidden"
     >
       <NuxtLink
         to="/"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
-        :class="route.path === '/' ? 'text-primary' : 'text-base-content/50'"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
+        :class="route.path === '/' ? 'text-primary' : 'text-base-content/60'"
       >
         <Icon name="heroicons:home" class="h-6 w-6" />
-        <span class="text-[10px] font-medium">首頁</span>
+        <span class="text-[10px]">首頁</span>
       </NuxtLink>
       <NuxtLink
         to="/search"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
         :class="
-          route.path === '/search' ? 'text-primary' : 'text-base-content/50'
+          route.path === '/search' ? 'text-primary' : 'text-base-content/60'
         "
       >
         <Icon name="heroicons:fire" class="h-6 w-6" />
-        <span class="text-[10px] font-medium">熱門</span>
+        <span class="text-[10px]">熱門</span>
       </NuxtLink>
       <NuxtLink
         to="/import"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
         :class="
-          route.path === '/import' ? 'text-primary' : 'text-base-content/50'
+          route.path === '/import' ? 'text-primary' : 'text-base-content/60'
         "
       >
         <Icon name="heroicons:arrow-down-tray" class="h-6 w-6" />
-        <span class="text-[10px] font-medium">匯入</span>
+        <span class="text-[10px]">匯入</span>
       </NuxtLink>
       <NuxtLink
         to="/about"
-        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 font-semibold transition-colors"
         :class="
-          route.path === '/about' ? 'text-primary' : 'text-base-content/50'
+          route.path === '/about' ? 'text-primary' : 'text-base-content/60'
         "
       >
         <Icon name="heroicons:cog-6-tooth" class="h-6 w-6" />
-        <span class="text-[10px] font-medium">設定</span>
+        <span class="text-[10px]">設定</span>
       </NuxtLink>
     </nav>
 
     <!-- ── 頁面內容 ── -->
-    <main class="flex-1 pb-16 sm:pb-0">
+    <main class="mt-14 flex-1 pb-16 sm:pb-0">
       <slot />
     </main>
 

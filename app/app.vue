@@ -1,22 +1,22 @@
 <script setup lang="ts">
-const { init } = useAuth()
-const router = useRouter()
-const slideDir = ref<'left' | 'right'>('left')
+const { init } = useAuth();
+const router = useRouter();
+const slideDir = ref<"left" | "right">("left");
 
 router.beforeEach((to, from) => {
-  const toDepth = to.path.split('/').filter(Boolean).length
-  const fromDepth = from.path.split('/').filter(Boolean).length
-  slideDir.value = toDepth >= fromDepth ? 'left' : 'right'
-})
+  const toDepth = to.path.split("/").filter(Boolean).length;
+  const fromDepth = from.path.split("/").filter(Boolean).length;
+  slideDir.value = toDepth >= fromDepth ? "left" : "right";
+});
 
 const pageTransition = computed(() => ({
   name: `slide-${slideDir.value}`,
-  mode: 'out-in' as const,
-}))
+  mode: "out-in" as const,
+}));
 
 onMounted(() => {
-  init()
-})
+  init();
+});
 </script>
 
 <template>
