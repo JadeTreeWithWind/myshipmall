@@ -120,6 +120,8 @@ watch(
 );
 
 // 8. 生命週期鉤子
+const { initInstallPrompt } = usePwaInstall();
+
 useHead({
   titleTemplate: (title) =>
     title ? `${title} | 賣貨商城` : "賣貨商城 — 賣貨便商品瀏覽平台",
@@ -140,6 +142,7 @@ useHead({
 });
 
 onMounted(() => {
+  initInstallPrompt();
   const saved = localStorage.getItem("theme");
   if (saved) {
     theme.value = saved;
@@ -388,6 +391,9 @@ onUnmounted(() => {
 
     <!-- ── Toast 通知 ── -->
     <ToastContainer />
+
+    <!-- ── PWA 安裝提示 ── -->
+    <PwaInstallBanner />
 
     <!-- ── 聯絡我浮動視窗 ── -->
     <Teleport to="body">
