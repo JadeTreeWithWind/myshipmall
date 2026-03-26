@@ -93,10 +93,10 @@ export default defineNuxtConfig({
       orientation: "portrait",
       start_url: "/",
       icons: [
-        { src: "/icons/pwa_192.png", sizes: "any", type: "image/png" },
+        { src: "/pwa_192.png", sizes: "192x192", type: "image/png" },
         {
-          src: "/icons/pwa_512.png",
-          sizes: "any",
+          src: "/pwa_512.png",
+          sizes: "512x512",
           type: "image/png",
           purpose: "any maskable",
         },
