@@ -245,7 +245,7 @@ definePageMeta({ keepalive: { max: 5 } });
           <!-- 商城描述 -->
           <div
             v-if="shop?.description"
-            class="prose prose-sm text-base-content/80 border-base-300/50 mt-5 max-w-none border-t pt-5"
+            class="prose prose-sm text-base-content/80 border-base-300/50 mt-5 max-w-none border-t pt-5 text-sm sm:text-base"
             v-html="sanitize(shop.description)"
           />
         </template>

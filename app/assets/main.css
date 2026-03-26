@@ -41,6 +41,15 @@ h6 {
   }
 }
 
+::view-transition-group(bottom-nav) {
+  animation: none;
+}
+
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  animation: none;
+}
+
 .prose a {
   @apply text-primary font-bold;
 }

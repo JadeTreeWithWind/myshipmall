@@ -147,13 +147,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col">
+  <div class="relative mb-8 flex min-h-screen flex-col sm:mb-0">
     <!-- ── Navbar ── -->
     <nav
       class="bg-base-100 border-base-300/60 sticky top-0 z-50 backdrop-blur-xs"
     >
       <div
-        class="mx-auto flex h-14 max-w-7xl items-center px-4 sm:h-20 sm:gap-3 sm:px-6"
+        class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-20 sm:gap-3 sm:px-6"
       >
         <!-- Logo -->
         <button
@@ -180,7 +180,10 @@ onUnmounted(() => {
         </NuxtLink>
 
         <!-- 搜尋框（桌面） -->
-        <div class="mx-4 flex flex-1">
+        <div
+          class="mx-4 flex flex-1"
+          :class="route.path === '/' ? 'hidden' : 'flex'"
+        >
           <form class="relative w-full" @submit.prevent="handleSearch">
             <Icon
               name="heroicons:magnifying-glass"
@@ -345,8 +348,53 @@ onUnmounted(() => {
       </div>
     </nav>
 
+    <!-- ── 手機底部導航列 ── -->
+    <nav
+      style="view-transition-name: bottom-nav"
+      class="border-base-300 bg-base-100 fixed bottom-0 left-0 z-99 flex h-12 w-full items-center justify-around border-t sm:hidden"
+    >
+      <NuxtLink
+        to="/"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+        :class="route.path === '/' ? 'text-primary' : 'text-base-content/50'"
+      >
+        <Icon name="heroicons:home" class="h-6 w-6" />
+        <span class="text-[10px] font-medium">首頁</span>
+      </NuxtLink>
+      <NuxtLink
+        to="/search"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+        :class="
+          route.path === '/search' ? 'text-primary' : 'text-base-content/50'
+        "
+      >
+        <Icon name="heroicons:fire" class="h-6 w-6" />
+        <span class="text-[10px] font-medium">熱門</span>
+      </NuxtLink>
+      <NuxtLink
+        to="/import"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+        :class="
+          route.path === '/import' ? 'text-primary' : 'text-base-content/50'
+        "
+      >
+        <Icon name="heroicons:arrow-down-tray" class="h-6 w-6" />
+        <span class="text-[10px] font-medium">匯入</span>
+      </NuxtLink>
+      <NuxtLink
+        to="/about"
+        class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+        :class="
+          route.path === '/about' ? 'text-primary' : 'text-base-content/50'
+        "
+      >
+        <Icon name="heroicons:cog-6-tooth" class="h-6 w-6" />
+        <span class="text-[10px] font-medium">設定</span>
+      </NuxtLink>
+    </nav>
+
     <!-- ── 頁面內容 ── -->
-    <main class="flex-1">
+    <main class="flex-1 pb-16 sm:pb-0">
       <slot />
     </main>
 
@@ -461,7 +509,7 @@ onUnmounted(() => {
         <div
           class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center"
         >
-          <div class="flex flex-col gap-1.5">
+          <div class="flex flex-1 flex-col gap-1.5">
             <div class="flex items-center gap-2">
               <Icon
                 name="heroicons:shopping-bag"
@@ -470,30 +518,49 @@ onUnmounted(() => {
               <span class="text-sm font-semibold">賣貨商城</span>
             </div>
             <p class="text-base-content/80 max-w-xs text-xs leading-relaxed">
-              非官方賣貨便商品瀏覽平台，所有購買行為均在賣貨便完成
+              本站為獨立開發者建立的非官方展示平台，與統一超商、賣貨便官方無任何隸屬或合作關係。本站不販售商品、不經手金流，所有購買行為均導向賣貨便官方頁面完成。商品資訊由第三方匯入，本站不保證其準確性，實際內容請以賣貨便為準。
             </p>
           </div>
-          <div class="flex flex-col gap-2 text-sm">
-            <NuxtLink
-              to="/about"
-              class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
-              >關於</NuxtLink
-            >
-            <NuxtLink
-              to="/import"
-              class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
-              >匯入賣場</NuxtLink
-            >
-            <NuxtLink
-              to="/terms"
-              class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
-              >條款與免責</NuxtLink
-            >
+          <div class="flex w-full flex-1 justify-between gap-4">
+            <div class="flex w-1/2 flex-col gap-2 text-sm sm:w-auto">
+              <div class="title text-base-content/90 text-lg font-semibold">
+                功能
+              </div>
+              <NuxtLink
+                to="/import"
+                class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+                >* 匯入賣場</NuxtLink
+              >
+              <div
+                class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+                @click="contactOpen = true"
+              >
+                * 聯絡我
+              </div>
+            </div>
+            <div class="flex w-1/2 flex-col gap-2 text-sm sm:w-auto">
+              <div class="title text-base-content/90 text-lg font-semibold">
+                頁面
+              </div>
+              <NuxtLink
+                to="/about"
+                class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+                >* 關於商城</NuxtLink
+              >
+              <NuxtLink
+                to="/terms"
+                class="text-base-content/90 hover:text-primary cursor-pointer transition-colors"
+                >* 條款與免責</NuxtLink
+              >
+            </div>
           </div>
         </div>
         <div class="border-base-300/40 mt-8 border-t pt-6">
           <p class="text-base-content/70 text-center text-xs">
-            © {{ new Date().getFullYear() }} 賣貨商城
+            © {{ new Date().getFullYear() }} All rights reserved.
+          </p>
+          <p class="text-base-content/70 mt-2 text-center text-xs">
+            Made with ♥ by TJ
           </p>
         </div>
       </div>
