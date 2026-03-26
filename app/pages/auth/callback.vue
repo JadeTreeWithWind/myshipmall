@@ -7,7 +7,7 @@ onMounted(async () => {
   await supabase.auth.getSession()
   const redirect = localStorage.getItem('auth:redirect') ?? '/'
   localStorage.removeItem('auth:redirect')
-  await navigateTo(redirect, { replace: true })
+  window.location.replace(redirect)
 })
 </script>
 

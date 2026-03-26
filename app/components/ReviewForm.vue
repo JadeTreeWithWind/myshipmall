@@ -153,7 +153,7 @@ async function submit() {
         <button
           v-for="i in 5"
           :key="i"
-          class="text-3xl transition-transform hover:scale-110 focus:outline-none"
+          class="cursor-pointer text-3xl transition-transform hover:scale-110 focus:outline-none"
           :class="
             i <= (hoverRating || rating)
               ? 'text-warning'

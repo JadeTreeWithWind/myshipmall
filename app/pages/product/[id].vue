@@ -415,8 +415,10 @@ useHead({
                     :key="spec.id"
                     class="border-base-300/40"
                   >
-                    <td class="text-sm font-medium">{{ spec.name }}</td>
-                    <td class="text-sm">
+                    <td class="w-full max-w-0 truncate text-sm font-medium">
+                      {{ spec.name }}
+                    </td>
+                    <td class="min-w-30 text-sm">
                       <template v-if="spec.sale_price > 0">
                         <span class="text-error font-semibold"
                           >NT$&nbsp;{{ spec.sale_price.toLocaleString() }}</span

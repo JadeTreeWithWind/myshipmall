@@ -18,6 +18,9 @@ const THEMES = {
 const theme = ref(THEMES.DARK);
 const searchQ = ref("");
 const menuOpen = ref(false);
+function closeDropdown() {
+  (document.activeElement as HTMLElement)?.blur();
+}
 const menuRef = ref<HTMLElement | null>(null);
 const contactOpen = ref(false);
 const contactForm = reactive({ name: "", email: "", subject: "", message: "" });
@@ -272,6 +275,7 @@ onUnmounted(() => {
               <ul
                 tabindex="0"
                 class="menu dropdown-content bg-base-100 border-base-300/50 z-50 mt-2 w-52 rounded-xl border p-2 shadow-lg"
+                @click="closeDropdown"
               >
                 <li
                   v-if="user"

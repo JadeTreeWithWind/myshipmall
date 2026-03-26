@@ -17,7 +17,7 @@ export interface SearchParams {
   maxPrice?: number;
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 export function useProductSearch() {
   const products = ref<ProductSearchResult[]>([]);

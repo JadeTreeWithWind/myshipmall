@@ -75,13 +75,13 @@ const props = defineProps<{
       >
         <NuxtLink
           :to="`/shop/${shopId}`"
-          class="text-base-content hover:text-primary max-w-[70%] cursor-pointer truncate text-sm transition-colors"
+          class="text-base-content hover:text-primary max-w-[70%] cursor-pointer truncate text-xs transition-colors sm:text-sm"
           @click.stop
         >
           {{ shopName }}
         </NuxtLink>
         <span
-          class="text-base-content/90 flex shrink-0 items-center gap-0.5 text-sm"
+          class="text-base-content/90 flex shrink-0 items-center gap-0.5 text-xs sm:text-sm"
         >
           <Icon name="heroicons:fire" class="h-3 w-3 text-orange-400/80" />
           {{ clickCount }}

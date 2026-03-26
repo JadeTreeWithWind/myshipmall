@@ -100,14 +100,14 @@ useHead({
 <template>
   <div>
     <!-- ── Hero 區 ── -->
-    <section class="relative overflow-hidden px-4 py-2 sm:py-10">
+    <section class="relative overflow-hidden px-4 py-2 lg:py-10">
       <div class="relative mx-auto max-w-7xl rounded-2xl p-2 sm:p-10">
         <div
           class="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-[1fr_300px]"
         >
           <!-- 左：焦點區塊 -->
           <div
-            class="flex flex-col items-center justify-center py-4 sm:items-start"
+            class="flex flex-col items-center justify-center py-4 lg:items-start"
           >
             <!-- 小標籤 -->
             <div
@@ -175,16 +175,10 @@ useHead({
           <div class="hidden gap-4 sm:flex lg:flex-col">
             <!-- 匯入 CTA 卡 -->
             <div
-              class="bg-error/5 border-error/10 flex flex-1 flex-col justify-between rounded-2xl border p-6"
+              class="bg-error/10 border-error/20 flex flex-1 flex-col justify-between rounded-2xl border p-6"
             >
               <div>
                 <div class="flex items-center gap-2 lg:flex-col">
-                  <div class="bg-primary/30 mb-4 inline-flex rounded-xl p-2.5">
-                    <Icon
-                      name="heroicons:arrow-up-tray"
-                      class="text-primary h-6 w-6"
-                    />
-                  </div>
                   <h2
                     class="text-base-content mb-4 text-lg font-semibold lg:mb-2"
                   >
@@ -211,7 +205,7 @@ useHead({
               <p
                 class="text-base-content/50 mb-4 text-base font-medium tracking-wider uppercase"
               >
-                統計數據
+                目前已經有
               </p>
               <div class="grid grid-cols-2 gap-4">
                 <div>

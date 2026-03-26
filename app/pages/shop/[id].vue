@@ -16,7 +16,7 @@ const sortOptions = [
   { value: "price_desc", label: "價格高→低" },
   { value: "newest", label: "最新上架" },
 ];
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 // 4. State/Variables
 const { sanitize } = useSanitize();
