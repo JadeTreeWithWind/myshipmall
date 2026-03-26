@@ -195,7 +195,7 @@ async function submit() {
           取消
         </button>
         <button
-          class="btn btn-primary btn-sm flex-1"
+          class="btn btn-primary btn-sm sm:btn-md flex-1"
           :disabled="submitting"
           @click="submit"
         >

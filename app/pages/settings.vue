@@ -97,17 +97,20 @@ useHead({ title: "設定" });
           </NuxtLink>
         </li>
         <li>
-          <NuxtLink
-            to="/search"
-            class="active:bg-base-300/50 flex items-center gap-3 px-4 py-3.5 transition-colors"
+          <button
+            class="active:bg-base-300/50 flex w-full items-center gap-3 px-4 py-3.5 transition-colors"
+            @click="contactOpen = true"
           >
-            <Icon name="heroicons:fire" class="text-primary h-5 w-5 shrink-0" />
-            <span class="text-base-content flex-1">熱門商品</span>
+            <Icon
+              name="material-symbols:chat-outline-rounded"
+              class="text-primary h-5 w-5 shrink-0"
+            />
+            <span class="text-base-content flex-1 text-left">聯絡我</span>
             <Icon
               name="heroicons:chevron-right"
               class="text-base-content/30 h-4 w-4"
             />
-          </NuxtLink>
+          </button>
         </li>
       </ul>
     </section>
@@ -206,22 +209,6 @@ useHead({ title: "設定" });
               class="text-base-content/30 h-4 w-4"
             />
           </NuxtLink>
-        </li>
-        <li>
-          <button
-            class="active:bg-base-300/50 flex w-full items-center gap-3 px-4 py-3.5 transition-colors"
-            @click="contactOpen = true"
-          >
-            <Icon
-              name="material-symbols:chat-outline-rounded"
-              class="text-primary h-5 w-5 shrink-0"
-            />
-            <span class="text-base-content flex-1 text-left">聯絡我</span>
-            <Icon
-              name="heroicons:chevron-right"
-              class="text-base-content/30 h-4 w-4"
-            />
-          </button>
         </li>
       </ul>
     </section>
