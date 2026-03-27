@@ -123,21 +123,34 @@ const updatedAt = computed(() => {
   });
 });
 
-const buyUrl = computed(() => shop.value?.shop_url ?? null);
+const buyUrl = computed(() => safeMyshipUrl(shop.value?.shop_url));
 
 // 6. 核心邏輯與函數
 async function handleBuy() {
+  if (!buyUrl.value) return;
+
   $fetch("/api/record-click", {
     method: "POST",
     body: { product_id: productId },
   }).catch(() => {});
 
-  if (buyUrl.value) {
-    window.open(buyUrl.value, "_blank", "noopener,noreferrer");
-  }
+  window.open(buyUrl.value, "_blank", "noopener,noreferrer");
 }
 
 // 7. 偵聽器（無）
+const contactOpen = useState("contactOpen", () => false);
+const contactForm = useState("contactForm", () => ({
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+}));
+
+function openReport() {
+  contactForm.value.subject = "濫用檢舉";
+  contactForm.value.message = `【商品檢舉】\n商品名稱：${product.value?.name ?? ""}\n商品 ID：${productId}\n\n問題描述：\n`;
+  contactOpen.value = true;
+}
 
 // 8. 生命週期鉤子
 useHead({
@@ -491,10 +504,19 @@ useHead({
             </p>
           </div>
 
-          <!-- 熱門度 -->
-          <div class="text-base-content/90 flex items-center gap-1.5 text-sm">
-            <Icon name="heroicons:fire" class="h-4 w-4 text-orange-400/60" />
-            {{ product?.click_count }} 次點擊購買
+          <!-- 熱門度 + 檢舉 -->
+          <div class="flex items-center justify-between">
+            <div class="text-base-content/90 flex items-center gap-1.5 text-sm">
+              <Icon name="heroicons:fire" class="h-4 w-4 text-orange-400/60" />
+              {{ product?.click_count }} 次點擊購買
+            </div>
+            <button
+              class="text-base-content/40 hover:text-error flex items-center gap-1 text-xs transition-colors"
+              @click="openReport"
+            >
+              <Icon name="heroicons:flag" class="h-3.5 w-3.5" />
+              檢舉此商品
+            </button>
           </div>
         </div>
       </div>
@@ -505,10 +527,12 @@ useHead({
           <div class="bg-primary h-5 w-1 rounded-full" />
           <h2 class="text-lg font-semibold">商品說明</h2>
         </div>
-        <div
-          class="prose prose-sm bg-base-100 border-base-300/60 max-w-none rounded-2xl border p-6"
-          v-html="sanitize(product.description)"
-        />
+        <ExternalLinkGuard>
+          <div
+            class="prose prose-sm bg-base-100 border-base-300/60 max-w-none rounded-2xl border p-6"
+            v-html="sanitize(product.description)"
+          />
+        </ExternalLinkGuard>
       </div>
 
       <!-- ── 評論區 ── -->

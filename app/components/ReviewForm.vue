@@ -174,7 +174,7 @@ async function submit() {
       <textarea
         v-model="content"
         rows="3"
-        placeholder="分享您的購買心得..."
+        placeholder="分享您的購買心得（請勿留下私下交易資訊）..."
         class="textarea textarea-bordered w-full resize-none"
         maxlength="500"
       />

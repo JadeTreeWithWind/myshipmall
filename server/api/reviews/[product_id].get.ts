@@ -4,6 +4,10 @@ export default defineEventHandler(async (event) => {
   const product_id = getRouterParam(event, 'product_id')
   if (!product_id) throw createError({ statusCode: 400, message: 'product_id 必填' })
 
+  const query = getQuery(event)
+  const limit = Math.min(Number(query.limit) || 20, 100)
+  const offset = Number(query.offset) || 0
+
   const config = useRuntimeConfig(event)
   const supabase = createClient(config.public.supabaseUrl, config.supabaseSecretKey)
 
@@ -12,6 +16,7 @@ export default defineEventHandler(async (event) => {
     .select('id, rating, content, created_at, user_name, user_avatar')
     .eq('product_id', product_id)
     .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1)
 
   if (error) throw createError({ statusCode: 500, message: error.message })
 

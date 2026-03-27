@@ -51,6 +51,8 @@ const {
 });
 
 // 5. 計算屬性
+const safeShopUrl = computed(() => safeMyshipUrl(shop.value?.shop_url));
+
 const shopDesc = computed(() =>
   (
     shop.value?.description?.replace(/<[^>]+>/g, "") ??
@@ -240,8 +242,8 @@ definePageMeta({ keepalive: { max: 5 } });
                 資料最後更新：{{ updatedAt }}
               </p>
               <a
-                v-if="shop?.shop_url"
-                :href="shop.shop_url"
+                v-if="safeShopUrl"
+                :href="safeShopUrl"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-primary mt-2 inline-flex cursor-pointer items-center gap-1 text-base hover:underline"
@@ -256,11 +258,12 @@ definePageMeta({ keepalive: { max: 5 } });
           </div>
 
           <!-- 商城描述 -->
-          <div
-            v-if="shop?.description"
-            class="prose prose-sm text-base-content/80 border-base-300/50 mt-5 max-w-none border-t pt-5 text-sm sm:text-base"
-            v-html="sanitize(shop.description)"
-          />
+          <ExternalLinkGuard v-if="shop?.description">
+            <div
+              class="prose prose-sm text-base-content/80 border-base-300/50 mt-5 max-w-none border-t pt-5 text-sm sm:text-base"
+              v-html="sanitize(shop.description)"
+            />
+          </ExternalLinkGuard>
         </template>
       </div>
 
@@ -282,7 +285,7 @@ definePageMeta({ keepalive: { max: 5 } });
 
       <div
         v-if="products.length"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <ProductCard
           v-for="(p, index) in products"
@@ -301,7 +304,7 @@ definePageMeta({ keepalive: { max: 5 } });
 
       <div
         v-else-if="loading"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="sm:ga3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <SkeletonCard v-for="i in 6" :key="i" />
       </div>

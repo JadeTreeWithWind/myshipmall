@@ -11,20 +11,69 @@ interface Review {
 const props = defineProps<{ productId: string }>();
 const { minLoadingTime } = useMinLoadingTime();
 
-const {
-  data: reviews,
-  refresh: _refresh,
-  pending,
-} = await useAsyncData<Review[]>(`reviews-${props.productId}`, () =>
-  minLoadingTime($fetch(`/api/reviews/${props.productId}`)),
+const PAGE_SIZE = 20;
+
+const reviews = ref<Review[]>([]);
+const initialPending = ref(false);
+const loadingMore = ref(false);
+const hasMore = ref(true);
+const totalFetched = ref(0);
+
+async function fetchPage(offset: number, append = true) {
+  if (append) loadingMore.value = true;
+  else initialPending.value = true;
+  try {
+    const data = await minLoadingTime(
+      $fetch<Review[]>(`/api/reviews/${props.productId}`, {
+        query: { limit: PAGE_SIZE, offset },
+      }),
+    );
+    if (append) {
+      reviews.value.push(...data);
+    } else {
+      reviews.value = data;
+    }
+    totalFetched.value = offset + data.length;
+    hasMore.value = data.length === PAGE_SIZE;
+  } finally {
+    if (append) loadingMore.value = false;
+    else initialPending.value = false;
+  }
+}
+
+// SSR 初始載入第一頁
+await fetchPage(0, false);
+
+const refresh = async () => {
+  totalFetched.value = 0;
+  hasMore.value = true;
+  await fetchPage(0, false);
+};
+
+watch(
+  () => props.productId,
+  () => refresh(),
 );
 
-const refresh = async () => await minLoadingTime(_refresh());
+// IntersectionObserver 監控底部哨兵
+const sentinel = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0]?.isIntersecting && hasMore.value && !loadingMore.value) {
+        fetchPage(totalFetched.value);
+      }
+    },
+    { threshold: 0.1 },
+  );
+  watch(sentinel, (el) => { if (el) observer.observe(el); }, { immediate: true });
+  onUnmounted(() => observer.disconnect());
+});
 
 const avgRating = computed(() => {
-  const list = reviews.value ?? [];
-  if (!list.length) return 0;
-  return list.reduce((sum, r) => sum + r.rating, 0) / list.length;
+  if (!reviews.value.length) return 0;
+  return reviews.value.reduce((sum, r) => sum + r.rating, 0) / reviews.value.length;
 });
 
 function formatDate(iso: string) {
@@ -42,9 +91,9 @@ defineExpose({ refresh });
 <template>
   <div>
     <!-- 標題列 + 平均評分 -->
-    <div class="mb-4 flex items-center gap-3">
+    <div class="mb-3 flex items-center gap-3">
       <h2 class="text-lg font-bold">買家評論</h2>
-      <template v-if="(reviews?.length ?? 0) > 0">
+      <template v-if="reviews.length > 0">
         <div class="flex items-center gap-1">
           <Icon
             name="material-symbols:star-rounded"
@@ -53,19 +102,29 @@ defineExpose({ refresh });
           <span class="font-bold">{{ avgRating.toFixed(1) }}</span>
         </div>
         <span class="text-base-content/80 text-sm"
-          >（{{ reviews?.length }} 則）</span
+          >（{{ reviews.length }} 則）</span
         >
       </template>
     </div>
 
-    <!-- 載入中 -->
-    <div v-if="pending" class="flex justify-center py-8">
+    <!-- 防詐警語 -->
+    <div class="alert mb-4 py-2 text-sm" role="alert">
+      <Icon
+        name="material-symbols:warning-outline-rounded"
+        class="h-4 w-4 shrink-0"
+        aria-hidden="true"
+      />
+      <span>提醒：切勿在非官方管道與陌生人私下交易或轉帳，謹防詐騙。</span>
+    </div>
+
+    <!-- 初始載入中 -->
+    <div v-if="initialPending" class="flex justify-center py-8">
       <span class="loading loading-spinner loading-md" />
     </div>
 
     <!-- 空狀態 -->
     <div
-      v-else-if="!reviews?.length"
+      v-else-if="!reviews.length"
       class="bg-base-200 rounded-xl py-10 text-center text-sm opacity-50"
     >
       尚無評論，成為第一個留下評論的人吧！
@@ -123,6 +182,11 @@ defineExpose({ refresh });
         <!-- 內容 -->
         <p class="text-sm leading-relaxed">{{ review.content }}</p>
       </div>
+    </div>
+
+    <!-- Infinite scroll 哨兵 -->
+    <div ref="sentinel" class="flex justify-center py-4">
+      <span v-if="hasMore" class="loading loading-spinner loading-sm" />
     </div>
   </div>
 </template>

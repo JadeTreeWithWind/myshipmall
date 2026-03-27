@@ -20,7 +20,12 @@ const searchQ = ref("");
 const menuOpen = ref(false);
 const menuRef = ref<HTMLElement | null>(null);
 const contactOpen = useState("contactOpen", () => false);
-const contactForm = reactive({ name: "", email: "", subject: "", message: "" });
+const contactForm = useState("contactForm", () => ({
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+}));
 const contactSending = ref(false);
 const contactSent = ref(false);
 const navVisible = ref(true);
@@ -60,21 +65,21 @@ function handleSearch() {
 
 async function submitContact() {
   if (
-    !contactForm.name.trim() ||
-    !contactForm.email.trim() ||
-    !contactForm.message.trim()
+    !contactForm.value.name.trim() ||
+    !contactForm.value.email.trim() ||
+    !contactForm.value.message.trim()
   )
     return;
   contactSending.value = true;
   try {
     await $fetch("/api/contact", {
       method: "POST",
-      body: { ...contactForm },
+      body: { ...contactForm.value },
     });
     contactSent.value = true;
-    contactForm.name = "";
-    contactForm.email = "";
-    contactForm.message = "";
+    contactForm.value.name = "";
+    contactForm.value.email = "";
+    contactForm.value.message = "";
   } catch {
     useToast().error("訊息送出失敗，請稍後再試");
   } finally {
@@ -96,9 +101,26 @@ function handleClickOutside(e: MouseEvent) {
   }
 }
 
+const SCROLL_UP_THRESHOLD = 60;
+let scrollUpAccum = 0;
+
 function handleScroll() {
   const currentY = window.scrollY;
-  navVisible.value = currentY < 50 || currentY < lastScrollY - 10;
+  const delta = lastScrollY - currentY;
+
+  if (currentY < 10) {
+    navVisible.value = true;
+    scrollUpAccum = 0;
+  } else if (delta > 0) {
+    scrollUpAccum += delta;
+    if (scrollUpAccum >= SCROLL_UP_THRESHOLD) {
+      navVisible.value = true;
+    }
+  } else {
+    scrollUpAccum = 0;
+    navVisible.value = false;
+  }
+
   lastScrollY = currentY;
 }
 

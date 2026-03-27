@@ -166,14 +166,14 @@ function buildShopData(
   const name = str(raw.ShopName || raw.shopName || raw.name || raw.Name || "");
   if (!name) return null;
 
-  const imageUrl = str(
+  const imageUrl = safeImageUrl(str(
     raw.ShopImageUrl ||
       raw.shopImageUrl ||
       raw.image_url ||
       raw.imageUrl ||
       raw.logo ||
       "",
-  );
+  ));
   const description = str(
     raw.Description || raw.description || raw.intro || raw.Intro || "",
   );
@@ -212,9 +212,9 @@ function buildProductData(
     p.CgddName || p.cgddName || p.name || p.Name || p.productName || "",
   );
   const description = str(p.Description || p.description || p.intro || "");
-  const mainImage = str(
+  const mainImage = safeImageUrl(str(
     p.MainImage || p.mainImage || p.image || p.Image || p.imgUrl || "",
-  );
+  ));
   const minOrder = num(p.MinOrder || p.minOrder || p.min_order || 0);
   const maxOrder = num(p.MaxOrder || p.maxOrder || p.max_order || 0);
 
@@ -231,9 +231,9 @@ function buildProductData(
     p.Images ||
     []) as unknown[];
   const images: ImageData[] = rawImages.map((img: any, i: number) => ({
-    url: str(img.url || img.Url || img.imgUrl || img.ImageUrl || img),
+    url: safeImageUrl(str(img.url || img.Url || img.imgUrl || img.ImageUrl || img)),
     ordering: num(img.ordering || img.Order || img.sort || i),
-  }));
+  })).filter((img) => img.url !== "");
 
   // 若沒有 images 但有 mainImage，補一張
   if (images.length === 0 && mainImage) {
@@ -262,7 +262,7 @@ function buildSpecData(s: Record<string, unknown>): SpecData {
     name: str(s.SpecName || s.specName || s.name || s.Name || ""),
     price,
     sale_price: salePrice,
-    image: str(s.SpecImage || s.specImage || s.image || ""),
+    image: safeImageUrl(str(s.SpecImage || s.specImage || s.image || "")),
     stock: num(s.Stock || s.stock || s.inventory || 0),
   };
 }
@@ -288,11 +288,12 @@ function parseFromHtml(
 
   // 賣場主圖（og:image 為相對路徑）
   const ogImage = $('meta[property="og:image"]').attr("content") || "";
-  const imageUrl = ogImage
+  const resolvedOgImage = ogImage
     ? ogImage.startsWith("http")
       ? ogImage
       : `https://myship.7-11.com.tw${ogImage}`
     : "";
+  const imageUrl = safeImageUrl(resolvedOgImage);
 
   // 賣場說明：.col-lg-12.mb-20 下，去掉第一個「賣場說明：」段落
   const $descContainer = $(".main_content .col-lg-12.mb-20").clone();
@@ -381,6 +382,24 @@ function parseFromHtml(
 }
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
+
+const ALLOWED_IMAGE_HOSTS = new Set([
+  "myship.7-11.com.tw",
+  "img.7-11.com.tw",
+  "static.7-11.com.tw",
+]);
+
+/** 驗證圖片 URL 必須屬於白名單 domain，否則回傳空字串 */
+function safeImageUrl(url: string): string {
+  if (!url) return "";
+  try {
+    const { hostname } = new URL(url);
+    return ALLOWED_IMAGE_HOSTS.has(hostname) ? url : "";
+  } catch {
+    return "";
+  }
+}
+
 function str(val: unknown): string {
   if (val === null || val === undefined) return "";
   return String(val).trim();

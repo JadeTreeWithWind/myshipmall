@@ -274,7 +274,7 @@ useHead({
       <!-- 載入中 -->
       <div
         v-if="randomPending"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <SkeletonCard v-for="i in 10" :key="i" />
       </div>
@@ -282,7 +282,7 @@ useHead({
       <!-- 商品列表 -->
       <div
         v-else-if="randomProducts?.length"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <ProductCard
           v-for="p in randomProducts"
@@ -319,7 +319,7 @@ useHead({
       <!-- 載入中 -->
       <div
         v-if="pending"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <SkeletonCard v-for="i in 20" :key="i" />
       </div>
@@ -327,7 +327,7 @@ useHead({
       <!-- 商品列表 -->
       <div
         v-else-if="hotProducts?.length"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <ProductCard
           v-for="(p, index) in hotProducts"
@@ -386,7 +386,7 @@ useHead({
       <!-- 載入中 -->
       <div
         v-if="newPending"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <SkeletonCard v-for="i in 20" :key="i" />
       </div>
@@ -394,7 +394,7 @@ useHead({
       <!-- 商品列表 -->
       <div
         v-else-if="newProducts?.length"
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="sm:grid-cols3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <ProductCard
           v-for="p in newProducts"

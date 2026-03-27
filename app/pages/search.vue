@@ -191,7 +191,7 @@ useHead({
     <!-- ── 商品列表 ── -->
     <div
       v-if="products.length"
-      class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
     >
       <ProductCard
         v-for="(p, index) in products"
@@ -211,7 +211,7 @@ useHead({
     <!-- 骨架載入中 -->
     <div
       v-else-if="loading"
-      class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
     >
       <SkeletonCard v-for="i in 10" :key="i" />
     </div>

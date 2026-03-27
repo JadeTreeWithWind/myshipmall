@@ -30,7 +30,7 @@ const props = defineProps<{
 <template>
   <NuxtLink
     :to="`/product/${id}`"
-    class="group bg-base-200/50 border-base-300/70 hover:border-base-300 flex cursor-pointer flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+    class="group bg-base-200/50 border-base-300/70 hover:border-base-300 flex cursor-pointer flex-col overflow-hidden rounded-md border shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:shadow-sm"
   >
     <!-- 商品圖片 -->
     <div class="bg-base-200 aspect-square shrink-0 overflow-hidden">
