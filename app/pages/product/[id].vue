@@ -109,7 +109,9 @@ interface ShopRef {
   name: string;
   shop_url: string;
 }
-const shop = computed(() => (product.value?.shops as unknown as ShopRef) ?? null);
+const shop = computed(
+  () => (product.value?.shops as unknown as ShopRef) ?? null,
+);
 
 const updatedAt = computed(() => {
   const d = product.value?.updated_at;
@@ -141,9 +143,15 @@ async function handleBuy() {
 useHead({
   title: () => product.value?.name ?? "商品載入中",
   meta: [
-    { name: "description", content: () => productDesc.value },
-    { property: "og:title", content: () => product.value?.name ?? "" },
-    { property: "og:description", content: () => productDesc.value },
+    { name: "description", content: () => productDesc.value + "| 賣貨商城" },
+    {
+      property: "og:title",
+      content: () => (product.value?.name ?? "") + "| 賣貨商城",
+    },
+    {
+      property: "og:description",
+      content: () => productDesc.value + "| 賣貨商城",
+    },
     { property: "og:image", content: () => product.value?.main_image ?? "" },
     { property: "og:type", content: "product" },
     { property: "og:url", content: productUrl },

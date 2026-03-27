@@ -29,6 +29,19 @@
 
 <script setup lang="ts">
 const { showInstallBanner, install, dismiss } = usePwaInstall();
+
+let timer: ReturnType<typeof setTimeout> | null = null;
+
+watch(showInstallBanner, (val) => {
+  if (val) {
+    timer = setTimeout(() => dismiss(), 3000);
+  } else {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+});
 </script>
 
 <style scoped>

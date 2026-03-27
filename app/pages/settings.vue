@@ -124,7 +124,7 @@ useHead({ title: "設定" });
       </p>
       <ul class="bg-base-200 overflow-hidden rounded-2xl">
         <li>
-          <div class="flex items-center gap-3 px-4 py-3.5">
+          <label class="flex cursor-pointer items-center gap-3 px-4 py-3.5">
             <Icon
               name="heroicons:paint-brush"
               class="text-primary h-5 w-5 shrink-0"
@@ -136,7 +136,7 @@ useHead({ title: "設定" });
               :checked="theme === 'halloween'"
               @change="toggleTheme"
             />
-          </div>
+          </label>
         </li>
       </ul>
     </section>

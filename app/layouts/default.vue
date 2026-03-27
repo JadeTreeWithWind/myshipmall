@@ -205,7 +205,7 @@ onUnmounted(() => {
           <!-- 主題切換 -->
           <div class="hidden sm:flex">
             <label
-              class="swap btn btn-square btn-ghost btn-sm swap-rotate cursor-pointer"
+              class="swap btn btn-circle btn-ghost btn-sm swap-rotate cursor-pointer"
             >
               <!-- this hidden checkbox controls the state -->
               <input
@@ -485,7 +485,7 @@ onUnmounted(() => {
     </Teleport>
 
     <!-- ── Footer ── -->
-    <footer class="border-base-300/60 bg-base-100 mt-16 border-t">
+    <footer class="border-base-300/60 bg-base-100 border-t sm:mt-16">
       <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div
           class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center"
