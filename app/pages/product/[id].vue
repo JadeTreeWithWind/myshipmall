@@ -213,6 +213,20 @@ useHead({
       <NuxtLink to="/" class="btn btn-primary btn-sm">回首頁</NuxtLink>
     </div>
 
+    <!-- 已下架 -->
+    <div
+      v-else-if="!pending && product?.status === 0"
+      class="flex flex-col items-center gap-4 py-32 text-center"
+    >
+      <Icon
+        name="heroicons:archive-box-x-mark"
+        class="text-base-content/30 h-16 w-16"
+      />
+      <p class="text-base-content font-medium">此商品已下架</p>
+      <p class="text-base-content/60 text-sm">賣家已將此商品從賣貨便移除</p>
+      <NuxtLink to="/" class="btn btn-primary btn-sm">回首頁</NuxtLink>
+    </div>
+
     <!-- Skeleton -->
     <template v-else-if="pending">
       <!-- 麵包屑 skeleton -->

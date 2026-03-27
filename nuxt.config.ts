@@ -12,7 +12,6 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: "zh-Hant" },
       meta: [
-        { name: "theme-color", content: "#ffffff" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "format-detection", content: "telephone=no" },
         { name: "theme-color", content: "#000000" },

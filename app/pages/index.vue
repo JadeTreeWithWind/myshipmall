@@ -41,13 +41,21 @@ const { data: stats } = useFetch<{ products: number; shops: number }>(
 const displayProducts = ref(0);
 const displayShops = ref(0);
 
+// 存放動畫取消函數，確保元件卸載或重新觸發時能正確清理 RAF
+const cancelFns: Array<() => void> = [];
+
 /**
- * 數字動態累計動畫，元件卸載時自動取消
+ * 數字動態累計動畫，回傳取消函數
  * @param {number} target - 目標數值
  * @param {(v: number) => void} setter - 更新響應式數值的 setter
  * @param {number} duration - 動畫時長（毫秒），預設 3000
+ * @returns {() => void} 取消動畫的函數
  */
-function countUp(target: number, setter: (v: number) => void, duration = 3000) {
+function countUp(
+  target: number,
+  setter: (v: number) => void,
+  duration = 3000,
+): () => void {
   const from = Math.max(0, target - 30);
   const start = performance.now();
   let rafId: number;
@@ -58,18 +66,23 @@ function countUp(target: number, setter: (v: number) => void, duration = 3000) {
     if (progress < 1) rafId = requestAnimationFrame(step);
   }
   rafId = requestAnimationFrame(step);
-  onUnmounted(() => cancelAnimationFrame(rafId));
+  return () => cancelAnimationFrame(rafId);
 }
 
 watch(
   stats,
   (val) => {
     if (!val) return;
-    countUp(val.products, (v) => (displayProducts.value = v));
-    countUp(val.shops, (v) => (displayShops.value = v));
+    // 取消舊動畫再啟動新的，避免多次觸發時 RAF 堆積
+    cancelFns.forEach((fn) => fn());
+    cancelFns.length = 0;
+    cancelFns.push(countUp(val.products, (v) => (displayProducts.value = v)));
+    cancelFns.push(countUp(val.shops, (v) => (displayShops.value = v)));
   },
   { immediate: true },
 );
+
+onUnmounted(() => cancelFns.forEach((fn) => fn()));
 
 // 5. 計算屬性（無）
 
@@ -393,7 +406,7 @@ useHead({
       <!-- 商品列表 -->
       <div
         v-else-if="newProducts?.length"
-        class="sm:grid-cols3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <ProductCard
           v-for="p in newProducts"

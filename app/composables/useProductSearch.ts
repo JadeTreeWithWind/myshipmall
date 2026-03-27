@@ -55,6 +55,14 @@ export function useProductSearch() {
         offset.value += result.length;
       }
       hasMore.value = result.length === PAGE_SIZE;
+    } catch (err) {
+      // reset 時清空，避免顯示舊資料；loadMore 失敗則保留現有結果
+      if (reset) {
+        products.value = [];
+        hasMore.value = false;
+      }
+      useToast().error("載入商品失敗，請稍後再試");
+      console.error("[useProductSearch] fetchPage error:", err);
     } finally {
       loading.value = false;
     }

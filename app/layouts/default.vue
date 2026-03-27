@@ -1,5 +1,7 @@
 <script setup lang="ts">
 // 1. 外部引用
+import { BOTTOM_NAV_ITEMS, CONTACT_SUBJECTS } from "~/constants/text";
+
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
@@ -31,12 +33,7 @@ const contactSent = ref(false);
 const navVisible = ref(true);
 let lastScrollY = 0;
 
-const bottomNavItems = [
-  { path: "/", icon: "heroicons:home", label: "首頁" },
-  { path: "/search", icon: "heroicons:fire", label: "熱門" },
-  { path: "/import", icon: "heroicons:arrow-down-tray", label: "匯入" },
-  { path: "/settings", icon: "heroicons:cog-6-tooth", label: "設定" },
-];
+const bottomNavItems = BOTTOM_NAV_ITEMS;
 
 // 5. 計算屬性（無）
 
@@ -103,25 +100,31 @@ function handleClickOutside(e: MouseEvent) {
 
 const SCROLL_UP_THRESHOLD = 60;
 let scrollUpAccum = 0;
+let scrollRafId: number | null = null;
 
+// 用 rAF 節流，避免高頻 scroll 事件過度更新響應式狀態
 function handleScroll() {
-  const currentY = window.scrollY;
-  const delta = lastScrollY - currentY;
+  if (scrollRafId !== null) return;
+  scrollRafId = requestAnimationFrame(() => {
+    scrollRafId = null;
+    const currentY = window.scrollY;
+    const delta = lastScrollY - currentY;
 
-  if (currentY < 10) {
-    navVisible.value = true;
-    scrollUpAccum = 0;
-  } else if (delta > 0) {
-    scrollUpAccum += delta;
-    if (scrollUpAccum >= SCROLL_UP_THRESHOLD) {
+    if (currentY < 10) {
       navVisible.value = true;
+      scrollUpAccum = 0;
+    } else if (delta > 0) {
+      scrollUpAccum += delta;
+      if (scrollUpAccum >= SCROLL_UP_THRESHOLD) {
+        navVisible.value = true;
+      }
+    } else {
+      scrollUpAccum = 0;
+      navVisible.value = false;
     }
-  } else {
-    scrollUpAccum = 0;
-    navVisible.value = false;
-  }
 
-  lastScrollY = currentY;
+    lastScrollY = currentY;
+  });
 }
 
 // 7. 偵聽器
@@ -174,6 +177,7 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener("mousedown", handleClickOutside);
   window.removeEventListener("scroll", handleScroll);
+  if (scrollRafId !== null) cancelAnimationFrame(scrollRafId);
 });
 </script>
 
@@ -483,13 +487,13 @@ onUnmounted(() => {
                   class="select select-lg select-bordered w-full cursor-pointer"
                 >
                   <option value="" disabled>選擇主旨</option>
-                  <option value="問題回報">問題回報</option>
-                  <option value="功能建議">功能建議</option>
-                  <option value="資料移除">資料移除</option>
-                  <option value="著作權問題">著作權問題</option>
-                  <option value="濫用檢舉">濫用檢舉</option>
-                  <option value="商業合作">商業合作</option>
-                  <option value="其他">其他</option>
+                  <option
+                    v-for="subject in CONTACT_SUBJECTS"
+                    :key="subject"
+                    :value="subject"
+                  >
+                    {{ subject }}
+                  </option>
                 </select>
                 <textarea
                   v-model="contactForm.message"

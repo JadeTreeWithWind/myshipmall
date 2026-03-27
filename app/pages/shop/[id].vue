@@ -304,7 +304,7 @@ definePageMeta({ keepalive: { max: 5 } });
 
       <div
         v-else-if="loading"
-        class="sm:ga3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <SkeletonCard v-for="i in 6" :key="i" />
       </div>
