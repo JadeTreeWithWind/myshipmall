@@ -122,17 +122,17 @@ watch(sort, () => fetchProducts(true));
 
 // 8. 生命週期鉤子
 useHead({
-  title: () => (shop.value?.name ?? "") + "| 賣貨商城",
+  title: () => shop.value?.name ?? "",
   link: [{ rel: "canonical", href: shopUrl }],
   meta: [
-    { name: "description", content: () => shopDesc.value + "| 賣貨商城" },
+    { name: "description", content: () => shopDesc.value },
     {
       property: "og:title",
-      content: () => (shop.value?.name ?? "") + "| 賣貨商城",
+      content: () => shop.value?.name ?? "",
     },
     {
       property: "og:description",
-      content: () => shopDesc.value + "| 賣貨商城",
+      content: () => shopDesc.value,
     },
     { property: "og:image", content: () => shop.value?.image_url ?? "" },
     { property: "og:type", content: "website" },

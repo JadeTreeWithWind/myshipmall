@@ -28,3 +28,4 @@ scrap.html
 .nuxt/
 .agent/
 .wrangler/
+security.md

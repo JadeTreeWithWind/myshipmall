@@ -409,7 +409,7 @@ useHead({
 
           <!-- 資料更新時間 -->
           <p class="text-base-content/90 text-sm">
-            資料最後更新：{{ updatedAt }}
+            資料最後更新：{{ updatedAt }} | 資料來源：賣貨便
           </p>
 
           <!-- ── 規格列表 ── -->
@@ -482,9 +482,14 @@ useHead({
               class="h-4 w-4 opacity-60"
             />
           </button>
-          <p class="text-base-content/90 -mt-2 text-center text-sm">
-            點擊後將開啟 7-11 賣貨便頁面完成購買
-          </p>
+          <div>
+            <p class="text-base-content/90 text-center text-sm">
+              點擊後將開啟 7-11 賣貨便頁面完成購買
+            </p>
+            <p class="text-base-content/90 text-center text-sm">
+              所有的商品內容著作權歸賣貨便及原賣場所有
+            </p>
+          </div>
 
           <!-- 熱門度 -->
           <div class="text-base-content/90 flex items-center gap-1.5 text-sm">

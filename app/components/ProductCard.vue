@@ -52,7 +52,7 @@ const props = defineProps<{
     <div class="flex flex-1 flex-col gap-1.5 p-3">
       <!-- 商品名稱 -->
       <p
-        class="text-base-content line-clamp-2 text-base leading-snug font-medium"
+        class="text-base-content line-clamp-2 text-sm leading-snug font-medium sm:text-base"
       >
         {{ name }}
       </p>

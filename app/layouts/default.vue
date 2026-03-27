@@ -23,6 +23,8 @@ const contactOpen = useState("contactOpen", () => false);
 const contactForm = reactive({ name: "", email: "", subject: "", message: "" });
 const contactSending = ref(false);
 const contactSent = ref(false);
+const navVisible = ref(true);
+let lastScrollY = 0;
 
 const bottomNavItems = [
   { path: "/", icon: "heroicons:home", label: "首頁" },
@@ -94,6 +96,12 @@ function handleClickOutside(e: MouseEvent) {
   }
 }
 
+function handleScroll() {
+  const currentY = window.scrollY;
+  navVisible.value = currentY < 50 || currentY < lastScrollY;
+  lastScrollY = currentY;
+}
+
 // 7. 偵聽器
 watch(
   () => route.query.q,
@@ -138,10 +146,12 @@ onMounted(() => {
   }
   applyTheme(theme.value);
   document.addEventListener("mousedown", handleClickOutside);
+  window.addEventListener("scroll", handleScroll, { passive: true });
 });
 
 onUnmounted(() => {
   document.removeEventListener("mousedown", handleClickOutside);
+  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 
@@ -151,7 +161,10 @@ onUnmounted(() => {
   >
     <!-- ── Navbar ── -->
     <nav
-      class="bg-base-100 border-base-300/60 fixed top-0 z-50 w-full backdrop-blur-xs"
+      class="bg-base-100 border-base-300/60 fixed top-0 z-50 w-full backdrop-blur-xs transition-transform duration-300"
+      :class="
+        navVisible ? 'translate-y-0' : '-translate-y-full sm:translate-y-0'
+      "
     >
       <div
         class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-20 sm:gap-3 sm:px-6"
@@ -300,6 +313,15 @@ onUnmounted(() => {
               </li>
 
               <li>
+                <NuxtLink to="/pwa" class="rounded-lg text-base">
+                  <Icon
+                    name="heroicons:device-phone-mobile"
+                    class="text-base-content/90 text-xl"
+                  />
+                  安裝 App
+                </NuxtLink>
+              </li>
+              <li>
                 <NuxtLink to="/about" class="rounded-lg text-base">
                   <Icon
                     name="material-symbols:info-outline-rounded"
@@ -392,7 +414,7 @@ onUnmounted(() => {
       <Transition name="contact-panel">
         <div
           v-if="contactOpen"
-          class="bg-base-100 border-primary/50 fixed right-0 bottom-0 z-100 w-full rounded-2xl border p-2 shadow-2xl sm:right-4 sm:bottom-4 sm:max-w-96"
+          class="bg-base-100 border-primary/50 fixed right-0 bottom-0 z-100 w-full rounded-t-2xl border border-b-0 p-2 shadow-2xl sm:right-4 sm:bottom-4 sm:max-w-96 sm:rounded-b-2xl sm:border-b"
         >
           <div
             class="border-base-300/40 flex items-center justify-between border-b px-4 py-3"
@@ -409,7 +431,7 @@ onUnmounted(() => {
               aria-label="關閉"
               @click="contactOpen = false"
             >
-              <Icon name="heroicons:x-mark" class="h-4 w-4" />
+              <Icon name="heroicons:x-mark" class="text-xl" />
             </button>
           </div>
 
@@ -522,7 +544,7 @@ onUnmounted(() => {
             </div>
             <div class="flex w-1/2 flex-col gap-2 text-sm sm:w-auto">
               <div class="title text-base-content/90 text-lg font-semibold">
-                頁面
+                關於
               </div>
               <NuxtLink
                 to="/about"
@@ -553,13 +575,10 @@ onUnmounted(() => {
 <style scoped>
 .contact-panel-enter-active,
 .contact-panel-leave-active {
-  transition:
-    opacity 0.2s ease,
-    transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .contact-panel-enter-from,
 .contact-panel-leave-to {
-  opacity: 0;
-  transform: translateY(12px) scale(0.97);
+  transform: translateY(100%);
 }
 </style>

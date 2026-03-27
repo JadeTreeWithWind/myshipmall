@@ -25,7 +25,7 @@ useHead({ title: "設定" });
 </script>
 
 <template>
-  <div class="mx-auto max-w-lg px-4 py-6">
+  <div class="mx-auto min-h-dvh max-w-lg px-4 py-6">
     <!-- 使用者資訊卡 -->
     <div class="bg-base-200 mb-6 flex items-center gap-4 rounded-2xl p-4">
       <div
@@ -178,6 +178,22 @@ useHead({ title: "設定" });
       <ul
         class="bg-base-200 divide-base-300/40 divide-y overflow-hidden rounded-2xl"
       >
+        <li>
+          <NuxtLink
+            to="/pwa"
+            class="active:bg-base-300/50 flex items-center gap-3 px-4 py-3.5 transition-colors"
+          >
+            <Icon
+              name="heroicons:device-phone-mobile"
+              class="text-primary h-5 w-5 shrink-0"
+            />
+            <span class="text-base-content flex-1">安裝 App</span>
+            <Icon
+              name="heroicons:chevron-right"
+              class="text-base-content/30 h-4 w-4"
+            />
+          </NuxtLink>
+        </li>
         <li>
           <NuxtLink
             to="/about"

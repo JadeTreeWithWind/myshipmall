@@ -109,7 +109,7 @@ useHead({
 </script>
 
 <template>
-  <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+  <div class="mx-auto min-h-dvh max-w-7xl px-4 py-6 sm:px-6">
     <!-- ── 標題 ── -->
     <div class="mb-6">
       <h1 class="text-base-content text-2xl font-semibold">
