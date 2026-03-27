@@ -247,105 +247,105 @@ onUnmounted(() => {
 
           <!-- 漢堡選單 -->
           <div class="dropdown dropdown-end ml-1 hidden lg:block">
-              <label
-                tabindex="0"
-                class="btn btn-ghost btn-sm btn-circle avatar cursor-pointer"
+            <label
+              tabindex="0"
+              class="btn btn-ghost btn-sm btn-circle avatar cursor-pointer"
+            >
+              <div
+                class="flex w-7 items-center justify-center overflow-hidden rounded-full"
               >
-                <div
-                  class="flex w-7 items-center justify-center overflow-hidden rounded-full"
-                >
-                  <div v-if="user">
-                    <img
-                      v-if="user.user_metadata?.avatar_url"
-                      :src="user.user_metadata.avatar_url"
-                      :alt="user.user_metadata?.full_name ?? '使用者'"
-                    />
-                    <div
-                      v-else
-                      class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-xs font-bold"
-                    >
-                      {{
-                        (user.user_metadata?.full_name ??
-                          user.email ??
-                          "?")[0].toUpperCase()
-                      }}
-                    </div>
-                  </div>
-                  <Icon
-                    v-else
-                    name="iconamoon:menu-burger-horizontal-bold"
-                    class="h-5 w-5"
+                <div v-if="user">
+                  <img
+                    v-if="user.user_metadata?.avatar_url"
+                    :src="user.user_metadata.avatar_url"
+                    :alt="user.user_metadata?.full_name ?? '使用者'"
                   />
+                  <div
+                    v-else
+                    class="bg-primary text-primary-content flex h-full w-full items-center justify-center text-xs font-bold"
+                  >
+                    {{
+                      (user.user_metadata?.full_name ??
+                        user.email ??
+                        "?")[0].toUpperCase()
+                    }}
+                  </div>
                 </div>
-              </label>
-              <ul
-                tabindex="0"
-                class="menu dropdown-content bg-base-100 border-base-300/50 z-50 mt-2 w-52 rounded-xl border p-2 shadow-lg"
-                @click="closeDropdown"
+                <Icon
+                  v-else
+                  name="iconamoon:menu-burger-horizontal-bold"
+                  class="h-5 w-5"
+                />
+              </div>
+            </label>
+            <ul
+              tabindex="0"
+              class="menu dropdown-content bg-base-100 border-base-300/50 z-50 mt-2 w-52 rounded-xl border p-2 shadow-lg"
+              @click="closeDropdown"
+            >
+              <li
+                v-if="user"
+                class="menu-title text-base-content/90 truncate px-3 py-2"
               >
-                <li
-                  v-if="user"
-                  class="menu-title text-base-content/90 truncate px-3 py-2"
-                >
-                  {{ user.user_metadata?.full_name ?? user.email }}
-                </li>
-                <li v-if="isAdmin">
-                  <NuxtLink to="/admin/messages" class="rounded-lg text-base">
-                    <Icon
-                      name="material-symbols:stacked-email-outline"
-                      class="text-base-content/90 text-xl"
-                    />
-                    聯絡訊息
-                  </NuxtLink>
-                </li>
+                {{ user.user_metadata?.full_name ?? user.email }}
+              </li>
+              <li v-if="isAdmin">
+                <NuxtLink to="/admin/messages" class="rounded-lg text-base">
+                  <Icon
+                    name="material-symbols:stacked-email-outline"
+                    class="text-base-content/90 text-xl"
+                  />
+                  聯絡訊息
+                </NuxtLink>
+              </li>
 
-                <li>
-                  <NuxtLink to="/about" class="rounded-lg text-base">
-                    <Icon
-                      name="material-symbols:info-outline-rounded"
-                      class="text-base-content/90 text-xl"
-                    />
-                    關於商城
-                  </NuxtLink>
-                </li>
-                <li>
-                  <NuxtLink to="/terms" class="rounded-lg text-base">
-                    <Icon
-                      name="material-symbols:docs-outline"
-                      class="text-base-content/90 text-xl"
-                    />
-                    服務條款
-                  </NuxtLink>
-                </li>
-                <li>
-                  <button class="rounded-lg text-base" @click="openContact">
-                    <Icon
-                      name="material-symbols:chat-outline-rounded"
-                      class="text-base-content/90 text-xl"
-                    />
-                    聯絡我
-                  </button>
-                </li>
-                <li v-if="user">
-                  <button class="rounded-lg text-base" @click="signOut">
-                    <Icon
-                      name="material-symbols:mobile-arrow-right-outline-rounded"
-                      class="text-base-content/90 text-xl"
-                    />
-                    登出
-                  </button>
-                </li>
-                <li v-else>
-                  <button class="rounded-lg text-base" @click="signIn">
-                    <Icon
-                      name="material-symbols:account-circle-outline"
-                      class="text-base-content/90 text-xl"
-                    />
-                    登入
-                  </button>
-                </li>
-              </ul>
-            </div>
+              <li>
+                <NuxtLink to="/about" class="rounded-lg text-base">
+                  <Icon
+                    name="material-symbols:info-outline-rounded"
+                    class="text-base-content/90 text-xl"
+                  />
+                  關於商城
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/terms" class="rounded-lg text-base">
+                  <Icon
+                    name="material-symbols:docs-outline"
+                    class="text-base-content/90 text-xl"
+                  />
+                  服務條款
+                </NuxtLink>
+              </li>
+              <li>
+                <button class="rounded-lg text-base" @click="openContact">
+                  <Icon
+                    name="material-symbols:chat-outline-rounded"
+                    class="text-base-content/90 text-xl"
+                  />
+                  聯絡我
+                </button>
+              </li>
+              <li v-if="user">
+                <button class="rounded-lg text-base" @click="signOut">
+                  <Icon
+                    name="material-symbols:mobile-arrow-right-outline-rounded"
+                    class="text-base-content/90 text-xl"
+                  />
+                  登出
+                </button>
+              </li>
+              <li v-else>
+                <button class="rounded-lg text-base" @click="signIn">
+                  <Icon
+                    name="material-symbols:account-circle-outline"
+                    class="text-base-content/90 text-xl"
+                  />
+                  登入
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </nav>
@@ -378,7 +378,9 @@ onUnmounted(() => {
     <ToastContainer />
 
     <!-- ── PWA 安裝提示 ── -->
-    <PwaInstallBanner />
+    <div class="sm:hidden">
+      <PwaInstallBanner />
+    </div>
 
     <!-- ── 聯絡我浮動視窗 ── -->
     <Teleport to="body">

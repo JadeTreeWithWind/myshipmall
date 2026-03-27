@@ -91,12 +91,12 @@ export default defineNuxtConfig({
     registerType: "autoUpdate",
     manifest: {
       name: "賣貨商城",
-      short_name: "MyShipMall",
+      short_name: "賣貨商城",
       description: "購物評價平台",
       lang: "zh-Hant",
       theme_color: "#000000",
       background_color: "#80D1CA",
-      display: "fullscreen",
+      display: "standalone",
       orientation: "portrait",
       start_url: "/",
       icons: [
@@ -111,7 +111,7 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      navigateFallback: "/offline.html",
+      navigateFallback: "/",
       navigateFallbackAllowlist: [/^\/$/],
       runtimeCaching: [
         {
@@ -133,7 +133,7 @@ export default defineNuxtConfig({
       ],
     },
     devOptions: {
-      enabled: true, // dev 時也能測 SW
+      enabled: false,
       type: "module",
       suppressWarnings: true,
     },
