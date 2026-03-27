@@ -1,58 +1,13 @@
 <script setup lang="ts">
 // 1. Constants
+import {
+  PWA_DESC,
+  PWA_FEATURES as FEATURES,
+  PWA_GUIDES as GUIDES,
+} from "~/constants/text";
+
 const config = useRuntimeConfig();
-const DESC =
-  "不用去 Store 下載，直接把賣貨商城釘在手機，開起來跟一般 App 沒兩樣，還不佔什麼空間。";
-
-const FEATURES = [
-  {
-    icon: "heroicons:bolt",
-    title: "開好開滿",
-    desc: "從主畫面直接點開，比每次重開瀏覽器找網址快多了。",
-  },
-  {
-    icon: "heroicons:device-phone-mobile",
-    title: "沉浸式瀏覽",
-    desc: "沒有網址列佔版面，整個螢幕都是商品，看起來舒服很多。",
-  },
-  {
-    icon: "heroicons:arrow-down-tray",
-    title: "安裝即最新版",
-    desc: "不會有「要不要更新」的提示，每次開都是最新版本。",
-  },
-  {
-    icon: "heroicons:inbox-arrow-down",
-    title: "幾乎不佔空間",
-    desc: "沒有幾 MB 的安裝檔，就一個小小的捷徑，手機空間不哭泣。",
-  },
-];
-
-const GUIDES = [
-  {
-    id: "ios",
-    icon: "heroicons:device-phone-mobile",
-    label: "iOS",
-    steps: [
-      "用 Safari 打開這個網站",
-      "點一下畫面底部中間那個「分享」圖示",
-      "選單往下滑，找到「加入主畫面」然後點它",
-      "名稱保持預設就好，右上角點「新增」完成！",
-    ],
-    note: "Apple 限制iOS 只有 Safari 能安裝 PWA，其他瀏覽器的分享選單裡不會出現這個選項。",
-  },
-  {
-    id: "android",
-    icon: "heroicons:device-phone-mobile",
-    label: "Android",
-    steps: [
-      "用瀏覽器打開這個網站",
-      "點右上角三個點的選單",
-      "找「新增至主畫面」或「安裝應用程式」，點下去",
-      "確認一下名稱，按「安裝」就搞定了",
-    ],
-    note: "有些 Android 手機會主動跳出安裝提示，直接點那個也可以。",
-  },
-];
+const DESC = PWA_DESC;
 
 // 2. State
 const { showInstallBanner, install, dismiss } = usePwaInstall();

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 // 1. 外部引用
 import type { ProductSearchResult } from "~/composables/useProductSearch";
+import { HOME_DESC, HOME_SUGGESTED_SEARCHES } from "~/constants/text";
 
 // 2. 類型定義（無）
 
 // 3. 常量宣告
 const config = useRuntimeConfig();
-const HOME_DESC =
-  "搜尋並瀏覽所有已匯入的 7-11 賣貨便商品，提供更好的商品瀏覽與搜尋體驗。";
 
 // 4. 響應式狀態/變數
 const router = useRouter();
@@ -165,7 +164,7 @@ useHead({
             <div class="mt-4 flex flex-wrap items-center gap-2">
               <span class="text-base-content/40 text-xs">推薦：</span>
               <button
-                v-for="tag in ['貓', '蛋糕', '甜點', '美妝', '戒指', '布朗尼']"
+                v-for="tag in HOME_SUGGESTED_SEARCHES"
                 :key="tag"
                 class="border-base-content/10 bg-base-100/60 text-base-content/60 hover:border-primary/40 hover:bg-primary/5 hover:text-primary cursor-pointer rounded-full border px-3 py-1 text-xs transition-colors"
                 @click="

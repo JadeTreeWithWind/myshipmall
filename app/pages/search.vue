@@ -1,17 +1,14 @@
 <script setup lang="ts">
-// 1. 外部引用（無）
+// 1. 外部引用
+import {
+  SEARCH_DESC,
+  SORT_OPTIONS,
+} from "~/constants/text";
 
 // 2. 類型定義（無）
 
 // 3. 常量宣告
 const config = useRuntimeConfig();
-const SEARCH_DESC = "在 賣貨商城 搜尋賣貨便商品，快速找到您想要的物品。";
-const SORT_OPTIONS = [
-  { value: "popular", label: "最熱門" },
-  { value: "newest", label: "最新上架" },
-  { value: "price_asc", label: "價格↑" },
-  { value: "price_desc", label: "價格↓" },
-];
 
 // 4. 響應式狀態/變數
 const route = useRoute();
