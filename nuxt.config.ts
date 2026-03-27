@@ -90,13 +90,13 @@ export default defineNuxtConfig({
   pwa: {
     registerType: "autoUpdate",
     manifest: {
-      name: "MyShipMall",
+      name: "賣貨商城",
       short_name: "MyShipMall",
       description: "購物評價平台",
       lang: "zh-Hant",
-      theme_color: "#ffffff",
-      background_color: "#ffffff",
-      display: "standalone",
+      theme_color: "#000000",
+      background_color: "#80D1CA",
+      display: "fullscreen",
       orientation: "portrait",
       start_url: "/",
       icons: [
@@ -111,7 +111,8 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      navigateFallback: "/",
+      navigateFallback: "/offline.html",
+      navigateFallbackAllowlist: [/^\/$/],
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
@@ -130,10 +131,6 @@ export default defineNuxtConfig({
           },
         },
       ],
-    },
-    // Cloudflare Pages 不跑 node，關掉 SW 的 type: 'module'
-    injectManifest: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
     devOptions: {
       enabled: true, // dev 時也能測 SW
