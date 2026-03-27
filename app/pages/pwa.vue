@@ -45,7 +45,7 @@ const GUIDES = [
     icon: "heroicons:device-phone-mobile",
     label: "Android",
     steps: [
-      "用 Chrome 打開這個網站",
+      "用瀏覽器打開這個網站",
       "點右上角三個點的選單",
       "找「新增至主畫面」或「安裝應用程式」，點下去",
       "確認一下名稱，按「安裝」就搞定了",
@@ -114,23 +114,6 @@ useHead({
       <p class="text-base-content/70 text-base leading-relaxed">
         {{ DESC }}
       </p>
-    </div>
-
-    <!-- 已安裝提示 -->
-    <div
-      v-if="isInstalled"
-      class="bg-success/10 border-success/30 mb-8 flex items-center gap-3 rounded-2xl border p-5"
-    >
-      <Icon
-        name="heroicons:check-circle"
-        class="text-success shrink-0 text-2xl"
-      />
-      <div>
-        <p class="text-success font-semibold">安裝成功！</p>
-        <p class="text-base-content/60 text-sm">
-          你現在就是在用 App 模式瀏覽，下次直接從主畫面點開就行。
-        </p>
-      </div>
     </div>
 
     <!-- 一鍵安裝（Android/Chrome/Edge 支援） -->

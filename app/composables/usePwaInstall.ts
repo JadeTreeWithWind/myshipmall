@@ -7,12 +7,9 @@ export const usePwaInstall = () => {
 
     if (window.matchMedia("(display-mode: standalone)").matches) return;
 
-    // 使用者 7 天內關掉過就不再顯示
+    // 使用者 3 天內關掉過就不再顯示
     const dismissed = localStorage.getItem("pwa-dismissed");
-    if (
-      dismissed &&
-      Date.now() - Number(dismissed) < 7 * 24 * 60 * 60 * 1000
-    )
+    if (dismissed && Date.now() - Number(dismissed) < 3 * 24 * 60 * 60 * 1000)
       return;
 
     window.addEventListener("beforeinstallprompt", (e) => {

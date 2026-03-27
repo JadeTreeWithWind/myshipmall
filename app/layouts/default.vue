@@ -98,7 +98,7 @@ function handleClickOutside(e: MouseEvent) {
 
 function handleScroll() {
   const currentY = window.scrollY;
-  navVisible.value = currentY < 50 || currentY < lastScrollY;
+  navVisible.value = currentY < 50 || currentY < lastScrollY - 30;
   lastScrollY = currentY;
 }
 
