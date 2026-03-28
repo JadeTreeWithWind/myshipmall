@@ -57,15 +57,24 @@ function getTurnstileToken(): Promise<string> {
 
     if (turnstileWidgetId.value) {
       window.turnstile.remove(turnstileWidgetId.value);
+      turnstileWidgetId.value = null;
     }
 
     const id = window.turnstile.render(turnstileContainer.value!, {
       sitekey: config.public.turnstileSiteKey,
       size: "invisible",
-      callback: (token: string) => resolve(token),
-      "error-callback": () => reject(new Error("Turnstile 驗證失敗，請重試")),
-      "expired-callback": () =>
-        reject(new Error("Turnstile token 已過期，請重試")),
+      callback: (token: string) => {
+        if (turnstileWidgetId.value !== id) return;
+        resolve(token);
+      },
+      "error-callback": () => {
+        if (turnstileWidgetId.value !== id) return;
+        reject(new Error("Turnstile 驗證失敗，請重試"));
+      },
+      "expired-callback": () => {
+        if (turnstileWidgetId.value !== id) return;
+        reject(new Error("Turnstile token 已過期，請重試"));
+      },
     });
     turnstileWidgetId.value = id;
     window.turnstile.execute(id);
