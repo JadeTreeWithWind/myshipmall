@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/favicon.png" alt="myshipbang Logo" width="120" height="120">
+  <img src="public/favicon.png" alt="myshipmall Logo" width="120" height="120">
 </p>
 
-<h1 align="center">myshipbang — 賣貨便自架商城</h1>
+<h1 align="center">賣貨商城 — 賣貨便自架商城</h1>
 
 <p align="center">
   <strong>為賣貨便（7-11 myship）賣家打造的商品展示網站</strong>
@@ -18,9 +18,9 @@
 
 ## 📖 簡介
 
-**myshipbang** 是為賣貨便賣家打造的商品展示平台。賣貨便官方平台缺乏獨立商品頁面與搜尋功能，本站作為「展示層」填補這個缺口——不經手任何金流，所有購買行為皆導向賣貨便原始頁面完成交易。
+**myshipmall** 是為賣貨便賣家打造的商品展示平台。賣貨便官方平台缺乏獨立商品頁面與搜尋功能，本站作為「展示層」填補這個缺口——不經手任何金流，所有購買行為皆導向賣貨便原始頁面完成交易。
 
-### 為什麼選擇 myshipbang？
+### 為什麼選擇 myshipmall？
 
 - 🔍 **完整搜尋功能** - 支援商品名稱與商城名稱的模糊搜尋，排序、價格篩選一應俱全
 - 📦 **獨立商品頁面** - 每件商品擁有專屬頁面，含規格、圖片、評論與購買按鈕
@@ -114,44 +114,6 @@
 
 1. 登入 Google 帳號
 2. 在商品詳細頁下方填寫星評與文字評論
-
----
-
-## ⚙️ 本地開發
-
-### 環境需求
-
-- Node.js 20+
-- pnpm
-- Cloudflare 帳號（Workers KV、Turnstile）
-- Supabase 專案
-
-### 安裝與啟動
-
-```bash
-pnpm install
-pnpm dev        # http://localhost:3000
-```
-
-### 建置與部署
-
-```bash
-pnpm build
-pnpm preview    # 本地預覽 production build
-
-# 部署至 Cloudflare
-pnpm wrangler pages deploy
-```
-
-### 資料庫初始化
-
-依序執行 `supabase/` 目錄下的 SQL：
-
-```bash
-supabase/01_schema.sql    # 資料表、索引、Trigger
-supabase/02_functions.sql # DB Function（原子性匯入）
-supabase/03_rls.sql       # RLS 政策
-```
 
 ---
 
