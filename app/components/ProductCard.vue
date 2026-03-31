@@ -34,14 +34,17 @@ const props = defineProps<{
   >
     <!-- 商品圖片 -->
     <div class="bg-base-200 aspect-square shrink-0 overflow-hidden">
-      <img
+      <NuxtImg
         v-if="mainImage"
         :src="mainImage"
         :alt="name"
         width="400"
         height="400"
-        :loading="isEager ? undefined : 'lazy'"
-        :fetchpriority="isEager ? 'high' : undefined"
+        format="webp"
+        quality="80"
+        :loading="isEager ? 'eager' : 'lazy'"
+        :preload="isEager"
+        :fetchpriority="isEager ? 'high' : 'auto'"
         class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
       <div v-else class="flex h-full w-full items-center justify-center">
@@ -75,10 +78,15 @@ const props = defineProps<{
       >
         <NuxtLink
           :to="`/shop/${shopId}`"
-          class="text-base-content hover:text-primary max-w-[70%] cursor-pointer truncate text-xs transition-colors sm:text-sm"
-          @click.stop
+          custom
+          v-slot="{ navigate }"
         >
-          {{ shopName }}
+          <span
+            class="text-base-content hover:text-primary max-w-[70%] cursor-pointer truncate text-xs transition-colors sm:text-sm"
+            @click.stop.prevent="navigate"
+          >
+            {{ shopName }}
+          </span>
         </NuxtLink>
         <span
           class="text-base-content/90 flex shrink-0 items-center gap-0.5 text-xs sm:text-sm"

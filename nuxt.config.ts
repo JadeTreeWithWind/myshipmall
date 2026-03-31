@@ -173,6 +173,11 @@ export default defineNuxtConfig({
       suppressWarnings: true,
     },
   },
+  image: {
+    domains: ["myship.7-11.com.tw"],
+    quality: 60,
+    format: ["webp", "jpg"],
+  },
   nitro: {
     preset: "cloudflare-pages",
   },

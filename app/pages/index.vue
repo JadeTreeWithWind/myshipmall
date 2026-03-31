@@ -301,8 +301,9 @@ useHead({
         class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <ProductCard
-          v-for="p in randomProducts"
+          v-for="(p, index) in randomProducts"
           :key="p.id"
+          :is-eager="index < 4"
           :id="p.id"
           :name="p.name"
           :main-image="p.main_image"
@@ -356,7 +357,7 @@ useHead({
           :shop-name="p.shop_name"
           :shop-id="p.shop_id"
           :click-count="p.click_count"
-          :is-eager="index < 5"
+          :is-eager="index < 10"
         />
       </div>
 
