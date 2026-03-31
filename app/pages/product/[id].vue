@@ -156,14 +156,14 @@ function openReport() {
 useHead({
   title: () => product.value?.name ?? "商品載入中",
   meta: [
-    { name: "description", content: () => productDesc.value + "| 賣貨商城" },
+    { name: "description", content: () => productDesc.value + "| 賣貨便商城" },
     {
       property: "og:title",
-      content: () => (product.value?.name ?? "") + "| 賣貨商城",
+      content: () => (product.value?.name ?? "") + "| 賣貨便商城",
     },
     {
       property: "og:description",
-      content: () => productDesc.value + "| 賣貨商城",
+      content: () => productDesc.value + "| 賣貨便商城",
     },
     { property: "og:image", content: () => product.value?.main_image ?? "" },
     { property: "og:type", content: "product" },

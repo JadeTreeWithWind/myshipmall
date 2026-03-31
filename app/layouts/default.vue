@@ -157,7 +157,7 @@ const { initInstallPrompt } = usePwaInstall();
 
 useHead({
   titleTemplate: (title) =>
-    title ? `${title} | 賣貨商城` : "賣貨商城 — 賣貨便商品瀏覽平台",
+    title ? `${title} | 賣貨便商城` : "賣貨便商城 — 賣貨便商品瀏覽平台",
   link: [{ rel: "canonical", href: `${config.public.siteUrl}${route.path}` }],
 });
 
@@ -215,7 +215,7 @@ onUnmounted(() => {
           />
           <span
             class="text-base-content font-Noto font-semibold tracking-wide sm:text-xl"
-            >賣貨商城</span
+            >賣貨便商城</span
           >
         </NuxtLink>
 
@@ -544,7 +544,7 @@ onUnmounted(() => {
                 name="heroicons:shopping-bag"
                 class="text-primary h-4 w-4"
               />
-              <span class="text-sm font-semibold">賣貨商城</span>
+              <span class="text-sm font-semibold">賣貨便商城</span>
             </div>
             <p class="text-base-content/80 max-w-xs text-xs leading-relaxed">
               本站為獨立開發者建立的非官方展示平台，與統一超商、賣貨便官方無任何隸屬或合作關係。本站不販售商品、不經手金流，所有購買行為均導向賣貨便官方頁面完成。商品資訊由第三方匯入，本站不保證其準確性，實際內容請以賣貨便為準。

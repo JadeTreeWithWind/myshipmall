@@ -12,7 +12,7 @@
             class="size-10 rounded-lg"
           />
           <div>
-            <p class="text-sm font-medium">安裝賣貨商城</p>
+            <p class="text-sm font-medium">安裝賣貨便商城</p>
             <p class="text-base-content/60 text-xs">
               加到主畫面，享受更接近App的體驗
             </p>

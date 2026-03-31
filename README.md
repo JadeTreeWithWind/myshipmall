@@ -2,7 +2,7 @@
   <img src="public/favicon.png" alt="myshipmall Logo" width="120" height="120">
 </p>
 
-<h1 align="center">賣貨商城 — 賣貨便自架商城</h1>
+<h1 align="center">賣貨便商城 — 賣貨便自架商城</h1>
 
 <p align="center">
   <strong>為賣貨便（7-11 myship）賣家打造的商品展示網站</strong>

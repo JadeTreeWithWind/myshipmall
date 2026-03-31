@@ -25,7 +25,7 @@ useHead({
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/terms` }],
   meta: [
     { name: "description", content: TERMS_DESC },
-    { property: "og:title", content: "條款與免責聲明 | 賣貨商城" },
+    { property: "og:title", content: "條款與免責聲明 | 賣貨便商城" },
     { property: "og:description", content: TERMS_DESC },
     { property: "og:image", content: `${config.public.siteUrl}/og-image.png` },
     { property: "og:type", content: "website" },

@@ -21,7 +21,7 @@ const desc = computed(() => {
 });
 
 useHead({
-  title: `${title.value} — 賣貨商城`,
+  title: `${title.value} — 賣貨便商城`,
 });
 </script>
 

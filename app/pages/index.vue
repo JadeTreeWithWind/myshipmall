@@ -102,16 +102,20 @@ function goSearch() {
 
 // 8. 生命週期鉤子
 useHead({
-  title: "賣貨商城 — 賣貨便商品瀏覽平台",
+  title: "賣貨便商城 — 賣貨便商品瀏覽平台",
   meta: [
     { name: "description", content: HOME_DESC },
-    { property: "og:title", content: "賣貨商城 — 賣貨便商品瀏覽平台" },
+    { property: "og:title", content: "賣貨便商城 — 賣貨便商品瀏覽平台" },
     { property: "og:description", content: HOME_DESC },
     { property: "og:type", content: "website" },
     { property: "og:url", content: config.public.siteUrl },
+    { property: "og:image", content: `${config.public.siteUrl}/og-image.png` },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: "賣貨商城 — 賣貨便商品瀏覽平台" },
+    { name: "twitter:title", content: "賣貨便商城 — 賣貨便商品瀏覽平台" },
     { name: "twitter:description", content: HOME_DESC },
+    { name: "twitter:image", content: `${config.public.siteUrl}/og-image.png` },
   ],
 });
 </script>

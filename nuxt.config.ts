@@ -17,6 +17,17 @@ export default defineNuxtConfig({
         { name: "theme-color", content: "#000000" },
         { name: "apple-mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-status-bar-style", content: "black" },
+        {
+          name: "description",
+          content:
+            "賣貨便商城是專為 7-11 賣貨便打造的商品搜尋平台。搜尋賣貨便商品、瀏覽賣貨便賣場，找到小農、手作與特色商品。",
+        },
+        {
+          name: "keywords",
+          content:
+            "賣貨便,賣貨便商品,賣貨便賣場,賣貨便搜尋,7-11賣貨便,賣貨便商城,myship,7-11商品",
+        },
+        { property: "og:site_name", content: "賣貨便商城" },
       ],
       link: [
         { rel: "icon", type: "image/png", href: "/favicon.png" },
@@ -42,6 +53,28 @@ export default defineNuxtConfig({
         },
       ],
       script: [
+        // 🔹 JSON-LD 結構化資料：WebSite + SearchAction（有助 Google 理解網站用途）
+        {
+          type: "application/ld+json",
+          innerHTML: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "賣貨便商城",
+            alternateName: ["賣貨便商品搜尋", "7-11賣貨便商城"],
+            description:
+              "專為 7-11 賣貨便打造的商品搜尋與展示平台，搜尋賣貨便商品、瀏覽賣貨便賣場。",
+            url: "https://myshipmall.org",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: {
+                "@type": "EntryPoint",
+                urlTemplate:
+                  "https://myshipmall.org/search?q={search_term_string}",
+              },
+              "query-input": "required name=search_term_string",
+            },
+          }),
+        },
         // 🔹 這裡加入小小 Inline Script，防止主題閃爍 (Theme Flicker)
         {
           innerHTML: `(function() {
@@ -92,9 +125,9 @@ export default defineNuxtConfig({
   pwa: {
     registerType: "autoUpdate",
     manifest: {
-      name: "賣貨商城",
-      short_name: "賣貨商城",
-      description: "購物評價平台",
+      name: "賣貨便商城",
+      short_name: "賣貨便商城",
+      description: "7-11 賣貨便商品搜尋與展示平台，快速找到賣貨便賣場商品。",
       lang: "zh-Hant",
       theme_color: "#000000",
       background_color: "#80D1CA",

@@ -1,9 +1,6 @@
 <script setup lang="ts">
 // 1. 外部引用
-import {
-  SEARCH_DESC,
-  SORT_OPTIONS,
-} from "~/constants/text";
+import { SEARCH_DESC, SORT_OPTIONS } from "~/constants/text";
 
 // 2. 類型定義（無）
 
@@ -91,7 +88,7 @@ useHead({
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/search` }],
   meta: [
     { name: "description", content: SEARCH_DESC },
-    { property: "og:title", content: "搜尋商品 — 賣貨商城" },
+    { property: "og:title", content: "搜尋商品 — 賣貨便商城" },
     { property: "og:description", content: SEARCH_DESC },
     { property: "og:image", content: `${config.public.siteUrl}/og-search.png` },
     { property: "og:type", content: "website" },

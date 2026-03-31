@@ -172,26 +172,26 @@ function resetToInput() {
 onMounted(() => {
   // 動態載入 Turnstile script（僅在此頁面載入，不全站污染）
   if (!document.querySelector('script[src*="turnstile"]')) {
-    const s = document.createElement('script');
-    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    const s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
     s.async = true;
     s.defer = true;
     document.head.appendChild(s);
   }
 });
 useHead({
-  title: "匯入賣場 — 賣貨商城",
+  title: "匯入賣場 — 賣貨便商城",
   meta: [
     {
       name: "description",
       content:
-        "輸入您的賣貨便賣場網址，將賣場商品一鍵匯入 賣貨商城，建立您的專屬商城頁面。",
+        "輸入您的賣貨便賣場網址，將賣場商品一鍵匯入 賣貨便商城，建立您的專屬商城頁面。",
     },
-    { property: "og:title", content: "匯入賣場 — 賣貨商城" },
+    { property: "og:title", content: "匯入賣場 — 賣貨便商城" },
     {
       property: "og:description",
       content:
-        "輸入您的賣貨便賣場網址，將賣場商品一鍵匯入 賣貨商城，建立您的專屬商城頁面。",
+        "輸入您的賣貨便賣場網址，將賣場商品一鍵匯入 賣貨便商城，建立您的專屬商城頁面。",
     },
     { property: "og:image", content: `${config.public.siteUrl}/og-import.png` },
     { name: "twitter:card", content: "summary_large_image" },

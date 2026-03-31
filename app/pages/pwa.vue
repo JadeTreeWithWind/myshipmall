@@ -45,7 +45,7 @@ useHead({
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/pwa` }],
   meta: [
     { name: "description", content: DESC },
-    { property: "og:title", content: "安裝 App | 賣貨商城" },
+    { property: "og:title", content: "安裝 App | 賣貨便商城" },
     { property: "og:description", content: DESC },
   ],
 });

@@ -28,7 +28,7 @@ useHead({
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/about` }],
   meta: [
     { name: "description", content: ABOUT_DESC },
-    { property: "og:title", content: "關於 賣貨商城" },
+    { property: "og:title", content: "關於 賣貨便商城" },
     { property: "og:description", content: ABOUT_DESC },
     { property: "og:image", content: `${config.public.siteUrl}/og-image.png` },
     { property: "og:type", content: "website" },
@@ -43,7 +43,7 @@ useHead({
     <!-- ── Hero ── -->
     <div class="mb-14 text-center">
       <h1 class="text-base-content mb-3 text-3xl font-semibold lg:text-4xl">
-        關於 賣貨商城
+        關於 賣貨便商城
       </h1>
       <p class="text-base-content/90 mt-4 text-sm leading-relaxed sm:text-base">
         {{ ABOUT_DESC }}
@@ -227,7 +227,7 @@ useHead({
         免責聲明
       </h2>
       <p class="text-base-content/70 text-sm leading-relaxed sm:text-base">
-        賣貨商城是非官方獨立平台，與統一超商或賣貨便官方完全無關。商品資訊由使用者自行匯入，本站不保證資料的即時性與完整性。所有購買行為皆在賣貨便官方平台進行，本站不承擔任何交易相關責任。
+        賣貨便商城是非官方獨立平台，與統一超商或賣貨便官方完全無關。商品資訊由使用者自行匯入，本站不保證資料的即時性與完整性。所有購買行為皆在賣貨便官方平台進行，本站不承擔任何交易相關責任。
       </p>
       <NuxtLink
         to="/terms"
