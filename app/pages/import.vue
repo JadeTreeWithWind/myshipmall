@@ -1,9 +1,9 @@
 <script setup lang="ts">
-// 1. 外部引用
+// 外部引用
 import type { ShopData } from "../../server/utils/types";
 import { IMPORT_FAQS as faqItems } from "~/constants/text";
 
-// 2. 類型定義
+// 類型定義
 declare global {
   interface Window {
     turnstile: {
@@ -18,7 +18,7 @@ declare global {
   }
 }
 
-// 3. 常量宣告
+// 常量宣告
 const config = useRuntimeConfig();
 const { minLoadingTime } = useMinLoadingTime();
 const URL_PATTERN =
@@ -29,7 +29,7 @@ const PAGE_PHASE = {
   SUCCESS: "success",
 };
 
-// 4. 響應式狀態/變數
+// 響應式狀態/變數
 const url = ref("");
 const urlError = ref("");
 const phase = ref(PAGE_PHASE.INPUT);
@@ -45,9 +45,7 @@ const turnstileWidgetId = ref<string | null>(null);
 const turnstileContainer = ref<HTMLElement | null>(null);
 const agreedToTerms = ref(false);
 
-// 5. 計算屬性（無）
-
-// 6. 核心邏輯與函數
+// 核心邏輯與函數
 function getTurnstileToken(): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!window.turnstile) {
@@ -166,9 +164,7 @@ function resetToInput() {
   errorMsg.value = "";
 }
 
-// 7. 偵聽器（無）
-
-// 8. 生命週期鉤子
+// 生命週期鉤子
 onMounted(() => {
   // 動態載入 Turnstile script（僅在此頁面載入，不全站污染）
   if (!document.querySelector('script[src*="turnstile"]')) {

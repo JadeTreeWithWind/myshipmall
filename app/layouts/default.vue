@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// 1. 外部引用
+// 外部引用
 import { BOTTOM_NAV_ITEMS, CONTACT_SUBJECTS } from "~/constants/text";
 
 const route = useRoute();
@@ -8,15 +8,13 @@ const config = useRuntimeConfig();
 const { user, signIn, signOut } = useAuth();
 const { isAdmin, checkAdmin } = useAdminCheck();
 
-// 2. 類型定義（無）
-
-// 3. 常量宣告
+// 常量宣告
 const THEMES = {
   LIGHT: "lofi",
   DARK: "halloween",
 };
 
-// 4. 響應式狀態/變數
+// 響應式狀態/變數
 const theme = ref(THEMES.DARK);
 const searchQ = ref("");
 const menuOpen = ref(false);
@@ -35,9 +33,7 @@ let lastScrollY = 0;
 
 const bottomNavItems = BOTTOM_NAV_ITEMS;
 
-// 5. 計算屬性（無）
-
-// 6. 核心邏輯與函數
+// 核心邏輯與函數
 function closeDropdown() {
   (document.activeElement as HTMLElement)?.blur();
 }
@@ -127,7 +123,7 @@ function handleScroll() {
   });
 }
 
-// 7. 偵聽器
+// 偵聽器
 watch(
   () => route.query.q,
   (v) => {
@@ -152,7 +148,7 @@ watch(
   { immediate: true },
 );
 
-// 8. 生命週期鉤子
+// 生命週期鉤子
 const { initInstallPrompt } = usePwaInstall();
 
 useHead({

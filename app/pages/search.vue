@@ -1,13 +1,11 @@
 <script setup lang="ts">
-// 1. 外部引用
+// 外部引用
 import { SEARCH_DESC, SORT_OPTIONS } from "~/constants/text";
 
-// 2. 類型定義（無）
-
-// 3. 常量宣告
+// 常量宣告
 const config = useRuntimeConfig();
 
-// 4. 響應式狀態/變數
+// 響應式狀態/變數
 const route = useRoute();
 const router = useRouter();
 const { products, loading, hasMore, search, loadMore, setProducts } =
@@ -25,10 +23,10 @@ const maxPrice = ref(
   route.query.max_price ? Number(route.query.max_price) : undefined,
 );
 
-// 5. 計算屬性
+// 計算屬性
 const q = computed(() => (route.query.q as string) || "");
 
-// 6. 核心邏輯與函數
+// 核心邏輯與函數
 async function doSearch() {
   router.replace({
     query: {
@@ -48,11 +46,11 @@ async function doSearch() {
 
 const SCROLL_CACHE_KEY = "search-scroll-state";
 
-// 7. 偵聽器
+// 偵聽器
 watch(sort, doSearch);
 watch(q, doSearch);
 
-// 8. 生命週期鉤子
+// 生命週期鉤子
 onBeforeRouteLeave((to) => {
   if (to.path.startsWith("/product/")) {
     sessionStorage.setItem(

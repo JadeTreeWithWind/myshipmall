@@ -1,25 +1,15 @@
 <script setup lang="ts">
-// 1. Imports
+// Imports
 import {
   TERMS_DESC,
   TERMS_LAST_UPDATED,
   TERMS_SECTIONS as SECTIONS,
 } from "~/constants/text";
 
-// 2. Types (None)
-
-// 3. Constants
+// Constants
 const config = useRuntimeConfig();
 
-// 4. State/Variables (None)
-
-// 5. Computed Properties (None)
-
-// 6. Functions/Methods (None)
-
-// 7. Watchers (None)
-
-// 8. Lifecycle Hooks
+// Lifecycle Hooks
 useHead({
   title: "條款與免責聲明",
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/terms` }],

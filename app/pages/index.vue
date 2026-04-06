@@ -1,14 +1,12 @@
 <script setup lang="ts">
-// 1. 外部引用
+// 外部引用
 import type { ProductSearchResult } from "~/composables/useProductSearch";
 import { HOME_DESC, HOME_SUGGESTED_SEARCHES } from "~/constants/text";
 
-// 2. 類型定義（無）
-
-// 3. 常量宣告
+// 常量宣告
 const config = useRuntimeConfig();
 
-// 4. 響應式狀態/變數
+// 響應式狀態/變數
 const router = useRouter();
 const searchQ = ref("");
 const {
@@ -84,9 +82,7 @@ watch(
 
 onUnmounted(() => cancelFns.forEach((fn) => fn()));
 
-// 5. 計算屬性（無）
-
-// 6. 核心邏輯與函數
+// 核心邏輯與函數
 function refreshRandom() {
   if (isCoolingDown.value) return;
   isCoolingDown.value = true;
@@ -98,9 +94,7 @@ function goSearch() {
   router.push({ path: "/search", query: { q: searchQ.value.trim() } });
 }
 
-// 7. 偵聽器（無）
-
-// 8. 生命週期鉤子
+// 生命週期鉤子
 useHead({
   title: "賣貨便商城 — 賣貨便商品瀏覽平台",
   meta: [

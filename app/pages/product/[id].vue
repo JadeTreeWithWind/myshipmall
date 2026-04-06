@@ -1,15 +1,11 @@
 <script setup lang="ts">
-// 1. 外部引用（無）
-
-// 2. 類型定義（無）
-
-// 3. 常量宣告
+// 常量宣告
 const route = useRoute();
 const productId = route.params.id as string;
 const config = useRuntimeConfig();
 const productUrl = `${config.public.siteUrl}${route.path}`;
 
-// 4. 響應式狀態/變數
+// 響應式狀態/變數
 const supabase = useSupabase();
 const { sanitize } = useSanitize();
 
@@ -79,7 +75,7 @@ function onTouchEnd(e: TouchEvent) {
   navigate(diff > 0 ? "next" : "prev");
 }
 
-// 5. 計算屬性
+// 計算屬性
 const productDesc = computed(() => {
   const raw = product.value?.description ?? product.value?.name ?? "";
   return raw.replace(/<[^>]+>/g, "").slice(0, 150);
@@ -125,7 +121,7 @@ const updatedAt = computed(() => {
 
 const buyUrl = computed(() => safeMyshipUrl(shop.value?.shop_url));
 
-// 6. 核心邏輯與函數
+// 核心邏輯與函數
 async function handleBuy() {
   if (!buyUrl.value) return;
 
@@ -137,7 +133,7 @@ async function handleBuy() {
   window.open(buyUrl.value, "_blank", "noopener,noreferrer");
 }
 
-// 7. 偵聽器（無）
+// 偵聽器（無）
 const contactOpen = useState("contactOpen", () => false);
 const contactForm = useState("contactForm", () => ({
   name: "",

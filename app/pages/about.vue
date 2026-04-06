@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// 1. 外部引用
+// 外部引用
 import {
   ABOUT_DESC,
   ABOUT_STORY as STORY,
@@ -9,20 +9,10 @@ import {
   ABOUT_FAQS as FAQS,
 } from "~/constants/text";
 
-// 2. 類型定義（無）
-
-// 3. 常量宣告
+// 常量宣告
 const config = useRuntimeConfig();
 
-// 4. 響應式狀態/變數（無）
-
-// 5. 計算屬性（無）
-
-// 6. 核心邏輯與函數（無）
-
-// 7. 偵聽器（無）
-
-// 8. 生命週期鉤子
+// 生命週期鉤子
 useHead({
   title: "關於我們",
   link: [{ rel: "canonical", href: `${config.public.siteUrl}/about` }],

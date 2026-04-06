@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// 1. Constants
+// Constants
 import {
   PWA_DESC,
   PWA_FEATURES as FEATURES,
@@ -9,18 +9,18 @@ import {
 const config = useRuntimeConfig();
 const DESC = PWA_DESC;
 
-// 2. State
+// State
 const { showInstallBanner, install, dismiss } = usePwaInstall();
 const isInstalled = ref(false);
 const isInstalling = ref(false);
 const activeTab = ref<"ios" | "android">("android");
 
-// 3. Computed
+// Computed
 const canInstall = computed(
   () => showInstallBanner.value && !isInstalled.value,
 );
 
-// 4. Functions
+// Functions
 function detectPlatform(): "ios" | "android" {
   const ua = navigator.userAgent;
   if (/iphone|ipad|ipod/i.test(ua)) return "ios";
@@ -34,7 +34,7 @@ async function handleInstall() {
   isInstalled.value = window.matchMedia("(display-mode: standalone)").matches;
 }
 
-// 5. Lifecycle
+// Lifecycle
 onMounted(() => {
   isInstalled.value = window.matchMedia("(display-mode: standalone)").matches;
   activeTab.value = detectPlatform();

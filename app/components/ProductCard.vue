@@ -1,11 +1,5 @@
 <script setup lang="ts">
-// 1. 外部引用（無）
-
-// 2. 類型定義（無）
-
-// 3. 常量宣告（無）
-
-// 4. 響應式狀態/變數
+// 響應式狀態/變數
 const props = defineProps<{
   id: string;
   name: string;
@@ -17,14 +11,6 @@ const props = defineProps<{
   clickCount: number;
   isEager?: boolean;
 }>();
-
-// 5. 計算屬性（無）
-
-// 6. 核心邏輯與函數（無）
-
-// 7. 偵聽器（無）
-
-// 8. 生命週期鉤子（無）
 </script>
 
 <template>
@@ -76,11 +62,7 @@ const props = defineProps<{
       <div
         class="border-base-200 mt-auto flex items-center justify-between border-t pt-2"
       >
-        <NuxtLink
-          :to="`/shop/${shopId}`"
-          custom
-          v-slot="{ navigate }"
-        >
+        <NuxtLink :to="`/shop/${shopId}`" custom v-slot="{ navigate }">
           <span
             class="text-base-content hover:text-primary max-w-[70%] cursor-pointer truncate text-xs transition-colors sm:text-sm"
             @click.stop.prevent="navigate"
